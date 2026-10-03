@@ -35,7 +35,7 @@ async function adminRequest(path, options = {}) {
 }
 
 export const api = {
-   getProducts: (category) =>
+  getProducts: (category) =>
     request(category ? `/api/products?category=${category}` : "/api/products"),
   getProduct: (id) => request(`/api/products/${id}`),
   createOrder: (payload) =>
@@ -43,16 +43,24 @@ export const api = {
       method: "POST",
       body: JSON.stringify(payload),
     }),
-    captureOrder: (orderId, paymentHash) =>
+  captureOrder: (orderId, paymentHash) =>
     request(`/api/orders/${orderId}/capture`, {
       method: "POST",
       body: JSON.stringify({ paymentHash }),
     }),
-    
+
   getOrder: (orderId) => request(`/api/orders/${orderId}`),
   getOrders: () => adminRequest("/api/orders"),
 
-  // --- Admin ---
+  // --- Contenido de la portada (hero, category strip, category grid, about us) ---
+  getContent: () => request("/api/content"),
+  updateContent: (key, value) =>
+    adminRequest(`/api/content/${key}`, {
+      method: "PUT",
+      body: JSON.stringify(value),
+    }),
+
+  // --- Admin: productos ---
   createProduct: (data) =>
     adminRequest("/api/products", {
       method: "POST",
