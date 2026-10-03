@@ -1,6 +1,9 @@
+import { useNavigate } from "react-router-dom";
 import { formatPriceLPS } from "../data/storeData";
 
 export default function CategoryPage({ title, products }) {
+  const navigate = useNavigate();
+
   return (
     <section className="normal-flow-section category-page">
       <h1 className="category-page-title">{title}</h1>
@@ -17,24 +20,26 @@ export default function CategoryPage({ title, products }) {
       {products.length === 0 ? (
         <p className="grid-status">Muy pronto vas a encontrar piezas aquí</p>
       ) : (
-        <>
-          <div className="product-grid">
-            {products.map((product) => (
-              <div className="product-card-item" key={product.id}>
-                <div className="product-card-image">
-                  <img src={product.image} alt={product.title} />
-                </div>
-                <div className="product-info-title">{product.title}</div>
-                <div className="product-info-price">
-                  {formatPriceLPS(product.price)}
-                </div>
+        <div className="product-grid">
+          {products.map((product) => (
+            <div
+              className="product-card-item"
+              key={product.id}
+              onClick={() => navigate(`/producto/${product.id}`)}
+            >
+              <div className="product-card-image">
+                {product.badge && (
+                  <span className="badge-tag">{product.badge}</span>
+                )}
+                <img src={product.image} alt={product.title} />
               </div>
-            ))}
-          </div>
-          <p className="category-page-note">
-            * Productos de ejemplo — pronto disponibles para compra
-          </p>
-        </>
+              <div className="product-info-title">{product.title}</div>
+              <div className="product-info-price">
+                {formatPriceLPS(product.price)}
+              </div>
+            </div>
+          ))}
+        </div>
       )}
     </section>
   );
