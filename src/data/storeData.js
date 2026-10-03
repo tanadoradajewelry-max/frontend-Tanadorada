@@ -53,11 +53,12 @@ export const categories = [
 ];
 
 export const navLinks = [
+  { label: "Inicio", href: "/" },
   { label: "Novedades", href: "#" },
-  { label: "Collares", href: "#" },
-  { label: "Aretes", href: "#" },
+  { label: "Collares", href: "/coleccion/collares" , preview: ["/img/1.jpg" , "img/2.jpg","img/3.jpg","img/4.jpg","img/5.jpg"]},
+  { label: "Aretes", href: "/coleccion/aretes"},
   { label: "Anillos", href: "/coleccion/anillos", preview: ["/img/7.jpeg", "/img/8.jpeg", "/img/9.jpeg", "/img/10.jpeg"] },
-];  
+];
 
 export function formatPriceLPS(amount) {
   return `$${amount.toFixed(2)} LPS`;
