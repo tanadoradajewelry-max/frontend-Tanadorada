@@ -13,9 +13,7 @@ import AdminProductForm from "./pages/admin/AdminProductForm";
 import AdminOrders from "./pages/admin/AdminOrders";
 import AdminGuard from "./components/admin/AdminGuard";
 import AccountComingSoon from "./pages/account/AccountComingSoon";
-import RingsCategoryPage from "./pages/RingsCategoryPage";
-import NecklacesCategoryPage from "./pages/NecklacesCategoryPage";
-import AretesCategoryPage from "./pages/AretesCategoryPage";
+import CollectionPage from "./pages/CollectionPage";
 
 export default function App() {
   return (
@@ -30,7 +28,7 @@ export default function App() {
             <Route path="/carrito" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/gracias" element={<OrderConfirmation />} />
-                        <Route path="/coleccion/anillos" element={<RingsCategoryPage />} />
+                                    <Route path="/coleccion/:categorySlug" element={<CollectionPage />} />
                                     <Route
               path="/cuenta/iniciar-sesion"
               element={<AccountComingSoon title="Iniciar Sesión" />}
@@ -39,10 +37,10 @@ export default function App() {
               path="/cuenta/registro"
               element={<AccountComingSoon title="Crear Cuenta" />}
             />
-                        <Route path="/coleccion/collares" element={<NecklacesCategoryPage />} />
+                       
 
             <Route path="/admin/login" element={<AdminLogin />} />
-                        <Route path="/coleccion/aretes" element={<AretesCategoryPage />} />
+                        
             <Route
               path="/admin"
               element={
