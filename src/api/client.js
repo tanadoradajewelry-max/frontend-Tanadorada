@@ -35,7 +35,8 @@ async function adminRequest(path, options = {}) {
 }
 
 export const api = {
-  getProducts: () => request("/api/products"),
+   getProducts: (category) =>
+    request(category ? `/api/products?category=${category}` : "/api/products"),
   getProduct: (id) => request(`/api/products/${id}`),
   createOrder: (payload) =>
     request("/api/orders", {
