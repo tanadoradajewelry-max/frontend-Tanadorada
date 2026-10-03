@@ -14,23 +14,28 @@ export default function CategoryPage({ title, products }) {
         </div>
       </div>
 
-      <div className="product-grid">
-        {products.map((product) => (
-          <div className="product-card-item" key={product.id}>
-            <div className="product-card-image">
-              <img src={product.image} alt={product.title} />
-            </div>
-            <div className="product-info-title">{product.title}</div>
-            <div className="product-info-price">
-              {formatPriceLPS(product.price)}
-            </div>
+      {products.length === 0 ? (
+        <p className="grid-status">Muy pronto vas a encontrar piezas aquí</p>
+      ) : (
+        <>
+          <div className="product-grid">
+            {products.map((product) => (
+              <div className="product-card-item" key={product.id}>
+                <div className="product-card-image">
+                  <img src={product.image} alt={product.title} />
+                </div>
+                <div className="product-info-title">{product.title}</div>
+                <div className="product-info-price">
+                  {formatPriceLPS(product.price)}
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-
-      <p className="category-page-note">
-        * Productos de ejemplo — pronto disponibles para compra
-      </p>
+          <p className="category-page-note">
+            * Productos de ejemplo — pronto disponibles para compra
+          </p>
+        </>
+      )}
     </section>
   );
 }
