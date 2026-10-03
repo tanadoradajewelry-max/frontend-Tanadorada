@@ -14,6 +14,7 @@ import AdminOrders from "./pages/admin/AdminOrders";
 import AdminGuard from "./components/admin/AdminGuard";
 import AccountComingSoon from "./pages/account/AccountComingSoon";
 import CollectionPage from "./pages/CollectionPage";
+import AdminContent from "./pages/admin/AdminContent";
 
 export default function App() {
   return (
@@ -28,6 +29,14 @@ export default function App() {
             <Route path="/carrito" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/gracias" element={<OrderConfirmation />} />
+                        <Route
+              path="/admin/contenido"
+              element={
+                <AdminGuard>
+                  <AdminContent />
+                </AdminGuard>
+              }
+            />  
                         
                                     <Route
               path="/cuenta/iniciar-sesion"
