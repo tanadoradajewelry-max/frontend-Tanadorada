@@ -48,7 +48,7 @@ export const heroSlides = [
 
 export const categories = [
   { id: "aretes-statement", image: "/img/1.jpg", title: "Aretes Statement", href: "/coleccion/aretes" },
-  { id: "beach-edit", image: "/img/2.jpg", title: "The Beach Edit", href: "#best-sellers" },
+  { id: "beach-edit", image: "/img/2.jpg", title: "The Beach Edit", href: "/coleccion/collares" },
   { id: "anillos-chunky", image: "/img/3.jpg", title: "Anillos Chunky", href: "/coleccion/anillos" },
 ];
 
