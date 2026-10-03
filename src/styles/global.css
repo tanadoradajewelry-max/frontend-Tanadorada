@@ -1312,3 +1312,86 @@ button {
   color: var(--accent);
   margin-bottom: 10px;
 }
+
+/* ==========================================================================
+   21. SELECT DEL PANEL ADMIN
+   ========================================================================== */
+.checkout-form select {
+  font-family: var(--FONT-STACK-BODY);
+  font-size: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-small);
+  background: #FFFFFF;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+/* ==========================================================================
+   22. PANEL ADMIN — CONTENIDO DE PORTADA
+   ========================================================================== */
+.admin-content-block {
+  max-width: 600px;
+  margin: 0 auto 50px;
+  padding: 24px;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-medium);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.admin-content-block h3 {
+  font-family: var(--FONT-STACK-HEADING);
+  font-size: 20px;
+  margin-bottom: 6px;
+}
+
+.admin-content-block label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #555;
+}
+
+.admin-content-block input[type="text"],
+.admin-content-block textarea {
+  font-family: var(--FONT-STACK-BODY);
+  font-size: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-small);
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.admin-content-preview {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: var(--radius-small);
+}
+
+.admin-content-subitem {
+  border-top: 1px dashed var(--border);
+  padding-top: 14px;
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-content-remove {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  color: #B4453D;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
