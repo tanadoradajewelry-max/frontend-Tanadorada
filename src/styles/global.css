@@ -1300,3 +1300,15 @@ button {
 #root {
   background-color: #ffffff !important;
 }
+
+/* ==========================================================================
+   20. ETIQUETA PEQUEÑA SOBRE TÍTULOS (patrón reutilizable)
+   ========================================================================== */
+.section-eyebrow {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
