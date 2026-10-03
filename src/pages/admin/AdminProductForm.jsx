@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { api } from "../../api/client";
+import { CATEGORIES } from "../../data/categories";
 
-const emptyForm = { title: "", price: "", badge: "", image: "" };
+const emptyForm = { title: "", price: "", badge: "", image: "", category: "" };
 
 export default function AdminProductForm() {
   const { productId } = useParams();
@@ -27,6 +28,7 @@ export default function AdminProductForm() {
           price: product.price,
           badge: product.badge || "",
           image: product.image,
+          category: product.category || "",
         });
         setImagePreview(product.image);
         setIsLoading(false);
@@ -57,8 +59,6 @@ export default function AdminProductForm() {
     try {
       let imageUrl = form.image;
 
-      // Si el usuario eligió un archivo nuevo, se sube primero y se usa
-      // esa URL. Si está editando y no tocó la imagen, se queda la anterior.
       if (imageFile) {
         const uploaded = await api.uploadImage(imageFile);
         imageUrl = uploaded.url;
@@ -75,6 +75,7 @@ export default function AdminProductForm() {
         price: Number(form.price),
         badge: form.badge || null,
         image: imageUrl,
+        category: form.category || null,
       };
 
       if (isEditing) {
@@ -137,6 +138,18 @@ export default function AdminProductForm() {
             onChange={handleChange}
             required
           />
+        </label>
+
+        <label>
+          Categoría
+          <select name="category" value={form.category} onChange={handleChange}>
+            <option value="">Sin categoría</option>
+            {CATEGORIES.map((cat) => (
+              <option key={cat.slug} value={cat.slug}>
+                {cat.label}
+              </option>
+            ))}
+          </select>
         </label>
 
         <label>
