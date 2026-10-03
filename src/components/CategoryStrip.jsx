@@ -1,10 +1,9 @@
 import { Link } from "react-router-dom";
-import { categoryStrip } from "../data/sampleCollections";
 
-export default function CategoryStrip() {
+export default function CategoryStrip({ items }) {
   return (
     <div className="category-strip">
-      {categoryStrip.map((category) => (
+      {items.map((category) => (
         <Link to={category.href} className="category-strip-item" key={category.label}>
           <div className="category-strip-image">
             <img src={category.image} alt={category.label} />
