@@ -8,7 +8,7 @@ const RING_PRODUCT_IDS = [
   "caramella-ring",
   "olive-ring",
   "the-loop-ring",
-  "velvet-ring",
+  "veltvet-ring",
 ];
 
 export default function RingsCategoryPage() {
