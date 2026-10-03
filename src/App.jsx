@@ -15,6 +15,7 @@ import AdminGuard from "./components/admin/AdminGuard";
 import AccountComingSoon from "./pages/account/AccountComingSoon";
 import RingsCategoryPage from "./pages/RingsCategoryPage";
 import NecklacesCategoryPage from "./pages/NecklacesCategoryPage";
+import AretesCategoryPage from "./pages/AretesCategoryPage";
 
 export default function App() {
   return (
@@ -41,6 +42,7 @@ export default function App() {
                         <Route path="/coleccion/collares" element={<NecklacesCategoryPage />} />
 
             <Route path="/admin/login" element={<AdminLogin />} />
+                        <Route path="/coleccion/aretes" element={<AretesCategoryPage />} />
             <Route
               path="/admin"
               element={
