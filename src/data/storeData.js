@@ -47,9 +47,9 @@ export const heroSlides = [
 ];
 
 export const categories = [
-  { id: "aretes-statement", image: "/img/1.jpg", title: "Aretes Statement" },
-  { id: "beach-edit", image: "/img/2.jpg", title: "The Beach Edit" },
-  { id: "anillos-chunky", image: "/img/3.jpg", title: "Anillos Chunky" },
+  { id: "aretes-statement", image: "/img/1.jpg", title: "Aretes Statement", href: "/coleccion/aretes" },
+  { id: "beach-edit", image: "/img/2.jpg", title: "The Beach Edit", href: "#best-sellers" },
+  { id: "anillos-chunky", image: "/img/3.jpg", title: "Anillos Chunky", href: "/coleccion/anillos" },
 ];
 
 export const navLinks = [
@@ -57,7 +57,7 @@ export const navLinks = [
   { label: "Collares", href: "#" },
   { label: "Aretes", href: "#" },
   { label: "Anillos", href: "/coleccion/anillos", preview: ["/img/7.jpeg", "/img/8.jpeg", "/img/9.jpeg", "/img/10.jpeg"] },
-];
+];  
 
 export function formatPriceLPS(amount) {
   return `$${amount.toFixed(2)} LPS`;
