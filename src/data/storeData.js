@@ -53,16 +53,16 @@ export const categories = [
 ];
 
 export const navLinks = [
-  { label: "Inicio", href: "/" },
-  { label: "Novedades", href: "#" },
+  { label: "Home", href: "/" },
+  { label: "New In", href: "#" },
   {
-    label: "Collares",
+    label: "Necklaces",
     href: "/coleccion/collares",
     preview: ["/img/2.jpg", "/img/3.jpg", "/img/4.jpg", "/img/5.jpg"],
   },
-  { label: "Aretes", href: "/coleccion/aretes" },
+  { label: "Earrings", href: "/coleccion/aretes" },
   {
-    label: "Anillos",
+    label: "Rings",
     href: "/coleccion/anillos",
     preview: ["/img/7.jpeg", "/img/8.jpeg", "/img/9.jpeg", "/img/10.jpeg"],
   },
