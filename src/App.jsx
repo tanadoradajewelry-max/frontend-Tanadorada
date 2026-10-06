@@ -15,6 +15,7 @@ import AdminGuard from "./components/admin/AdminGuard";
 import AccountComingSoon from "./pages/account/AccountComingSoon";
 import CollectionPage from "./pages/CollectionPage";
 import AdminContent from "./pages/admin/AdminContent";
+import AdminCollections from "./pages/admin/AdminCollections";
 
 export default function App() {
   return (
@@ -37,6 +38,14 @@ export default function App() {
                 </AdminGuard>
               }
             />  
+                        <Route
+              path="/admin/colecciones"
+              element={
+                <AdminGuard>
+                  <AdminCollections />
+                </AdminGuard>
+              }
+            />
                         
                                     <Route
               path="/cuenta/iniciar-sesion"
