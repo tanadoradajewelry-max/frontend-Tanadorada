@@ -22,8 +22,8 @@ export default function AdminNav() {
         <Link to="/admin" style={linkStyle("/admin")}>
           Productos
         </Link>
-        <Link to="/admin/pedidos" style={linkStyle("/admin/pedidos")}>
-          Pedidos
+                        <Link to="/admin/colecciones" style={linkStyle("/admin/colecciones")}>
+          Colecciones
         </Link>
       </div>
       <button type="button" className="product-page-back" onClick={handleLogout}>
