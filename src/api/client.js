@@ -35,8 +35,13 @@ async function adminRequest(path, options = {}) {
 }
 
 export const api = {
-  getProducts: (category) =>
-    request(category ? `/api/products?category=${category}` : "/api/products"),
+  getProducts: (category, collection) => {
+    const params = new URLSearchParams();
+    if (category) params.set("category", category);
+    if (collection) params.set("collection", collection);
+    const qs = params.toString();
+    return request(qs ? `/api/products?${qs}` : "/api/products");
+  },
   getProduct: (id) => request(`/api/products/${id}`),
   createOrder: (payload) =>
     request("/api/orders", {
@@ -59,6 +64,16 @@ export const api = {
       method: "PUT",
       body: JSON.stringify(value),
     }),
+
+  // --- Colecciones (La Dolce Vita, Muza & Gala, etc.) ---
+  getCollections: () => request("/api/collections"),
+  createCollection: (name) =>
+    adminRequest("/api/collections", {
+      method: "POST",
+      body: JSON.stringify({ name }),
+    }),
+  deleteCollection: (id) =>
+    adminRequest(`/api/collections/${id}`, { method: "DELETE" }),
 
   // --- Admin: productos ---
   createProduct: (data) =>
