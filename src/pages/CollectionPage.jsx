@@ -9,22 +9,50 @@ export default function CollectionPage() {
   const navigate = useNavigate();
 
   const [products, setProducts] = useState([]);
+  const [collections, setCollections] = useState([]);
+  const [activeCollection, setActiveCollection] = useState(null);
   const [status, setStatus] = useState("loading");
+
+  useEffect(() => {
+    api.getCollections().then(setCollections).catch(() => {});
+  }, []);
 
   useEffect(() => {
     setStatus("loading");
     api
-      .getProducts(categorySlug)
+      .getProducts(categorySlug, activeCollection)
       .then((data) => {
         setProducts(data);
         setStatus("success");
       })
       .catch(() => setStatus("error"));
-  }, [categorySlug]);
+  }, [categorySlug, activeCollection]);
 
   return (
     <section className="normal-flow-section category-page">
       <h1 className="category-page-title">{getCategoryLabel(categorySlug)}</h1>
+
+      {collections.length > 0 && (
+        <div className="collection-tabs">
+          <button
+            type="button"
+            className={`collection-tab ${activeCollection === null ? "collection-tab--active" : ""}`}
+            onClick={() => setActiveCollection(null)}
+          >
+            Todas
+          </button>
+          {collections.map((col) => (
+            <button
+              type="button"
+              key={col.id}
+              className={`collection-tab ${activeCollection === col.id ? "collection-tab--active" : ""}`}
+              onClick={() => setActiveCollection(col.id)}
+            >
+              {col.name}
+            </button>
+          ))}
+        </div>
+      )}
 
       <div className="category-page-toolbar">
         <span className="category-page-sort">Más vendidos ⌄</span>
