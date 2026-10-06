@@ -3,7 +3,14 @@ import { useNavigate, useParams, Link } from "react-router-dom";
 import { api } from "../../api/client";
 import { CATEGORIES } from "../../data/categories";
 
-const emptyForm = { title: "", price: "", badge: "", image: "", category: "" };
+const emptyForm = {
+  title: "",
+  price: "",
+  badge: "",
+  image: "",
+  category: "",
+  collection: "",
+};
 
 export default function AdminProductForm() {
   const { productId } = useParams();
@@ -11,11 +18,16 @@ export default function AdminProductForm() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState(emptyForm);
+  const [collections, setCollections] = useState([]);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [isLoading, setIsLoading] = useState(isEditing);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    api.getCollections().then(setCollections).catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (!isEditing) return;
@@ -29,6 +41,7 @@ export default function AdminProductForm() {
           badge: product.badge || "",
           image: product.image,
           category: product.category || "",
+          collection: product.collection || "",
         });
         setImagePreview(product.image);
         setIsLoading(false);
@@ -76,6 +89,7 @@ export default function AdminProductForm() {
         badge: form.badge || null,
         image: imageUrl,
         category: form.category || null,
+        collection: form.collection || null,
       };
 
       if (isEditing) {
@@ -147,6 +161,18 @@ export default function AdminProductForm() {
             {CATEGORIES.map((cat) => (
               <option key={cat.slug} value={cat.slug}>
                 {cat.label}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label>
+          Colección
+          <select name="collection" value={form.collection} onChange={handleChange}>
+            <option value="">Sin colección</option>
+            {collections.map((col) => (
+              <option key={col.id} value={col.id}>
+                {col.name}
               </option>
             ))}
           </select>
