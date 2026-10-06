@@ -1395,3 +1395,37 @@ button {
   letter-spacing: 1px;
   cursor: pointer;
 }
+/* ==========================================================================
+   23. PESTAÑAS DE COLECCIÓN (dentro de cada categoría)
+   ========================================================================== */
+.collection-tabs {
+  max-width: 1350px;
+  margin: 0 auto 20px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.collection-tab {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 7px 16px;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  color: var(--text);
+  transition: all 0.2s ease;
+}
+
+.collection-tab:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.collection-tab--active {
+  background: var(--text);
+  border-color: var(--text);
+  color: #FFFFFF;
+}
