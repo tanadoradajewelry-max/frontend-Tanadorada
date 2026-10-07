@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { api } from "../../api/client";
 import { CATEGORIES } from "../../data/categories";
+import { compressImage } from "../../utils/compressImage";
+
+const MAX_PRODUCT_IMAGES = 3;
 
 const emptyForm = {
   title: "",
   price: "",
   badge: "",
-  image: "",
   category: "",
   collection: "",
 };
@@ -18,14 +20,15 @@ export default function AdminProductForm() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState(emptyForm);
+  const [gallery, setGallery] = useState([]);
   const [collections, setCollections] = useState([]);
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
   const [isLoading, setIsLoading] = useState(isEditing);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState(null);
 
-    useEffect(() => {
+  // Las colecciones disponibles dependen de la categoría elegida.
+  useEffect(() => {
     if (!form.category) {
       setCollections([]);
       return;
@@ -35,8 +38,6 @@ export default function AdminProductForm() {
       .getCollections(form.category)
       .then((data) => {
         setCollections(data);
-        // Si la colección que tenía puesta ya no pertenece a la nueva
-        // categoría elegida, la limpiamos.
         setForm((prev) =>
           data.some((c) => c.id === prev.collection)
             ? prev
@@ -44,7 +45,7 @@ export default function AdminProductForm() {
         );
       })
       .catch(() => setCollections([]));
-  }, [form.category]);       
+  }, [form.category]);
 
   useEffect(() => {
     if (!isEditing) return;
@@ -56,11 +57,10 @@ export default function AdminProductForm() {
           title: product.title,
           price: product.price,
           badge: product.badge || "",
-          image: product.image,
           category: product.category || "",
           collection: product.collection || "",
         });
-        setImagePreview(product.image);
+        setGallery(product.images?.length ? product.images : [product.image]);
         setIsLoading(false);
       })
       .catch(() => {
@@ -74,37 +74,71 @@ export default function AdminProductForm() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-    setImageFile(file);
-    setImagePreview(URL.createObjectURL(file));
+  const handleAuthError = (err) => {
+    if (err.message.includes("Contraseña")) {
+      localStorage.removeItem("tanadorada_admin_password");
+      navigate("/admin/login");
+      return true;
+    }
+    return false;
   };
+
+  // Sube las fotos elegidas (comprimidas) y las agrega a la galería.
+  const handleAddImages = async (event) => {
+    const files = Array.from(event.target.files || []);
+    event.target.value = "";
+
+    const room = MAX_PRODUCT_IMAGES - gallery.length;
+    const toUpload = files.slice(0, room);
+    if (toUpload.length === 0) return;
+
+    setIsUploading(true);
+    setError(null);
+
+    try {
+      const urls = [];
+      for (const file of toUpload) {
+        const compressed = await compressImage(file);
+        const uploaded = await api.uploadImage(compressed);
+        urls.push(uploaded.url);
+      }
+      setGallery((prev) => [...prev, ...urls].slice(0, MAX_PRODUCT_IMAGES));
+    } catch (err) {
+      if (handleAuthError(err)) return;
+      setError(err.message);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const removeImage = (index) =>
+    setGallery((prev) => prev.filter((_, i) => i !== index));
+
+  const makeMain = (index) =>
+    setGallery((prev) => [prev[index], ...prev.filter((_, i) => i !== index)]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError(null);
+
+    if (isUploading) {
+      setError("Espera a que termine de subirse la imagen");
+      return;
+    }
+    if (gallery.length === 0) {
+      setError("Debes subir al menos una imagen");
+      return;
+    }
+
     setIsSaving(true);
 
     try {
-      let imageUrl = form.image;
-
-      if (imageFile) {
-        const uploaded = await api.uploadImage(imageFile);
-        imageUrl = uploaded.url;
-      }
-
-      if (!imageUrl) {
-        setError("Debes subir una imagen");
-        setIsSaving(false);
-        return;
-      }
-
       const payload = {
         title: form.title,
         price: Number(form.price),
         badge: form.badge || null,
-        image: imageUrl,
+        image: gallery[0],
+        images: gallery,
         category: form.category || null,
         collection: form.collection || null,
       };
@@ -117,11 +151,7 @@ export default function AdminProductForm() {
 
       navigate("/admin");
     } catch (err) {
-      if (err.message.includes("Contraseña")) {
-        localStorage.removeItem("tanadorada_admin_password");
-        navigate("/admin/login");
-        return;
-      }
+      if (handleAuthError(err)) return;
       setError(err.message);
       setIsSaving(false);
     }
@@ -183,7 +213,7 @@ export default function AdminProductForm() {
           </select>
         </label>
 
-                <label>
+        <label>
           Colección
           <select
             name="collection"
@@ -212,27 +242,53 @@ export default function AdminProductForm() {
           />
         </label>
 
-        <label>
-          Imagen
-          <input type="file" accept="image/png,image/jpeg,image/webp" onChange={handleFileChange} />
-        </label>
+        <div className="admin-gallery">
+          <span className="admin-gallery-label">
+            Imágenes (hasta {MAX_PRODUCT_IMAGES}) — la primera es la principal
+          </span>
 
-        {imagePreview && (
-          <img
-            src={imagePreview}
-            alt="Vista previa"
-            style={{
-              width: 160,
-              height: 160,
-              objectFit: "cover",
-              borderRadius: "var(--radius-medium)",
-            }}
-          />
-        )}
+          <div className="admin-gallery-grid">
+            {gallery.map((src, i) => (
+              <div className="admin-gallery-item" key={i}>
+                <img src={src} alt={`Imagen ${i + 1}`} />
+                {i === 0 && (
+                  <span className="admin-gallery-main-tag">Principal</span>
+                )}
+                <div className="admin-gallery-actions">
+                  {i > 0 && (
+                    <button type="button" onClick={() => makeMain(i)}>
+                      Hacer principal
+                    </button>
+                  )}
+                  <button type="button" onClick={() => removeImage(i)}>
+                    Quitar
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {gallery.length < MAX_PRODUCT_IMAGES && (
+            <label className="admin-gallery-add">
+              {isUploading ? "Subiendo…" : "+ Agregar imagen(es)"}
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                multiple
+                onChange={handleAddImages}
+                disabled={isUploading}
+              />
+            </label>
+          )}
+        </div>
 
         {error && <p className="grid-status grid-status--error">{error}</p>}
 
-        <button type="submit" className="btn btn--dark" disabled={isSaving}>
+        <button
+          type="submit"
+          className="btn btn--dark"
+          disabled={isSaving || isUploading}
+        >
           {isSaving ? "Guardando…" : "Guardar"}
         </button>
 
