@@ -13,9 +13,9 @@ export default function CollectionPage() {
   const [activeCollection, setActiveCollection] = useState(null);
   const [status, setStatus] = useState("loading");
 
-  useEffect(() => {
-    api.getCollections().then(setCollections).catch(() => {});
-  }, []);
+    useEffect(() => {
+    api.getCollections(categorySlug).then(setCollections).catch(() => {});
+  }, [categorySlug]);
 
   useEffect(() => {
     setStatus("loading");
