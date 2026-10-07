@@ -1,9 +1,5 @@
 import { create } from "zustand";
 
-// Store único del carrito, compartido entre Header, Home, ProductPage,
-// Cart y Checkout. Cuando conectemos el backend, "checkout" es el único
-// método que cambia: en vez de solo vaciar el carrito, primero hace el
-// POST a /api/orders y espera confirmación de pago antes de vaciar.
 export const useCartStore = create((set, get) => ({
   items: [], // [{ id, title, price, image, quantity }]
 
@@ -28,7 +24,7 @@ export const useCartStore = create((set, get) => ({
             id: product.id,
             title: product.title,
             price: product.price,
-            image: product.image,
+            image: product.image || product.images?.[0] || "",
             quantity,
           },
         ],
@@ -56,8 +52,6 @@ export const useCartStore = create((set, get) => ({
 
   clearCart: () => set({ items: [] }),
 
-  // Selectores derivados como funciones normales (no hooks) para
-  // usarlos dentro de otros métodos del store sin re-renders extra.
   getItemCount: () => get().items.reduce((sum, item) => sum + item.quantity, 0),
   getSubtotal: () =>
     get().items.reduce((sum, item) => sum + item.price * item.quantity, 0),
