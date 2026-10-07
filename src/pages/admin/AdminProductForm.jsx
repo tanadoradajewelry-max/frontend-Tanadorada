@@ -25,9 +25,26 @@ export default function AdminProductForm() {
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    api.getCollections().then(setCollections).catch(() => {});
-  }, []);
+    useEffect(() => {
+    if (!form.category) {
+      setCollections([]);
+      return;
+    }
+
+    api
+      .getCollections(form.category)
+      .then((data) => {
+        setCollections(data);
+        // Si la colección que tenía puesta ya no pertenece a la nueva
+        // categoría elegida, la limpiamos.
+        setForm((prev) =>
+          data.some((c) => c.id === prev.collection)
+            ? prev
+            : { ...prev, collection: "" }
+        );
+      })
+      .catch(() => setCollections([]));
+  }, [form.category]);       
 
   useEffect(() => {
     if (!isEditing) return;
@@ -166,10 +183,17 @@ export default function AdminProductForm() {
           </select>
         </label>
 
-        <label>
+                <label>
           Colección
-          <select name="collection" value={form.collection} onChange={handleChange}>
-            <option value="">Sin colección</option>
+          <select
+            name="collection"
+            value={form.collection}
+            onChange={handleChange}
+            disabled={!form.category}
+          >
+            <option value="">
+              {form.category ? "Sin colección" : "Primero elige una categoría"}
+            </option>
             {collections.map((col) => (
               <option key={col.id} value={col.id}>
                 {col.name}
