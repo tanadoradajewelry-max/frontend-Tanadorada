@@ -28,7 +28,7 @@ export default function Home() {
       <Hero data={content.hero} />
       <CategoryStrip items={content.category_strip} />
 
-      <section className="normal-flow-section">
+            <section className="normal-flow-section" id="colecciones-por-estilo">
         <CategoryGrid data={content.category_grid} />
       </section>
 
