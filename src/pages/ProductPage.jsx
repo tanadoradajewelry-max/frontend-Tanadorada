@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { formatPriceLPS } from "../data/storeData";
 import { useCartStore } from "../store/useCartStore";
 import { useProduct } from "../hooks/useProduct";
+import ProductGallery from "../components/ProductGallery";
 
 export default function ProductPage() {
   const { productId } = useParams();
@@ -12,6 +13,12 @@ export default function ProductPage() {
   const { product, status } = useProduct(productId);
   const [quantity, setQuantity] = useState(1);
   const [justAdded, setJustAdded] = useState(false);
+
+  // Al pasar de un producto a otro, la cantidad vuelve a 1.
+  useEffect(() => {
+    setQuantity(1);
+    setJustAdded(false);
+  }, [productId]);
 
   if (status === "loading") {
     return (
@@ -37,6 +44,9 @@ export default function ProductPage() {
     );
   }
 
+  // Si el producto no tiene galería, se usa su foto única de siempre.
+  const images = product.images?.length ? product.images : [product.image];
+
   const handleAddToCart = () => {
     addItem(product, quantity);
     setJustAdded(true);
@@ -46,10 +56,12 @@ export default function ProductPage() {
   return (
     <section className="normal-flow-section">
       <div className="product-page">
-        <div className="product-page-image">
-          {product.badge && <span className="badge-tag">{product.badge}</span>}
-          <img src={product.image} alt={product.title} />
-        </div>
+        <ProductGallery
+          key={product.id}
+          images={images}
+          title={product.title}
+          badge={product.badge}
+        />
 
         <div className="product-page-info">
           <h1 className="product-page-title">{product.title}</h1>
