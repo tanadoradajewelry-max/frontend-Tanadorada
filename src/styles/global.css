@@ -1429,3 +1429,240 @@ button {
   border-color: var(--text);
   color: #FFFFFF;
 }
+/* ==========================================================================
+   24. HERO CARRUSEL
+   ========================================================================== */
+.hero-minimal-image-wrapper {
+  overflow: hidden;
+}
+
+.hero-minimal-track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1);
+  will-change: transform;
+}
+
+.hero-minimal-slide {
+  flex: 0 0 100%;
+  height: 100%;
+}
+
+.hero-minimal-dots {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 4;
+}
+
+.hero-minimal-dot {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid #FFFFFF;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.hero-minimal-dot--active {
+  background: #FFFFFF;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-minimal-track { transition: none; }
+}
+
+/* ==========================================================================
+   25. GALERÍA DE PRODUCTO
+   ========================================================================== */
+.product-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.product-gallery-main {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  background: #EFECE6;
+  border-radius: var(--radius-medium);
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.product-gallery-main .badge-tag {
+  z-index: 2;
+}
+
+.product-gallery-track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.45s ease;
+}
+
+.product-gallery-slide {
+  flex: 0 0 100%;
+  height: 100%;
+}
+
+.product-gallery-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-gallery-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.product-gallery-arrow--prev { left: 12px; }
+.product-gallery-arrow--next { right: 12px; }
+
+.product-gallery-thumbs {
+  display: flex;
+  gap: 10px;
+}
+
+.product-gallery-thumb {
+  width: 72px;
+  aspect-ratio: 3 / 4;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius-small);
+  overflow: hidden;
+  background: none;
+  cursor: pointer;
+  opacity: 0.65;
+  transition: opacity 0.2s ease;
+}
+
+.product-gallery-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-gallery-thumb--active {
+  border-color: var(--text);
+  opacity: 1;
+}
+
+/* ==========================================================================
+   26. ADMIN — GALERÍA DE IMÁGENES (productos y hero)
+   ========================================================================== */
+.admin-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-gallery-label {
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #555;
+}
+
+.admin-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.admin-gallery-item {
+  position: relative;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-small);
+  overflow: hidden;
+}
+
+.admin-gallery-item img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+}
+
+.admin-gallery-main-tag {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  padding: 2px 6px;
+  border-radius: 2px;
+  background: var(--text);
+  color: #FFFFFF;
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.admin-gallery-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px;
+}
+
+.admin-gallery-actions button {
+  padding: 2px 0;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font-size: 11px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.admin-gallery-actions button:last-child {
+  color: #B4453D;
+}
+
+.checkout-form .admin-gallery-add,
+.admin-content-block .admin-gallery-add {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  gap: 0;
+  padding: 10px 16px;
+  border: 1px dashed var(--accent);
+  border-radius: var(--radius-small);
+  color: var(--accent);
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.admin-gallery-add input {
+  display: none;
+}
+
+/* ==========================================================================
+   27. CARRITO — foto vacía
+   ========================================================================== */
+.cart-line-image--empty {
+  background: #EFECE6;
+}
