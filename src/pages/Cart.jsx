@@ -2,7 +2,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useCartStore } from "../store/useCartStore";
 import { formatPriceLPS } from "../data/storeData";
 
-
 export default function Cart() {
   const items = useCartStore((state) => state.items);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
@@ -37,10 +36,15 @@ export default function Cart() {
         <ul className="cart-list">
           {items.map((item) => (
             <li className="cart-line" key={item.id}>
-              <img
-                alt={item.title}
-                className="cart-line-image"
-              />
+              {item.image ? (
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="cart-line-image"
+                />
+              ) : (
+                <div className="cart-line-image cart-line-image--empty" />
+              )}
 
               <div className="cart-line-info">
                 <div className="product-info-title">{item.title}</div>
