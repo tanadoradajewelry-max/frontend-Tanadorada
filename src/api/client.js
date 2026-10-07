@@ -66,11 +66,14 @@ export const api = {
     }),
 
   // --- Colecciones (La Dolce Vita, Muza & Gala, etc.) ---
-  getCollections: () => request("/api/collections"),
-  createCollection: (name) =>
+   getCollections: (category) =>
+    request(
+      category ? `/api/collections?category=${category}` : "/api/collections"
+    ),
+  createCollection: (name, category) =>
     adminRequest("/api/collections", {
       method: "POST",
-      body: JSON.stringify({ name }),
+      body: JSON.stringify({ name, category }),
     }),
   deleteCollection: (id) =>
     adminRequest(`/api/collections/${id}`, { method: "DELETE" }),
