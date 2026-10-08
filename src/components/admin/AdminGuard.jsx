@@ -4,10 +4,11 @@ import { api } from "../../api/client";
 
 const PASSWORD_KEY = "tanadorada_admin_password";
 
-// Guardia de TODAS las páginas de admin. Se usa como "ruta de layout" en
-// App.jsx: verifica la contraseña con el servidor UNA vez al entrar al
-// panel, y mientras navegas entre las pestañas no vuelve a preguntar.
-export default function AdminGuard() {
+// Guardia de las páginas de admin. Funciona de las dos formas:
+//  - como ruta de layout:  <Route element={<AdminGuard />}> ... </Route>
+//  - envolviendo una página: <AdminGuard><AdminProducts /></AdminGuard>
+// Verifica la contraseña con el servidor al entrar al panel.
+export default function AdminGuard({ children }) {
   // checking | ok | denied | error
   const [state, setState] = useState(() =>
     localStorage.getItem(PASSWORD_KEY) ? "checking" : "denied"
@@ -60,5 +61,6 @@ export default function AdminGuard() {
     return <Navigate to="/admin/login" replace />;
   }
 
-  return <Outlet />;
+  // Si la página vino envuelta se muestra tal cual; si no, las rutas hijas.
+  return children ?? <Outlet />;
 }
