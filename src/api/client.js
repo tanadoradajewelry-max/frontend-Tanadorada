@@ -57,7 +57,7 @@ export const api = {
   getOrder: (orderId) => request(`/api/orders/${orderId}`),
   getOrders: () => adminRequest("/api/orders"),
 
-  // --- Contenido de la portada (hero, category strip, category grid, about us) ---
+  // --- Contenido de la portada ---
   getContent: () => request("/api/content"),
   updateContent: (key, value) =>
     adminRequest(`/api/content/${key}`, {
@@ -66,9 +66,11 @@ export const api = {
     }),
 
   // --- Colecciones (La Dolce Vita, Muza & Gala, etc.) ---
-   getCollections: (category) =>
+  getCollections: (category) =>
     request(
-      category ? `/api/collections?category=${category}` : "/api/collections"
+      category
+        ? `/api/collections?category=${encodeURIComponent(category)}`
+        : "/api/collections"
     ),
   createCollection: (name, category) =>
     adminRequest("/api/collections", {
@@ -109,19 +111,13 @@ export const api = {
     return response.json(); // { url }
   },
 
-  // Prueba la contraseña contra una ruta protegida real, así el login
-  // no acepta cualquier cosa silenciosamente.
+  // Pregunta al servidor si la contraseña es válida.
+  // true = válida, false = incorrecta. Si el servidor no responde,
+  // lanza error (así el guardia no te saca de la sesión por una caída).
   verifyAdminPassword: async (password) => {
-    const response = await fetch(`${API_URL}/api/products/__ping__`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "x-admin-password": password,
-      },
-      body: JSON.stringify({}),
+    const response = await fetch(`${API_URL}/api/admin/verify`, {
+      headers: { "x-admin-password": password },
     });
-    // 401 = contraseña mala. 404/500 = contraseña buena pero el producto
-    // "__ping__" no existe, que es justo lo que esperamos.
-    return response.status !== 401;
+    return response.ok;
   },
 };
