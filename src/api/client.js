@@ -58,7 +58,7 @@ export const api = {
   getOrders: () => adminRequest("/api/orders"),
 
   // --- Contenido de la portada ---
-  getContent: () => request("/api/content"),
+  getContentBlock: (key) => request(`/api/content/${key}`),
   updateContent: (key, value) =>
     adminRequest(`/api/content/${key}`, {
       method: "PUT",
