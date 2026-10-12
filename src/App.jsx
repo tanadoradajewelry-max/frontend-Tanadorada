@@ -56,8 +56,8 @@ export default function App() {
               <Route path="/admin/colecciones" element={<AdminCollections />} />
               <Route path="/admin/contenido" element={<AdminContent />} />
               <Route path="/admin/pedidos" element={<AdminOrders />} />
-                            <Route path="/admin/menu" element={<AdminMenu />} />
-            </Route>
+              <Route path="/admin/menu" element={<AdminMenu />} />
+            </Route> 
           </Routes>
         </main>
 
