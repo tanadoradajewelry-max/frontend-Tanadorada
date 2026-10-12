@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../api/client";
 import AdminNav from "../../components/admin/AdminNav";
+import ImageListEditor from "../../components/admin/ImageListEditor";
 import { compressImage } from "../../utils/compressImage";
 
 const MAX_HERO_IMAGES = 5;
+const MAX_ABOUT_IMAGES = 5;
 
 const emptyContent = {
   hero: {
@@ -18,14 +20,14 @@ const emptyContent = {
   },
   category_strip: [],
   category_grid: { eyebrow: "", title: "", subtitle: "", items: [] },
-  about_us: { image: "", eyebrow: "", title: "", paragraphs: [] },
+  about_us: { image: "", images: [], eyebrow: "", title: "", paragraphs: [] },
 };
 
-// Si el hero ya tiene lista de imágenes se usa; si es contenido viejo,
+// Si el bloque ya tiene lista de imágenes se usa; si es contenido viejo,
 // se parte de la imagen única que tenía.
-function getHeroSlides(hero) {
-  if (hero.images?.length) return hero.images;
-  return hero.image ? [hero.image] : [];
+function getSlides(block) {
+  if (block.images?.length) return block.images;
+  return block.image ? [block.image] : [];
 }
 
 export default function AdminContent() {
@@ -35,7 +37,8 @@ export default function AdminContent() {
   const [status, setStatus] = useState("loading");
   const [savingKey, setSavingKey] = useState(null);
   const [message, setMessage] = useState(null);
-  const [heroUploading, setHeroUploading] = useState(false);
+  const [heroBusy, setHeroBusy] = useState(false);
+  const [aboutBusy, setAboutBusy] = useState(false);
 
   useEffect(() => {
     api
@@ -57,6 +60,11 @@ export default function AdminContent() {
     return false;
   };
 
+  const handleUploadError = (err) => {
+    if (handleAuthError(err)) return;
+    alert("No se pudo subir la imagen: " + err.message);
+  };
+
   // Comprime y sube una foto; devuelve su URL.
   const uploadFile = async (file) => {
     const compressed = await compressImage(file);
@@ -64,18 +72,24 @@ export default function AdminContent() {
     return uploaded.url;
   };
 
-  // Sube UNA imagen (Franja, cajas, Sobre Nosotros).
+  // Sube UNA imagen (Franja y cajas de Colecciones).
   const handleImageUpload = async (file, onSuccess) => {
     try {
       onSuccess(await uploadFile(file));
     } catch (err) {
-      if (handleAuthError(err)) return;
-      alert("No se pudo subir la imagen: " + err.message);
+      handleUploadError(err);
     }
   };
 
   const patchBlock = (key, patch) =>
     setContent((c) => ({ ...c, [key]: { ...c[key], ...patch } }));
+
+  // Cambia la lista de imágenes de un bloque; la primera es siempre "image".
+  const setSlides = (key, next) =>
+    setContent((c) => ({
+      ...c,
+      [key]: { ...c[key], images: next, image: next[0] || "" },
+    }));
 
   const patchStripItem = (index, patch) =>
     setContent((c) => {
@@ -91,36 +105,6 @@ export default function AdminContent() {
       return { ...c, category_grid: { ...c.category_grid, items } };
     });
 
-  // Cambia la lista de imágenes del hero; la primera es siempre "image".
-  const setHeroSlides = (updater) =>
-    setContent((c) => {
-      const next = updater(getHeroSlides(c.hero)).slice(0, MAX_HERO_IMAGES);
-      return { ...c, hero: { ...c.hero, images: next, image: next[0] || "" } };
-    });
-
-  const handleHeroAdd = async (event) => {
-    const files = Array.from(event.target.files || []);
-    event.target.value = "";
-
-    const room = MAX_HERO_IMAGES - getHeroSlides(content.hero).length;
-    const toUpload = files.slice(0, room);
-    if (toUpload.length === 0) return;
-
-    setHeroUploading(true);
-    try {
-      const urls = [];
-      for (const file of toUpload) {
-        urls.push(await uploadFile(file));
-      }
-      setHeroSlides((current) => [...current, ...urls]);
-    } catch (err) {
-      if (handleAuthError(err)) return;
-      alert("No se pudo subir la imagen: " + err.message);
-    } finally {
-      setHeroUploading(false);
-    }
-  };
-
   const saveBlock = async (key, value) => {
     setSavingKey(key);
     setMessage(null);
@@ -135,7 +119,8 @@ export default function AdminContent() {
     }
   };
 
-  const heroSlides = getHeroSlides(content.hero);
+  const heroSlides = getSlides(content.hero);
+  const aboutSlides = getSlides(content.about_us);
 
   if (status === "loading") {
     return (
@@ -172,58 +157,16 @@ export default function AdminContent() {
       <div className="admin-content-block">
         <h3>Hero (carrusel de inicio)</h3>
 
-        <div className="admin-gallery">
-          <span className="admin-gallery-label">
-            Imágenes (hasta {MAX_HERO_IMAGES}) — se mueven solas cada 5 segundos
-          </span>
-
-          <div className="admin-gallery-grid">
-            {heroSlides.map((src, i) => (
-              <div className="admin-gallery-item" key={i}>
-                <img src={src} alt={`Imagen ${i + 1}`} />
-                {i === 0 && (
-                  <span className="admin-gallery-main-tag">Primera</span>
-                )}
-                <div className="admin-gallery-actions">
-                  {i > 0 && (
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setHeroSlides((cur) => [
-                          cur[i],
-                          ...cur.filter((_, idx) => idx !== i),
-                        ])
-                      }
-                    >
-                      Poner primera
-                    </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setHeroSlides((cur) => cur.filter((_, idx) => idx !== i))
-                    }
-                  >
-                    Quitar
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {heroSlides.length < MAX_HERO_IMAGES && (
-            <label className="admin-gallery-add">
-              {heroUploading ? "Subiendo…" : "+ Agregar imagen(es)"}
-              <input
-                type="file"
-                accept="image/png,image/jpeg,image/webp"
-                multiple
-                onChange={handleHeroAdd}
-                disabled={heroUploading}
-              />
-            </label>
-          )}
-        </div>
+        <ImageListEditor
+          label={`Imágenes (hasta ${MAX_HERO_IMAGES}) — se mueven solas cada 5 segundos`}
+          firstLabel="Primera"
+          images={heroSlides}
+          max={MAX_HERO_IMAGES}
+          onChange={(next) => setSlides("hero", next)}
+          uploadFile={uploadFile}
+          onError={handleUploadError}
+          onBusyChange={setHeroBusy}
+        />
 
         <label>
           Etiqueta pequeña (eyebrow)
@@ -273,7 +216,7 @@ export default function AdminContent() {
         <button
           type="button"
           className="btn btn--dark"
-          disabled={savingKey === "hero" || heroUploading}
+          disabled={savingKey === "hero" || heroBusy}
           onClick={() => {
             if (heroSlides.length === 0) {
               alert("El hero necesita al menos una imagen");
@@ -497,26 +440,16 @@ export default function AdminContent() {
       <div className="admin-content-block">
         <h3>Sobre Nosotros</h3>
 
-        <label>
-          Imagen
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) =>
-              e.target.files[0] &&
-              handleImageUpload(e.target.files[0], (url) =>
-                patchBlock("about_us", { image: url })
-              )
-            }
-          />
-        </label>
-        {content.about_us.image && (
-          <img
-            src={content.about_us.image}
-            alt=""
-            className="admin-content-preview"
-          />
-        )}
+        <ImageListEditor
+          label={`Imágenes (hasta ${MAX_ABOUT_IMAGES}) — se mueven solas cada 5 segundos`}
+          firstLabel="Primera"
+          images={aboutSlides}
+          max={MAX_ABOUT_IMAGES}
+          onChange={(next) => setSlides("about_us", next)}
+          uploadFile={uploadFile}
+          onError={handleUploadError}
+          onBusyChange={setAboutBusy}
+        />
 
         <label>
           Etiqueta pequeña
@@ -548,16 +481,22 @@ export default function AdminContent() {
         <button
           type="button"
           className="btn btn--dark"
-          disabled={savingKey === "about_us"}
-          onClick={() =>
+          disabled={savingKey === "about_us" || aboutBusy}
+          onClick={() => {
+            if (aboutSlides.length === 0) {
+              alert("Sobre Nosotros necesita al menos una imagen");
+              return;
+            }
             saveBlock("about_us", {
               ...content.about_us,
+              images: aboutSlides,
+              image: aboutSlides[0],
               paragraphs: aboutText
                 .split(/\n\s*\n/)
                 .map((p) => p.trim())
                 .filter(Boolean),
-            })
-          }
+            });
+          }}
         >
           {savingKey === "about_us" ? "Guardando…" : "Guardar Sobre Nosotros"}
         </button>
