@@ -443,7 +443,7 @@ export default function AdminContent() {
                 <ImageListEditor
           label={`Imágenes (hasta ${MAX_ABOUT_IMAGES}) — se mueven solas cada 5 segundos`}
           firstLabel="Primera"
-          aspectRatio="16 / 9"
+          aspectRatio="4 / 5"
           images={aboutSlides}
           max={MAX_ABOUT_IMAGES}
           onChange={(next) => setSlides("about_us", next)}
