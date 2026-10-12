@@ -1,14 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { navLinks } from "../data/storeData";
 import { useCartStore } from "../store/useCartStore";
+import { api } from "../api/client";
 
 export default function Header() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  // null = todavía no se pidieron; {} = pedidas (o falló: se usan las de siempre)
+  const [navPreviews, setNavPreviews] = useState(null);
   const itemCount = useCartStore((state) => state.getItemCount());
 
   const toggleMenu = () => setIsDrawerOpen((open) => !open);
   const closeMenu = () => setIsDrawerOpen(false);
+
+  // Las fotos del submenú se piden UNA vez, la primera vez que se abre.
+  useEffect(() => {
+    if (!isDrawerOpen || navPreviews !== null) return;
+    api
+      .getContentBlock("nav_previews")
+      .then((data) => setNavPreviews(data || {}))
+      .catch(() => setNavPreviews({}));
+  }, [isDrawerOpen, navPreviews]);
+
+  // Fotos guardadas desde el panel; si no hay, las de siempre (storeData).
+  // Mientras cargan no se muestra nada, para que no parpadeen las viejas.
+  const getPreview = (link) => {
+    if (navPreviews === null) return undefined;
+    const saved = navPreviews[link.href];
+    return Array.isArray(saved) ? saved : link.preview;
+  };
 
   return (
     <>
@@ -33,7 +53,11 @@ export default function Header() {
           <ul className="nav-menu">
             {navLinks.map((link) => (
               <li className="nav-item" key={link.label}>
-                <a href={link.href}>{link.label}</a>
+                {link.href.startsWith("/") ? (
+                  <Link to={link.href}>{link.label}</Link>
+                ) : (
+                  <a href={link.href}>{link.label}</a>
+                )}
               </li>
             ))}
           </ul>
@@ -61,21 +85,31 @@ export default function Header() {
         </button>
 
         <ul className="mobile-nav-list">
-          {navLinks.map((link) => (
-            <li key={link.label}>
-              <a href={link.href} onClick={closeMenu}>
-                {link.label}
-              </a>
+          {navLinks.map((link) => {
+            const preview = getPreview(link);
 
-              {link.preview && (
-                <div className="mobile-nav-preview">
-                  {link.preview.map((src) => (
-                    <img key={src} src={src} alt={`${link.label} preview`} />
-                  ))}
-                </div>
-              )}
-            </li>
-          ))}
+            return (
+              <li key={link.label}>
+                {link.href.startsWith("/") ? (
+                  <Link to={link.href} onClick={closeMenu}>
+                    {link.label}
+                  </Link>
+                ) : (
+                  <a href={link.href} onClick={closeMenu}>
+                    {link.label}
+                  </a>
+                )}
+
+                {preview?.length > 0 && (
+                  <div className="mobile-nav-preview">
+                    {preview.map((src, i) => (
+                      <img key={i} src={src} alt={`${link.label} preview`} />
+                    ))}
+                  </div>
+                )}
+              </li>
+            );
+          })}
         </ul>
 
         <div className="mobile-nav-account">
