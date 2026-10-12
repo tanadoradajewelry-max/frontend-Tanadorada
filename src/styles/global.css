@@ -1737,3 +1737,21 @@ select,
 textarea {
   touch-action: manipulation;
 }
+/* ==========================================================================
+   30. SOBRE NOSOTROS — IMAGEN EN 16:9
+   ========================================================================== */
+.about-us-image-wrapper {
+  aspect-ratio: 16 / 9;
+}
+
+/* Si en alguna foto se corta algo importante (una cara, por ejemplo),
+   cambia "center" por "top" o "bottom". */
+.about-us-slide img {
+  object-position: center;
+}
+
+@media (max-width: 768px) {
+  .about-us-image-wrapper {
+    aspect-ratio: 16 / 9;
+  }
+}
