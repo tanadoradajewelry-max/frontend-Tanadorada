@@ -5,6 +5,7 @@ const ADMIN_LINKS = [
   { to: "/admin", label: "Productos" },
   { to: "/admin/colecciones", label: "Colecciones" },
   { to: "/admin/contenido", label: "Contenido de página" },
+  { to: "/admin/menu", label: "Menú" },
   { to: "/admin/pedidos", label: "Pedidos" },
 ];
 
