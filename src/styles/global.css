@@ -1666,3 +1666,74 @@ button {
 .cart-line-image--empty {
   background: #EFECE6;
 }
+/* ==========================================================================
+   28. SOBRE NOSOTROS — CARRUSEL
+   ========================================================================== */
+.about-us-image-wrapper {
+  position: relative;
+  touch-action: pan-y;
+}
+
+.about-us-track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+  will-change: transform;
+}
+
+.about-us-slide {
+  flex: 0 0 100%;
+  height: 100%;
+}
+
+.about-us-dots {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 9px;
+  z-index: 2;
+}
+
+.about-us-dot {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid #FFFFFF;
+  background: rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.about-us-dot--active {
+  background: #FFFFFF;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-us-track { transition: none; }
+}
+/* ==========================================================================
+   29. SIN ZOOM AL ESCRIBIR EN CELULAR
+   iPhone/Safari hace zoom automático al tocar un campo con letra menor a
+   16px. Con 16px ya no lo hace, y la persona puede seguir haciendo zoom
+   con los dedos si quiere. También sirve para el checkout de la tienda.
+   ========================================================================== */
+@media (max-width: 768px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Evita el zoom accidental por doble toque en botones, links y campos. */
+button,
+a,
+label,
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
