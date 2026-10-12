@@ -8,10 +8,11 @@ export default function ImageListEditor({
   max,
   label,
   firstLabel = "Primera",
-  onChange, // recibe la lista nueva completa
-  uploadFile, // async (file) => url
-  onError, // (err) => void
-  onBusyChange, // (boolean) => void, opcional
+  aspectRatio, // opcional, ej: "16 / 9"
+  onChange,
+  uploadFile,
+  onError,
+  onBusyChange,
 }) {
   const [uploading, setUploading] = useState(false);
 
