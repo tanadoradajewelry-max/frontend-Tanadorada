@@ -1740,8 +1740,9 @@ textarea {
 /* ==========================================================================
    30. SOBRE NOSOTROS — IMAGEN EN 16:9
    ========================================================================== */
+
 .about-us-image-wrapper {
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 4 / 5;
 }
 
 /* Si en alguna foto se corta algo importante (una cara, por ejemplo),
@@ -1750,8 +1751,10 @@ textarea {
   object-position: center;
 }
 
+/* En celular también 4:5. Esta regla va al final del archivo a propósito,
+   para que gane sobre la regla vieja de la sección 15 (que ponía 16:10). */
 @media (max-width: 768px) {
   .about-us-image-wrapper {
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 4 / 5;
   }
 }
