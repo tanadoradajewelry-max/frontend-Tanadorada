@@ -440,9 +440,10 @@ export default function AdminContent() {
       <div className="admin-content-block">
         <h3>Sobre Nosotros</h3>
 
-        <ImageListEditor
+                <ImageListEditor
           label={`Imágenes (hasta ${MAX_ABOUT_IMAGES}) — se mueven solas cada 5 segundos`}
           firstLabel="Primera"
+          aspectRatio="16 / 9"
           images={aboutSlides}
           max={MAX_ABOUT_IMAGES}
           onChange={(next) => setSlides("about_us", next)}
