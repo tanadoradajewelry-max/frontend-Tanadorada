@@ -58,6 +58,9 @@ export const api = {
   getOrders: () => adminRequest("/api/orders"),
 
   // --- Contenido de la portada ---
+  // ✅ NUEVA: trae TODOS los bloques de una sola petición (la usa useSiteContent)
+  getContent: () => request("/api/content"),
+  // Trae UN solo bloque por su key (la usa AdminMenu)
   getContentBlock: (key) => request(`/api/content/${key}`),
   updateContent: (key, value) =>
     adminRequest(`/api/content/${key}`, {
