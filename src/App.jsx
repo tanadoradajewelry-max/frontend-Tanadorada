@@ -19,6 +19,7 @@ import AdminCollections from "./pages/admin/AdminCollections";
 import AdminContent from "./pages/admin/AdminContent";
 import AdminOrders from "./pages/admin/AdminOrders";
 import AdminMenu from "./pages/admin/AdminMenu";
+import AboutPage from "./pages/AboutPage";
 
 export default function App() {
   return (
@@ -35,6 +36,7 @@ export default function App() {
             <Route path="/carrito" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/gracias" element={<OrderConfirmation />} />
+             <Route path="/sobre-nosotros" element={<AboutPage />} />
             <Route
               path="/cuenta/iniciar-sesion"
               element={<AccountComingSoon title="Iniciar Sesión" />}
@@ -52,11 +54,11 @@ export default function App() {
             <Route element={<AdminGuard />}>
               <Route path="/admin" element={<AdminProducts />} />
               <Route path="/admin/nuevo" element={<AdminProductForm />} />
+              <Route path="/admin/menu" element={<AdminMenu />} />
               <Route path="/admin/editar/:productId" element={<AdminProductForm />} />
               <Route path="/admin/colecciones" element={<AdminCollections />} />
               <Route path="/admin/contenido" element={<AdminContent />} />
               <Route path="/admin/pedidos" element={<AdminOrders />} />
-              <Route path="/admin/menu" element={<AdminMenu />} />
             </Route> 
           </Routes>
         </main>
