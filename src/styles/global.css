@@ -1758,3 +1758,179 @@ textarea {
     aspect-ratio: 4 / 5;
   }
 }
+/* ==========================================================================
+   31. HEADER EDITORIAL (escritorio) + MENÚ DESPLEGABLE
+   Solo cambia en pantallas grandes; el celular se queda igual.
+   ========================================================================== */
+@media (min-width: 993px) {
+  .header-container {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    grid-template-areas:
+      "left logo right"
+      "nav  nav  nav";
+    align-items: center;
+    row-gap: 10px;
+    padding: 18px 32px 0;
+  }
+
+  .header-logo {
+    grid-area: logo;
+    justify-self: center;
+    font-size: 36px;
+    letter-spacing: 6px;
+  }
+
+  /* "Buscar" a la izquierda y "Bolsa" a la derecha, sin cambiar el HTML */
+  .header-icons { display: contents; }
+  .header-icons a:first-child { grid-area: left; justify-self: start; }
+  .header-icons a:last-child { grid-area: right; justify-self: end; }
+
+  .nav-menu {
+    grid-area: nav;
+    justify-content: center;
+    gap: 44px;
+  }
+
+  .nav-item {
+    position: relative;
+    padding-bottom: 16px;
+  }
+
+  .nav-item > a {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 6px;
+    font-size: 12px;
+    letter-spacing: 2.5px;
+  }
+
+  /* Subrayado dorado que crece al pasar el mouse */
+  .nav-item > a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+
+  .nav-item:hover > a::after,
+  .nav-item:focus-within > a::after {
+    transform: scaleX(1);
+  }
+
+  .nav-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 210px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 16px 22px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--accent);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.1);
+    z-index: 600;
+    animation: nav-dropdown-in 0.2s ease;
+  }
+
+  .nav-dropdown a {
+    padding: 8px 0;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    white-space: nowrap;
+    text-transform: uppercase;
+    transition: color 0.2s ease, padding-left 0.2s ease;
+  }
+
+  .nav-dropdown a:hover {
+    color: var(--accent);
+    padding-left: 6px;
+  }
+}
+
+@keyframes nav-dropdown-in {
+  from { opacity: 0; transform: translate(-50%, -6px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* ==========================================================================
+   32. HERO EDITORIAL: pantalla completa, frase en cursiva + título grande
+   Solo es CSS: los textos se siguen editando en /admin/contenido.
+   ========================================================================== */
+.hero-minimal {
+  height: calc(100vh - 130px);
+  height: calc(100svh - 130px);
+  min-height: 520px;
+}
+
+.hero-minimal-overlay {
+  background: rgba(0, 0, 0, 0.28);
+}
+
+.hero-minimal-content {
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.25);
+}
+
+/* Si dejas un campo vacío en el panel, desaparece en vez de dejar un hueco */
+.hero-minimal-eyebrow:empty,
+.hero-minimal-subtext:empty {
+  display: none;
+}
+
+.hero-minimal-eyebrow {
+  order: 0;
+  margin-bottom: 22px;
+}
+
+/* El "Subtítulo" del panel pasa a ser la frase en cursiva de arriba */
+.hero-minimal-subtext {
+  order: 1;
+  font-family: var(--FONT-STACK-HEADING);
+  font-style: italic;
+  font-size: 26px;
+  letter-spacing: 0.5px;
+  margin-bottom: 14px;
+  opacity: 1;
+}
+
+/* Para que el título NO salga todo en mayúsculas, borra la línea text-transform */
+.hero-minimal-headline {
+  order: 2;
+  font-size: 68px;
+  letter-spacing: 9px;
+  text-transform: uppercase;
+  margin-bottom: 36px;
+  max-width: 1000px;
+}
+
+.hero-minimal-content .btn {
+  order: 3;
+}
+
+@media (max-width: 768px) {
+  .hero-minimal {
+    height: calc(100vh - 110px);
+    height: calc(100svh - 110px);
+    min-height: 460px;
+  }
+
+  .hero-minimal-subtext {
+    font-size: 19px;
+    margin-bottom: 12px;
+  }
+
+  .hero-minimal-headline {
+    font-size: 34px;
+    letter-spacing: 4px;
+    margin-bottom: 26px;
+  }
+}
