@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { navLinks } from "../data/storeData";
 import { useCartStore } from "../store/useCartStore";
 import { api } from "../api/client";
@@ -10,15 +10,27 @@ function getCategorySlug(href) {
 }
 
 export default function Header() {
+  const location = useLocation();
+  const isHome = location.pathname === "/";
+
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   // null = todavía no se pidieron; {} = pedidas (o falló: se usan las de siempre)
   const [navPreviews, setNavPreviews] = useState(null);
   const [collections, setCollections] = useState([]);
   const [openMenu, setOpenMenu] = useState(null);
+  const [scrolled, setScrolled] = useState(false);
   const itemCount = useCartStore((state) => state.getItemCount());
 
   const toggleMenu = () => setIsDrawerOpen((open) => !open);
   const closeMenu = () => setIsDrawerOpen(false);
+
+  // Detecta si ya se bajó un poco, para pasar de transparente a crema.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [location.pathname]);
 
   // Las colecciones llenan el menú desplegable del escritorio.
   useEffect(() => {
@@ -49,13 +61,28 @@ export default function Header() {
     return slug ? collections.filter((c) => c.category === slug) : [];
   };
 
+  const hasOpenDropdown = navLinks.some(
+    (link) => openMenu === link.label && getDropdownItems(link).length > 0
+  );
+
+  // Transparente solo en la portada, arriba del todo y sin menú abierto.
+  const isTransparent = isHome && !scrolled && !hasOpenDropdown;
+
+  const wrapperClass = [
+    "header-wrapper",
+    isHome ? "header-wrapper--home" : "",
+    isTransparent ? "header-wrapper--transparent" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
     <>
       <div className="announcement-bar">
         ENVÍOS GRATIS A TODO EL PAÍS EN COMPRAS MAYORES
       </div>
 
-      <div className="header-wrapper">
+      <div className={wrapperClass}>
         <header className="header-container">
           <button
             className="mobile-menu-toggle"
