@@ -1898,16 +1898,6 @@ textarea {
     padding-left: 6px;
   }
 }
-.announcement-bar {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--FONT-STACK-HEADING);
-  font-size: 14px;
-  line-height: 16px;
-  letter-spacing: 1px;
-  text-transform: lowercase;
-  font-weight: 500;
-}
 
 /* Pantallas medianas: un poco más compacto para que todo quepa */
 @media (min-width: 993px) and (max-width: 1180px) {
@@ -2033,79 +2023,6 @@ textarea {
   .hero-minimal-dots {
     right: 22px;
     bottom: 30px;
-  }
-}
-
-/* ==========================================================================
-   32. HERO EDITORIAL: pantalla completa, frase en cursiva + título grande
-   Solo es CSS: los textos se siguen editando en /admin/contenido.
-   ========================================================================== */
-.hero-minimal {
-  height: calc(100vh - 130px);
-  height: calc(100svh - 130px);
-  min-height: 520px;
-}
-
-.hero-minimal-overlay {
-  background: rgba(0, 0, 0, 0.28);
-}
-
-.hero-minimal-content {
-  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.25);
-}
-
-/* Si dejas un campo vacío en el panel, desaparece en vez de dejar un hueco */
-.hero-minimal-eyebrow:empty,
-.hero-minimal-subtext:empty {
-  display: none;
-}
-
-.hero-minimal-eyebrow {
-  order: 0;
-  margin-bottom: 22px;
-}
-
-/* El "Subtítulo" del panel pasa a ser la frase en cursiva de arriba */
-.hero-minimal-subtext {
-  order: 1;
-  font-family: var(--FONT-STACK-HEADING);
-  font-style: italic;
-  font-size: 26px;
-  letter-spacing: 0.5px;
-  margin-bottom: 14px;
-  opacity: 1;
-}
-
-/* Para que el título NO salga todo en mayúsculas, borra la línea text-transform */
-.hero-minimal-headline {
-  order: 2;
-  font-size: 68px;
-  letter-spacing: 9px;
-  text-transform: uppercase;
-  margin-bottom: 36px;
-  max-width: 1000px;
-}
-
-.hero-minimal-content .btn {
-  order: 3;
-}
-
-@media (max-width: 768px) {
-  .hero-minimal {
-    height: calc(100vh - 110px);
-    height: calc(100svh - 110px);
-    min-height: 460px;
-  }
-
-  .hero-minimal-subtext {
-    font-size: 19px;
-    margin-bottom: 12px;
-  }
-
-  .hero-minimal-headline {
-    font-size: 34px;
-    letter-spacing: 4px;
-    margin-bottom: 26px;
   }
 }
 /* ==========================================================================
