@@ -1,8 +1,9 @@
 import Hero from "../components/Hero";
 import CategoryStrip from "../components/CategoryStrip";
 import CategoryGrid from "../components/CategoryGrid";
-import AboutUs from "../components/AboutUs";
+import AboutBanner from "../components/AboutBanner";
 import { useSiteContent } from "../hooks/useSiteContent";
+import { aboutBannerDefaults } from "../data/aboutBannerDefaults";
 
 // Valores por defecto, por si la petición todavía no responde o falla —
 // así la portada nunca se ve vacía o rota.
@@ -17,7 +18,7 @@ const defaults = {
   },
   category_strip: [],
   category_grid: { eyebrow: "", title: "", subtitle: "", items: [] },
-  about_us: { image: "", eyebrow: "", title: "", paragraphs: [] },
+  about_banner: aboutBannerDefaults,
 };
 
 export default function Home() {
@@ -28,11 +29,11 @@ export default function Home() {
       <Hero data={content.hero} />
       <CategoryStrip items={content.category_strip} />
 
-            <section className="normal-flow-section" id="colecciones-por-estilo">
+      <section className="normal-flow-section" id="colecciones-por-estilo">
         <CategoryGrid data={content.category_grid} />
       </section>
 
-      <AboutUs data={content.about_us} />
+      <AboutBanner data={content.about_banner} />
     </>
   );
 }
