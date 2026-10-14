@@ -4,16 +4,31 @@ import { navLinks } from "../data/storeData";
 import { useCartStore } from "../store/useCartStore";
 import { api } from "../api/client";
 
+// "/coleccion/anillos" -> "anillos"
+function getCategorySlug(href) {
+  return href.startsWith("/coleccion/") ? href.split("/")[2] : null;
+}
+
 export default function Header() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   // null = todavía no se pidieron; {} = pedidas (o falló: se usan las de siempre)
   const [navPreviews, setNavPreviews] = useState(null);
+  const [collections, setCollections] = useState([]);
+  const [openMenu, setOpenMenu] = useState(null);
   const itemCount = useCartStore((state) => state.getItemCount());
 
   const toggleMenu = () => setIsDrawerOpen((open) => !open);
   const closeMenu = () => setIsDrawerOpen(false);
 
-  // Las fotos del submenú se piden UNA vez, la primera vez que se abre.
+  // Las colecciones llenan el menú desplegable del escritorio.
+  useEffect(() => {
+    api
+      .getCollections()
+      .then(setCollections)
+      .catch(() => {});
+  }, []);
+
+  // Las fotos del submenú del celular se piden UNA vez, al abrirlo.
   useEffect(() => {
     if (!isDrawerOpen || navPreviews !== null) return;
     api
@@ -22,12 +37,16 @@ export default function Header() {
       .catch(() => setNavPreviews({}));
   }, [isDrawerOpen, navPreviews]);
 
-  // Fotos guardadas desde el panel; si no hay, las de siempre (storeData).
-  // Mientras cargan no se muestra nada, para que no parpadeen las viejas.
   const getPreview = (link) => {
     if (navPreviews === null) return undefined;
     const saved = navPreviews[link.href];
     return Array.isArray(saved) ? saved : link.preview;
+  };
+
+  // Colecciones que pertenecen a la categoría de este link del menú.
+  const getDropdownItems = (link) => {
+    const slug = getCategorySlug(link.href);
+    return slug ? collections.filter((c) => c.category === slug) : [];
   };
 
   return (
@@ -51,15 +70,48 @@ export default function Header() {
           </Link>
 
           <ul className="nav-menu">
-            {navLinks.map((link) => (
-              <li className="nav-item" key={link.label}>
-                {link.href.startsWith("/") ? (
-                  <Link to={link.href}>{link.label}</Link>
-                ) : (
-                  <a href={link.href}>{link.label}</a>
-                )}
-              </li>
-            ))}
+            {navLinks.map((link) => {
+              const dropdownItems = getDropdownItems(link);
+              const isOpen = openMenu === link.label && dropdownItems.length > 0;
+
+              return (
+                <li
+                  className="nav-item"
+                  key={link.label}
+                  onMouseEnter={() => setOpenMenu(link.label)}
+                  onMouseLeave={() => setOpenMenu(null)}
+                  onFocus={() => setOpenMenu(link.label)}
+                  onBlur={(e) => {
+                    if (!e.currentTarget.contains(e.relatedTarget)) {
+                      setOpenMenu(null);
+                    }
+                  }}
+                >
+                  {link.href.startsWith("/") ? (
+                    <Link to={link.href}>{link.label}</Link>
+                  ) : (
+                    <a href={link.href}>{link.label}</a>
+                  )}
+
+                  {isOpen && (
+                    <div className="nav-dropdown">
+                      <Link to={link.href} onClick={() => setOpenMenu(null)}>
+                        View all
+                      </Link>
+                      {dropdownItems.map((col) => (
+                        <Link
+                          key={col.id}
+                          to={`${link.href}?coleccion=${col.id}`}
+                          onClick={() => setOpenMenu(null)}
+                        >
+                          {col.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </li>
+              );
+            })}
           </ul>
 
           <div className="header-icons">
