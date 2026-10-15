@@ -2,14 +2,10 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { navLinks } from "../data/storeData";
 import { useCartStore } from "../store/useCartStore";
+import { useCurrencyStore } from "../store/useCurrencyStore";
+import { useCurrency } from "../hooks/useCurrency";
+import CurrencySelector from "./CurrencySelector";
 import { api } from "../api/client";
-
-// Logo de la tienda (archivo en frontend/public/img).
-const LOGO_SRC = "/img/logo1.jpeg";
-// Opcional: versión del logo en BLANCO y con fondo transparente (PNG) para
-// la portada, por ejemplo "/img/logo-blanco.png". Si lo dejas vacío, en la
-// portada el logo se muestra sobre una etiqueta crema.
-const LOGO_LIGHT_SRC = "";
 
 // "/coleccion/anillos" -> "anillos"
 function getCategorySlug(href) {
@@ -28,8 +24,17 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const itemCount = useCartStore((state) => state.getItemCount());
 
+  const { currency, currencies } = useCurrency();
+  const selectCurrency = useCurrencyStore((state) => state.selectCurrency);
+  const loadCurrencies = useCurrencyStore((state) => state.loadCurrencies);
+
   const toggleMenu = () => setIsDrawerOpen((open) => !open);
   const closeMenu = () => setIsDrawerOpen(false);
+
+  // Trae las monedas configuradas en el panel.
+  useEffect(() => {
+    loadCurrencies();
+  }, [loadCurrencies]);
 
   // Detecta si ya se bajó un poco, para pasar de transparente a crema.
   useEffect(() => {
@@ -74,21 +79,11 @@ export default function Header() {
 
   // Transparente solo en la portada, arriba del todo y sin menú abierto.
   const isTransparent = isHome && !scrolled && !hasOpenDropdown;
-  const useLightLogo = isTransparent && Boolean(LOGO_LIGHT_SRC);
 
   const wrapperClass = [
     "header-wrapper",
     isHome ? "header-wrapper--home" : "",
     isTransparent ? "header-wrapper--transparent" : "",
-  ]
-    .filter(Boolean)
-    .join(" ");
-
-  const logoClass = [
-    "header-logo",
-    "header-logo--image",
-    useLightLogo ? "header-logo--light" : "",
-    isTransparent && !useLightLogo ? "header-logo--label" : "",
   ]
     .filter(Boolean)
     .join(" ");
@@ -109,8 +104,8 @@ export default function Header() {
             &#9776;
           </button>
 
-          <Link to="/" className={logoClass} aria-label="TANADORADA">
-            <img src={useLightLogo ? LOGO_LIGHT_SRC : LOGO_SRC} alt="TANADORADA" />
+          <Link to="/" className="header-logo">
+            TANADORADA
           </Link>
 
           <ul className="nav-menu">
@@ -159,6 +154,7 @@ export default function Header() {
           </ul>
 
           <div className="header-icons">
+            <CurrencySelector />
             <a href="#">Buscar</a>
             <Link to="/carrito">Bolsa ({itemCount})</Link>
           </div>
@@ -207,6 +203,22 @@ export default function Header() {
             );
           })}
         </ul>
+
+        {currencies.length > 1 && (
+          <label className="mobile-nav-currency">
+            <span className="mobile-nav-account-label">Moneda</span>
+            <select
+              value={currency.code}
+              onChange={(e) => selectCurrency(e.target.value)}
+            >
+              {currencies.map((c) => (
+                <option key={c.code} value={c.code}>
+                  {c.label} ({c.code} {c.symbol})
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
 
         <div className="mobile-nav-account">
           <span className="mobile-nav-account-label">Mi Cuenta</span>
