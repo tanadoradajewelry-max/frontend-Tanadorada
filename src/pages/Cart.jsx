@@ -1,12 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useCartStore } from "../store/useCartStore";
-import { formatPriceLPS } from "../data/storeData";
+import { useCurrency } from "../hooks/useCurrency";
 
 export default function Cart() {
   const items = useCartStore((state) => state.items);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
   const subtotal = useCartStore((state) => state.getSubtotal());
+  const { currency, isConverted, formatPrice, formatHnl } = useCurrency();
   const navigate = useNavigate();
 
   if (items.length === 0) {
@@ -49,7 +50,7 @@ export default function Cart() {
               <div className="cart-line-info">
                 <div className="product-info-title">{item.title}</div>
                 <div className="product-info-price">
-                  {formatPriceLPS(item.price)}
+                  {formatPrice(item.price)}
                 </div>
               </div>
 
@@ -86,8 +87,16 @@ export default function Cart() {
         <div className="cart-summary">
           <div className="cart-summary-row">
             <span>Subtotal</span>
-            <span>{formatPriceLPS(subtotal)}</span>
+            <span>{formatPrice(subtotal)}</span>
           </div>
+
+          {isConverted && (
+            <p className="price-note">
+              Precios en {currency.code} solo de referencia. En el pago se
+              cobra en lempiras: {formatHnl(subtotal)}.
+            </p>
+          )}
+
           <p className="cart-summary-note">
             Envío y cualquier descuento se calculan en el checkout
           </p>
