@@ -186,7 +186,7 @@ export default function InstagramEditor() {
       </label>
       {handle && (
         <p className="admin-instagram-hint">
-          Perfil: https://www.instagram.com/{handle}/
+          Perfil: https://www.instagram.com/tanadorada?stkn=MWV6M2p6bHdrNXE5ZA%3D%3D
         </p>
       )}
 
@@ -209,7 +209,7 @@ export default function InstagramEditor() {
             <input
               type="text"
               value={item.link}
-              placeholder="https://www.instagram.com/p/…"
+              placeholder="https://www.instagram.com/tanadorada?stkn=MWV6M2p6bHdrNXE5ZA%3D%3D"
               onChange={(e) => patchItem(index, { link: e.target.value })}
             />
           </label>
