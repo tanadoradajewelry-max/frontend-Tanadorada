@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { formatPriceLPS } from "../data/storeData";
 import { useCartStore } from "../store/useCartStore";
 import { useProduct } from "../hooks/useProduct";
+import { useCurrency } from "../hooks/useCurrency";
 import ProductGallery from "../components/ProductGallery";
 
 export default function ProductPage() {
   const { productId } = useParams();
   const navigate = useNavigate();
   const addItem = useCartStore((state) => state.addItem);
+  const { currency, isConverted, formatPrice, formatHnl } = useCurrency();
 
   const { product, status } = useProduct(productId);
   const [quantity, setQuantity] = useState(1);
@@ -65,7 +66,14 @@ export default function ProductPage() {
 
         <div className="product-page-info">
           <h1 className="product-page-title">{product.title}</h1>
-          <p className="product-page-price">{formatPriceLPS(product.price)}</p>
+          <p className="product-page-price">{formatPrice(product.price)}</p>
+
+          {isConverted && (
+            <p className="price-note">
+              Precio de referencia en {currency.code}. El cobro se hace en
+              lempiras ({formatHnl(product.price)}).
+            </p>
+          )}
 
           <div className="quantity-selector">
             <button
