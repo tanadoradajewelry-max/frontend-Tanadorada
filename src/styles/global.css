@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap");
-
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:wght@400;500;700;800&display=swap");
 /* ==========================================================================
    1. VARIABLES CSS (THEME PALO ALTO / TANADORADA)
    ========================================================================== */
@@ -2438,4 +2438,185 @@ textarea {
 @media (min-width: 993px) {
   .header-logo { grid-column: 2; justify-self: center; }
   .nav-menu { grid-column: 1; justify-self: start; }
+}
+/* ==========================================================================
+   35. SELECTOR DE MONEDA
+   ========================================================================== */
+.currency-selector {
+  position: relative;
+}
+
+.currency-selector-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+/* Sobre la foto del hero, en blanco como el resto del menú */
+.header-wrapper--transparent .currency-selector-button {
+  color: #FFFFFF;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.35);
+}
+
+.currency-selector-caret {
+  display: inline-block;
+  font-size: 14px;
+  line-height: 1;
+  transform: translateY(-2px);
+  transition: transform 0.2s ease;
+}
+
+.currency-selector-caret.is-open {
+  transform: translateY(1px) rotate(180deg);
+}
+
+.currency-selector-list {
+  position: absolute;
+  top: calc(100% + 14px);
+  right: 0;
+  z-index: 700;
+  min-width: 230px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 6px 0;
+  list-style: none;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-small);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+  text-shadow: none;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.currency-selector-list button {
+  display: block;
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  background: none;
+  color: var(--text);
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.currency-selector-list button:hover {
+  background: #F4F2EF;
+}
+
+.currency-selector-list button.is-active {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* En celular el selector vive dentro del menú de hamburguesa */
+@media (max-width: 992px) {
+  .header-icons .currency-selector {
+    display: none;
+  }
+}
+
+.mobile-nav-currency {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 30px;
+}
+
+.mobile-nav-currency select {
+  padding: 11px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-small);
+  background: #FFFFFF;
+  font-family: var(--FONT-STACK-BODY);
+  font-size: 14px;
+}
+
+/* Nota debajo de los precios convertidos */
+.price-note {
+  font-size: 11px;
+  line-height: 1.5;
+  color: #777;
+}
+
+/* --- Panel admin: editor de monedas --- */
+.admin-content-block input[type="number"] {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-small);
+  font-family: var(--FONT-STACK-BODY);
+  font-size: 14px;
+  letter-spacing: normal;
+}
+
+.admin-currency-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 10px;
+}
+
+.admin-currency-hint {
+  font-size: 11px;
+  line-height: 1.6;
+  color: #777;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+@media (max-width: 480px) {
+  .admin-currency-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
+/* ==========================================================================
+   34B. TIPOGRAFÍAS GRATUITAS (Google Fonts)
+   ========================================================================== */
+:root {
+  --FONT-STACK-DISPLAY: 'Playfair Display', Georgia, serif;   /* logo y título del hero */
+  --FONT-STACK-HEADING: 'Cormorant Garamond', Georgia, serif; /* títulos de sección */
+  --FONT-STACK-ACCENT: 'Cormorant Garamond', Georgia, serif;  /* frases finas */
+  --FONT-STYLE-ACCENT: italic;
+}
+
+/* ==========================================================================
+   34C. DÓNDE SE USA CADA LETRA
+   ========================================================================== */
+.header-logo {
+  font-family: var(--FONT-STACK-DISPLAY);
+}
+
+.hero-minimal-headline {
+  font-family: var(--FONT-STACK-DISPLAY);
+}
+
+.hero-minimal-subtext {
+  font-family: var(--FONT-STACK-ACCENT);
+  font-style: var(--FONT-STYLE-ACCENT);
+}
+
+.announcement-bar {
+  font-family: var(--FONT-STACK-ACCENT);
+}
+
+/* OPCIONAL: menú de arriba también en letra serif, como en la inspiración.
+   Si prefieres el menú como está, borra este bloque. */
+@media (min-width: 993px) {
+  .nav-item > a {
+    font-family: var(--FONT-STACK-HEADING);
+    font-size: 15px;
+    letter-spacing: 1.5px;
+  }
 }
