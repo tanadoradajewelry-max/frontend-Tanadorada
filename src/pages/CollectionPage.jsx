@@ -1,19 +1,25 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "../api/client";
-import { formatPriceLPS } from "../data/storeData";
 import { getCategoryLabel } from "../data/categories";
+import { useCurrency } from "../hooks/useCurrency";
 
 export default function CollectionPage() {
   const { categorySlug } = useParams();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { formatPrice } = useCurrency();
+
+  // La colección activa vive en la dirección: ?coleccion=la-dolce-vita
+  const activeCollection = searchParams.get("coleccion");
+  const selectCollection = (id) =>
+    setSearchParams(id ? { coleccion: id } : {}, { replace: true });
 
   const [products, setProducts] = useState([]);
   const [collections, setCollections] = useState([]);
-  const [activeCollection, setActiveCollection] = useState(null);
   const [status, setStatus] = useState("loading");
 
-    useEffect(() => {
+  useEffect(() => {
     api.getCollections(categorySlug).then(setCollections).catch(() => {});
   }, [categorySlug]);
 
@@ -37,7 +43,7 @@ export default function CollectionPage() {
           <button
             type="button"
             className={`collection-tab ${activeCollection === null ? "collection-tab--active" : ""}`}
-            onClick={() => setActiveCollection(null)}
+            onClick={() => selectCollection(null)}
           >
             Todas
           </button>
@@ -46,7 +52,7 @@ export default function CollectionPage() {
               type="button"
               key={col.id}
               className={`collection-tab ${activeCollection === col.id ? "collection-tab--active" : ""}`}
-              onClick={() => setActiveCollection(col.id)}
+              onClick={() => selectCollection(col.id)}
             >
               {col.name}
             </button>
@@ -89,7 +95,7 @@ export default function CollectionPage() {
               </div>
               <div className="product-info-title">{product.title}</div>
               <div className="product-info-price">
-                {formatPriceLPS(product.price)}
+                {formatPrice(product.price)}
               </div>
             </div>
           ))}
