@@ -4,6 +4,8 @@ import { api } from "../../api/client";
 import AdminNav from "../../components/admin/AdminNav";
 import ImageListEditor from "../../components/admin/ImageListEditor";
 import { compressImage } from "../../utils/compressImage";
+import AboutBannerEditor from "../../components/admin/AboutBannerEditor";
+import InstagramEditor from "../../components/admin/InstagramEditor";
 
 const MAX_HERO_IMAGES = 5;
 const MAX_ABOUT_IMAGES = 5;
@@ -435,7 +437,8 @@ export default function AdminContent() {
           </button>
         </div>
       </div>
-
+      <InstagramEditor />
+      <AboutBannerEditor />
       {/* --- ABOUT US --- */}
       <div className="admin-content-block">
         <h3>Sobre Nosotros</h3>
