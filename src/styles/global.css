@@ -2164,3 +2164,278 @@ textarea {
   letter-spacing: normal;
   text-transform: none;
 }
+/* ==========================================================================
+   33. LOGO EN IMAGEN
+   ========================================================================== */
+.header-logo--image {
+  display: inline-flex;
+  align-items: center;
+  line-height: 0;
+}
+
+/* "multiply" funde el fondo blanco del JPEG con el crema del header */
+.header-logo--image img {
+  display: block;
+  height: 40px;
+  width: auto;
+  mix-blend-mode: multiply;
+}
+
+/* Logo PNG blanco con fondo transparente: sin mezcla */
+.header-logo--light img {
+  mix-blend-mode: normal;
+}
+
+/* En la portada, con el logo JPEG: se muestra sobre una etiqueta crema */
+.header-logo--label {
+  padding: 6px 14px;
+  background: var(--bg);
+  border-radius: 3px;
+}
+
+@media (min-width: 993px) {
+  .header-logo--image img {
+    height: 48px;
+  }
+}
+
+/* ==========================================================================
+   34. TIPOGRAFÍA TAN (Aegean, Angleton y Ashford)
+   Los archivos van en frontend/public/fonts/ con estos nombres. Si falta
+   alguno, el sitio usa Cormorant Garamond y no se rompe nada.
+   "font-weight: 100 900" evita que el navegador invente una negrita falsa.
+   ========================================================================== */
+@font-face {
+  font-family: "TAN Angleton";
+  src: url("/fonts/TAN-Angleton.woff2") format("woff2"),
+       url("/fonts/TAN-Angleton.otf") format("opentype"),
+       url("/fonts/TAN-Angleton.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "TAN Aegean";
+  src: url("/fonts/TAN-Aegean.woff2") format("woff2"),
+       url("/fonts/TAN-Aegean.otf") format("opentype"),
+       url("/fonts/TAN-Aegean.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "TAN Ashford";
+  src: url("/fonts/TAN-Ashford.woff2") format("woff2"),
+       url("/fonts/TAN-Ashford.otf") format("opentype"),
+       url("/fonts/TAN-Ashford.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* Títulos y menú */
+  --FONT-STACK-HEADING: "TAN Angleton", "Cormorant Garamond", Georgia, serif;
+  /* Frases decorativas (la frase de arriba del título del hero) */
+  --FONT-STACK-ACCENT: "TAN Aegean", "TAN Angleton", "Cormorant Garamond", Georgia, serif;
+  /* Titulares grandes y pesados (sin asignar todavía) */
+  --FONT-STACK-DISPLAY: "TAN Ashford", "TAN Angleton", "Cormorant Garamond", Georgia, serif;
+}
+
+.hero-minimal-subtext {
+  font-family: var(--FONT-STACK-ACCENT);
+  font-style: normal;
+}
+
+@media (min-width: 993px) {
+  .nav-item > a {
+    font-family: var(--FONT-STACK-HEADING);
+    font-size: 15px;
+    letter-spacing: 1.5px;
+  }
+
+  .nav-dropdown a {
+    font-family: var(--FONT-STACK-HEADING);
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+}
+
+/* ==========================================================================
+   35. CARRUSEL DE INSTAGRAM
+   ========================================================================== */
+.instagram-section {
+  position: relative;
+  z-index: 60;
+  padding: 56px 20px 64px;
+  background: #FFFFFF;
+}
+
+.instagram-header {
+  margin-bottom: 28px;
+  text-align: center;
+}
+
+.instagram-title {
+  font-family: var(--FONT-STACK-HEADING);
+  font-size: 32px;
+  font-weight: 400;
+}
+
+.instagram-title a {
+  color: var(--accent);
+}
+
+.instagram-title a:hover {
+  text-decoration: underline;
+}
+
+.instagram-carousel {
+  position: relative;
+  max-width: 1350px;
+  margin: 0 auto;
+}
+
+.instagram-track {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.instagram-track::-webkit-scrollbar {
+  display: none;
+}
+
+/* 6 fotos a la vista en escritorio */
+.instagram-item {
+  position: relative;
+  flex: 0 0 calc((100% - 5 * 12px) / 6);
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-medium);
+  overflow: hidden;
+  scroll-snap-align: start;
+  background: #EFECE6;
+}
+
+.instagram-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.instagram-item-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0);
+  color: #FFFFFF;
+  transition: background 0.3s ease;
+}
+
+.instagram-item-overlay svg {
+  width: 38px;
+  height: 38px;
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* El oscurecido con el icono solo aparece donde hay mouse */
+@media (hover: hover) {
+  .instagram-item:hover .instagram-item-overlay,
+  .instagram-item:focus-visible .instagram-item-overlay {
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .instagram-item:hover .instagram-item-overlay svg,
+  .instagram-item:focus-visible .instagram-item-overlay svg {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .instagram-item:hover img {
+    transform: scale(1.04);
+  }
+}
+
+.instagram-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.instagram-arrow--prev { left: 10px; }
+.instagram-arrow--next { right: 10px; }
+
+@media (max-width: 992px) {
+  .instagram-item {
+    flex-basis: calc((100% - 3 * 12px) / 4);
+  }
+}
+
+@media (max-width: 576px) {
+  .instagram-section {
+    padding: 40px 16px 48px;
+  }
+
+  .instagram-title {
+    font-size: 24px;
+  }
+
+  /* 2 fotos y un pedacito de la tercera, para que se note que se desliza */
+  .instagram-item {
+    flex-basis: calc((100% - 12px) / 2.3);
+  }
+}
+
+/* --- Panel admin: editor del carrusel --- */
+.admin-instagram-hint {
+  margin-top: -6px;
+  font-size: 11px;
+  color: #777;
+}
+
+.admin-instagram-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.admin-instagram-actions button {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.admin-instagram-actions button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.admin-instagram-actions button:last-child {
+  margin-left: auto;
+  color: #B4453D;
+}
+@media (min-width: 993px) {
+  .header-logo { grid-column: 2; justify-self: center; }
+  .nav-menu { grid-column: 1; justify-self: start; }
+}
