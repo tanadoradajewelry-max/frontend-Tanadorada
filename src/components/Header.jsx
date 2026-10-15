@@ -5,7 +5,7 @@ import { useCartStore } from "../store/useCartStore";
 import { api } from "../api/client";
 
 // Logo de la tienda (archivo en frontend/public/img).
-const LOGO_SRC = "/img/logopng.png";
+const LOGO_SRC = "/img/logo/jpeg";
 // Opcional: versión del logo en BLANCO y con fondo transparente (PNG) para
 // la portada, por ejemplo "/img/logo-blanco.png". Si lo dejas vacío, en la
 // portada el logo se muestra sobre una etiqueta crema.
