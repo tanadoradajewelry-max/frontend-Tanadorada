@@ -1,8 +1,8 @@
 import Hero from "../components/Hero";
 import CategoryStrip from "../components/CategoryStrip";
 import CategoryGrid from "../components/CategoryGrid";
-import InstagramCarousel from "../components/InstagramCarousel";
 import AboutBanner from "../components/AboutBanner";
+import QuoteBand, { quoteBandDefaults } from "../components/QuoteBand";
 import { useSiteContent } from "../hooks/useSiteContent";
 import { aboutBannerDefaults } from "../data/aboutBannerDefaults";
 
@@ -19,8 +19,8 @@ const defaults = {
   },
   category_strip: [],
   category_grid: { eyebrow: "", title: "", subtitle: "", items: [] },
-  instagram: { title: "Síguenos en", handle: "", items: [] },
   about_banner: aboutBannerDefaults,
+  quote_band: quoteBandDefaults,
 };
 
 export default function Home() {
@@ -35,9 +35,8 @@ export default function Home() {
         <CategoryGrid data={content.category_grid} />
       </section>
 
-      <InstagramCarousel data={content.instagram} />
-
       <AboutBanner data={content.about_banner} />
+      <QuoteBand data={content.quote_band} />
     </>
   );
 }
