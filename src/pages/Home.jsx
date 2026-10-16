@@ -2,6 +2,7 @@ import Hero from "../components/Hero";
 import CategoryStrip from "../components/CategoryStrip";
 import CategoryGrid from "../components/CategoryGrid";
 import AboutBanner from "../components/AboutBanner";
+import AboutUs from "../components/AboutUs";
 import QuoteBand, { quoteBandDefaults } from "../components/QuoteBand";
 import { useSiteContent } from "../hooks/useSiteContent";
 import { aboutBannerDefaults } from "../data/aboutBannerDefaults";
@@ -20,6 +21,7 @@ const defaults = {
   category_strip: [],
   category_grid: { eyebrow: "", title: "", subtitle: "", items: [] },
   about_banner: aboutBannerDefaults,
+  about_us: null, // el carrusel con tu historia: aparece cuando llega del servidor
   quote_band: quoteBandDefaults,
 };
 
@@ -36,6 +38,7 @@ export default function Home() {
       </section>
 
       <AboutBanner data={content.about_banner} />
+      {content.about_us && <AboutUs data={content.about_us} />}
       <QuoteBand data={content.quote_band} />
     </>
   );
