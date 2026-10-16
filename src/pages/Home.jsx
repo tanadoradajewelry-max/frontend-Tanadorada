@@ -5,6 +5,7 @@ import AboutBanner from "../components/AboutBanner";
 import QuoteBand, { quoteBandDefaults } from "../components/QuoteBand";
 import { useSiteContent } from "../hooks/useSiteContent";
 import { aboutBannerDefaults } from "../data/aboutBannerDefaults";
+import InstagramCarousel from "../components/InstagramCarousel";
 
 // Valores por defecto, por si la petición todavía no responde o falla —
 // así la portada nunca se ve vacía o rota.
@@ -21,8 +22,9 @@ const defaults = {
   category_grid: { eyebrow: "", title: "", subtitle: "", items: [] },
   about_banner: aboutBannerDefaults,
   quote_band: quoteBandDefaults,
-};
 
+  instagram: { title: "", handle: "", items: [] },
+};
 export default function Home() {
   const { content } = useSiteContent(defaults);
 
@@ -37,6 +39,7 @@ export default function Home() {
 
       <AboutBanner data={content.about_banner} />
       <QuoteBand data={content.quote_band} />
+      <InstagramCarousel data={content.instagram} />
     </>
   );
 }
