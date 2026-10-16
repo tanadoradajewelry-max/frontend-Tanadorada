@@ -49,7 +49,7 @@ export const heroSlides = [
 export const categories = [
   { id: "aretes-statement", image: "/img/1.jpg", title: "Aretes Statement", href: "/coleccion/aretes" },
   { id: "beach-edit", image: "/img/2.jpg", title: "The Beach Edit", href: "/coleccion/collares" },
-  { id: "anillos-chunky", image: "/img/3.jpg", title: "Anillos Chunky", href: "/coleccion/anillos" },
+  { id: "anillos-chunky", image: "/img/7.jpeg", title: "Anillos Chunky", href: "/coleccion/anillos" },
 ];
 
 export const navLinks = [
@@ -66,6 +66,7 @@ export const navLinks = [
     href: "/coleccion/anillos",
     preview: ["/img/7.jpeg", "/img/8.jpeg", "/img/9.jpeg", "/img/10.jpeg"],
   },
+  { label: "Charm Bar Experience", href: "/charm-bar" },
 ];
 
 export function formatPriceLPS(amount) {
