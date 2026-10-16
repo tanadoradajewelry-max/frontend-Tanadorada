@@ -5,6 +5,7 @@ import { useCartStore } from "../store/useCartStore";
 import { useCurrencyStore } from "../store/useCurrencyStore";
 import { useCurrency } from "../hooks/useCurrency";
 import CurrencySelector from "./CurrencySelector";
+import { SearchIcon, BagIcon, MenuIcon } from "./HeaderIcons";
 import { api } from "../api/client";
 
 // "/coleccion/anillos" -> "anillos"
@@ -80,10 +81,10 @@ export default function Header() {
   // Transparente solo en la portada, arriba del todo y sin menú abierto.
   const isTransparent = isHome && !scrolled && !hasOpenDropdown;
 
-  const wrapperClass = [
-    "header-wrapper",
-    isHome ? "header-wrapper--home" : "",
-    isTransparent ? "header-wrapper--transparent" : "",
+  const headerClass = [
+    "site-header",
+    isHome ? "site-header--home" : "",
+    isTransparent ? "site-header--transparent" : "",
   ]
     .filter(Boolean)
     .join(" ");
@@ -94,70 +95,101 @@ export default function Header() {
         ENVÍOS GRATIS A TODO EL PAÍS EN COMPRAS MAYORES
       </div>
 
-      <div className={wrapperClass}>
-        <header className="header-container">
-          <button
-            className="mobile-menu-toggle"
-            aria-label="Abrir menú"
-            onClick={toggleMenu}
-          >
-            &#9776;
-          </button>
+      <div className={headerClass}>
+        <header className="site-header-inner">
+          <div className="site-header-left">
+            <button
+              type="button"
+              className="mobile-menu-toggle"
+              aria-label="Abrir menú"
+              aria-expanded={isDrawerOpen}
+              onClick={toggleMenu}
+            >
+              <MenuIcon />
+            </button>
 
-          <Link to="/" className="header-logo">
+            <CurrencySelector />
+          </div>
+
+          <Link to="/" className="site-logo">
             TANADORADA
           </Link>
 
-          <ul className="nav-menu">
-            {navLinks.map((link) => {
-              const dropdownItems = getDropdownItems(link);
-              const isOpen = openMenu === link.label && dropdownItems.length > 0;
+          <div className="site-actions">
+            <button
+              type="button"
+              className="site-icon-button"
+              aria-label="Buscar"
+              title="Buscar"
+            >
+              <SearchIcon />
+            </button>
 
-              return (
-                <li
-                  className="nav-item"
-                  key={link.label}
-                  onMouseEnter={() => setOpenMenu(link.label)}
-                  onMouseLeave={() => setOpenMenu(null)}
-                  onFocus={() => setOpenMenu(link.label)}
-                  onBlur={(e) => {
-                    if (!e.currentTarget.contains(e.relatedTarget)) {
-                      setOpenMenu(null);
-                    }
-                  }}
-                >
-                  {link.href.startsWith("/") ? (
-                    <Link to={link.href}>{link.label}</Link>
-                  ) : (
-                    <a href={link.href}>{link.label}</a>
-                  )}
-
-                  {isOpen && (
-                    <div className="nav-dropdown">
-                      <Link to={link.href} onClick={() => setOpenMenu(null)}>
-                        View all
-                      </Link>
-                      {dropdownItems.map((col) => (
-                        <Link
-                          key={col.id}
-                          to={`${link.href}?coleccion=${col.id}`}
-                          onClick={() => setOpenMenu(null)}
-                        >
-                          {col.name}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-
-          <div className="header-icons">
-            <CurrencySelector />
-            <a href="#">Buscar</a>
-            <Link to="/carrito">Bolsa ({itemCount})</Link>
+            <Link
+              to="/carrito"
+              className="site-icon-button"
+              aria-label={`Bolsa, ${itemCount} ${
+                itemCount === 1 ? "producto" : "productos"
+              }`}
+            >
+              <BagIcon />
+              {itemCount > 0 && (
+                <span className="site-cart-badge">{itemCount}</span>
+              )}
+            </Link>
           </div>
+
+          <nav className="site-nav" aria-label="Principal">
+            <ul className="site-nav-list">
+              {navLinks.map((link) => {
+                const dropdownItems = getDropdownItems(link);
+                const isOpen =
+                  openMenu === link.label && dropdownItems.length > 0;
+
+                return (
+                  <li
+                    className="site-nav-item"
+                    key={link.label}
+                    onMouseEnter={() => setOpenMenu(link.label)}
+                    onMouseLeave={() => setOpenMenu(null)}
+                    onFocus={() => setOpenMenu(link.label)}
+                    onBlur={(e) => {
+                      if (!e.currentTarget.contains(e.relatedTarget)) {
+                        setOpenMenu(null);
+                      }
+                    }}
+                  >
+                    {link.href.startsWith("/") ? (
+                      <Link className="site-nav-link" to={link.href}>
+                        {link.label}
+                      </Link>
+                    ) : (
+                      <a className="site-nav-link" href={link.href}>
+                        {link.label}
+                      </a>
+                    )}
+
+                    {isOpen && (
+                      <div className="site-nav-dropdown">
+                        <Link to={link.href} onClick={() => setOpenMenu(null)}>
+                          View all
+                        </Link>
+                        {dropdownItems.map((col) => (
+                          <Link
+                            key={col.id}
+                            to={`${link.href}?coleccion=${col.id}`}
+                            onClick={() => setOpenMenu(null)}
+                          >
+                            {col.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
         </header>
       </div>
 
