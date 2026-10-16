@@ -58,10 +58,8 @@ export const api = {
   getOrders: () => adminRequest("/api/orders"),
 
   // --- Contenido de la portada ---
-  // ✅ NUEVA: trae TODOS los bloques de una sola petición (la usa useSiteContent)
-  getContent: () => request("/api/content"),
-  // Trae UN solo bloque por su key (la usa AdminMenu)
-  getContentBlock: (key) => request(`/api/content/${key}`),
+  getContent: () => request("/api/content"), // todos los bloques (la portada)
+  getContentBlock: (key) => request(`/api/content/${key}`), // uno solo (el menú)
   updateContent: (key, value) =>
     adminRequest(`/api/content/${key}`, {
       method: "PUT",
@@ -82,6 +80,19 @@ export const api = {
     }),
   deleteCollection: (id) =>
     adminRequest(`/api/collections/${id}`, { method: "DELETE" }),
+
+  // --- Charm Bar Experience ---
+  createCharmBarRequest: (payload) =>
+    request("/api/charm-bar", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  getCharmBarRequests: () => adminRequest("/api/charm-bar"),
+  updateCharmBarStatus: (id, status) =>
+    adminRequest(`/api/charm-bar/${id}/status`, {
+      method: "PUT",
+      body: JSON.stringify({ status }),
+    }),
 
   // --- Admin: productos ---
   createProduct: (data) =>
