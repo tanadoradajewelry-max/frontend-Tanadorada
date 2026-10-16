@@ -50,6 +50,9 @@ const PATHS = {
 };
 
 export default function PillarIcon({ name }) {
+  // Sin icono: "none", vacío o un nombre que ya no existe.
+  if (!name || name === "none" || !PATHS[name]) return null;
+
   return (
     <svg
       viewBox="0 0 24 24"
@@ -60,7 +63,7 @@ export default function PillarIcon({ name }) {
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      {PATHS[name] || PATHS.gem}
+      {PATHS[name]}
     </svg>
   );
 }
