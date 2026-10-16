@@ -37,9 +37,10 @@ export default function Home() {
         <CategoryGrid data={content.category_grid} />
       </section>
 
+      <InstagramCarousel data={content.instagram} />
+
       <AboutBanner data={content.about_banner} />
       <QuoteBand data={content.quote_band} />
-      <InstagramCarousel data={content.instagram} />
     </>
   );
 }
