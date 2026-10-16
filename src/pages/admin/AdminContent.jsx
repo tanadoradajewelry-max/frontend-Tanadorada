@@ -7,6 +7,7 @@ import { compressImage } from "../../utils/compressImage";
 import AboutBannerEditor from "../../components/admin/AboutBannerEditor";
 import InstagramEditor from "../../components/admin/InstagramEditor";
 import CurrencyEditor from "../../components/admin/CurrencyEditor";
+import QuoteBandEditor from "../../components/admin/QuoteBandEditor";
 
 const MAX_HERO_IMAGES = 5;
 const MAX_ABOUT_IMAGES = 5;
@@ -440,6 +441,7 @@ export default function AdminContent() {
       </div>
       <InstagramEditor />
       <AboutBannerEditor />
+     <QuoteBandEditor />
       <CurrencyEditor />
       {/* --- ABOUT US --- */}
       <div className="admin-content-block">
