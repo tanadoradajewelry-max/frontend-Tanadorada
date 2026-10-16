@@ -6,6 +6,9 @@ import PillarIcon, { PILLAR_ICON_OPTIONS } from "../PillarIcon";
 import { compressImage } from "../../utils/compressImage";
 import { aboutBannerDefaults } from "../../data/aboutBannerDefaults";
 
+const NO_ICON = { value: "none", label: "Ninguno" };
+const iconOptions = [NO_ICON, ...PILLAR_ICON_OPTIONS];
+
 const CONTENT_KEY = "about_banner";
 const MAX_PILLARS = 4;
 
@@ -63,7 +66,7 @@ export default function AboutBannerEditor() {
   const addPillar = () =>
     setData((d) => ({
       ...d,
-      pillars: [...(d.pillars || []), { icon: "gem", title: "", text: "" }],
+      pillars: [...(d.pillars || []), { icon: "none", title: "", text: "" }],
     }));
 
   const removePillar = (index) =>
@@ -158,13 +161,15 @@ export default function AboutBannerEditor() {
         <div className="admin-content-subitem" key={index}>
           <div className="admin-pillar-row">
             <span className="admin-pillar-icon">
-              <PillarIcon name={pillar.icon} />
+              {pillar.icon && pillar.icon !== "none" && (
+                <PillarIcon name={pillar.icon} />
+              )}
             </span>
             <select
-              value={pillar.icon}
+              value={pillar.icon || "none"}
               onChange={(e) => patchPillar(index, { icon: e.target.value })}
             >
-              {PILLAR_ICON_OPTIONS.map((option) => (
+              {iconOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
