@@ -36,7 +36,7 @@ export default function Cart() {
       <div className="cart-page">
         <ul className="cart-list">
           {items.map((item) => (
-            <li className="cart-line" key={item.id}>
+            <li className="cart-line" key={item.key}>
               {item.image ? (
                 <img
                   src={item.image}
@@ -49,6 +49,9 @@ export default function Cart() {
 
               <div className="cart-line-info">
                 <div className="product-info-title">{item.title}</div>
+                {item.size && (
+                  <div className="cart-line-size">Talla {item.size}</div>
+                )}
                 <div className="product-info-price">
                   {formatPrice(item.price)}
                 </div>
@@ -57,7 +60,7 @@ export default function Cart() {
               <div className="quantity-selector">
                 <button
                   type="button"
-                  onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                  onClick={() => updateQuantity(item.key, item.quantity - 1)}
                   aria-label="Disminuir cantidad"
                 >
                   −
@@ -65,7 +68,7 @@ export default function Cart() {
                 <span>{item.quantity}</span>
                 <button
                   type="button"
-                  onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                  onClick={() => updateQuantity(item.key, item.quantity + 1)}
                   aria-label="Aumentar cantidad"
                 >
                   +
@@ -75,7 +78,7 @@ export default function Cart() {
               <button
                 type="button"
                 className="cart-line-remove"
-                onClick={() => removeItem(item.id)}
+                onClick={() => removeItem(item.key)}
                 aria-label={`Quitar ${item.title}`}
               >
                 Quitar
