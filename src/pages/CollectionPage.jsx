@@ -3,6 +3,7 @@ import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "../api/client";
 import { getCategoryLabel } from "../data/categories";
 import { useCurrency } from "../hooks/useCurrency";
+import { getPriceRange } from "../utils/productSizes";
 
 export default function CollectionPage() {
   const { categorySlug } = useParams();
@@ -81,24 +82,29 @@ export default function CollectionPage() {
 
       {status === "success" && products.length > 0 && (
         <div className="product-grid">
-          {products.map((product) => (
-            <div
-              className="product-card-item"
-              key={product.id}
-              onClick={() => navigate(`/producto/${product.id}`)}
-            >
-              <div className="product-card-image">
-                {product.badge && (
-                  <span className="badge-tag">{product.badge}</span>
-                )}
-                <img src={product.image} alt={product.title} />
+          {products.map((product) => {
+            const range = getPriceRange(product);
+
+            return (
+              <div
+                className="product-card-item"
+                key={product.id}
+                onClick={() => navigate(`/producto/${product.id}`)}
+              >
+                <div className="product-card-image">
+                  {product.badge && (
+                    <span className="badge-tag">{product.badge}</span>
+                  )}
+                  <img src={product.image} alt={product.title} />
+                </div>
+                <div className="product-info-title">{product.title}</div>
+                <div className="product-info-price">
+                  {range.hasRange && "Desde "}
+                  {formatPrice(range.min)}
+                </div>
               </div>
-              <div className="product-info-title">{product.title}</div>
-              <div className="product-info-price">
-                {formatPrice(product.price)}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </section>
