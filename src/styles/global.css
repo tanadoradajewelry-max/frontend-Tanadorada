@@ -3364,3 +3364,108 @@ textarea {
     font-size: 56px;
   }
 }
+/* ==========================================================================
+   40. TALLAS
+   ========================================================================== */
+.size-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 4px 0 6px;
+}
+
+.size-picker-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.size-picker-label {
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #555;
+}
+
+.size-picker-error {
+  font-size: 11px;
+  color: #B4453D;
+}
+
+.size-picker-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.size-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 56px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-small);
+  background: #FFFFFF;
+  color: var(--text);
+  font-size: 13px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.size-option:hover {
+  border-color: var(--text);
+}
+
+.size-option--active {
+  background: var(--text);
+  border-color: var(--text);
+  color: #FFFFFF;
+}
+
+.size-option-price {
+  font-size: 10px;
+  letter-spacing: 0.3px;
+  opacity: 0.75;
+}
+
+/* Talla debajo del nombre en la bolsa */
+.cart-line-size {
+  margin-top: 2px;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  color: #777;
+}
+
+/* --- Panel admin: editor de tallas --- */
+.admin-sizes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-size-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.admin-size-row button {
+  padding: 0 4px;
+  border: none;
+  background: none;
+  color: #B4453D;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.admin-size-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+}
