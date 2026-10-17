@@ -5,6 +5,13 @@ import { CATEGORIES } from "../../data/categories";
 import { compressImage } from "../../utils/compressImage";
 
 const MAX_PRODUCT_IMAGES = 3;
+const MAX_SIZES = 12;
+
+// Para no escribir las tallas una por una. Después se pueden editar.
+const SIZE_PRESETS = [
+  { name: "Anillo 5 al 10", labels: ["5", "6", "7", "8", "9", "10"] },
+  { name: "S / M / L", labels: ["S", "M", "L"] },
+];
 
 const emptyForm = {
   title: "",
@@ -21,6 +28,8 @@ export default function AdminProductForm() {
 
   const [form, setForm] = useState(emptyForm);
   const [gallery, setGallery] = useState([]);
+  // [{ label, price }] — el precio se guarda como texto mientras se escribe
+  const [sizes, setSizes] = useState([]);
   const [collections, setCollections] = useState([]);
   const [isLoading, setIsLoading] = useState(isEditing);
   const [isSaving, setIsSaving] = useState(false);
@@ -61,6 +70,12 @@ export default function AdminProductForm() {
           collection: product.collection || "",
         });
         setGallery(product.images?.length ? product.images : [product.image]);
+        setSizes(
+          (product.sizes || []).map((s) => ({
+            label: s.label,
+            price: String(s.price),
+          }))
+        );
         setIsLoading(false);
       })
       .catch(() => {
@@ -83,6 +98,43 @@ export default function AdminProductForm() {
     return false;
   };
 
+  // --- Tallas ---
+  const addSize = () =>
+    setSizes((current) =>
+      current.length >= MAX_SIZES
+        ? current
+        : [
+            ...current,
+            { label: "", price: form.price ? String(form.price) : "" },
+          ]
+    );
+
+  const updateSize = (index, changes) =>
+    setSizes((current) =>
+      current.map((size, i) => (i === index ? { ...size, ...changes } : size))
+    );
+
+  const removeSize = (index) =>
+    setSizes((current) => current.filter((_, i) => i !== index));
+
+  // Rellena las tallas con el precio que tengas puesto arriba.
+  const applyPreset = (labels) => {
+    if (
+      sizes.length > 0 &&
+      !window.confirm("Esto reemplaza las tallas que ya escribiste. ¿Continuar?")
+    ) {
+      return;
+    }
+
+    setSizes(
+      labels.map((label) => ({
+        label,
+        price: form.price ? String(form.price) : "",
+      }))
+    );
+  };
+
+  // --- Fotos ---
   // Sube las fotos elegidas (comprimidas) y las agrega a la galería.
   const handleAddImages = async (event) => {
     const files = Array.from(event.target.files || []);
@@ -130,12 +182,46 @@ export default function AdminProductForm() {
       return;
     }
 
+    // Validar las tallas antes de guardar.
+    const cleanedSizes = sizes.map((size) => ({
+      label: size.label.trim(),
+      price: Number(size.price),
+    }));
+
+    const seen = new Set();
+    for (const [i, size] of cleanedSizes.entries()) {
+      if (!size.label) {
+        setError(`Talla ${i + 1}: escribe el nombre de la talla`);
+        return;
+      }
+      if (!(size.price > 0)) {
+        setError(`Talla "${size.label}": escribe un precio mayor a 0`);
+        return;
+      }
+      const key = size.label.toLowerCase();
+      if (seen.has(key)) {
+        setError(`La talla "${size.label}" está repetida`);
+        return;
+      }
+      seen.add(key);
+    }
+
+    if (cleanedSizes.length === 0 && !(Number(form.price) > 0)) {
+      setError("Escribe el precio del producto");
+      return;
+    }
+
     setIsSaving(true);
 
     try {
       const payload = {
         title: form.title,
-        price: Number(form.price),
+        // Con tallas, el precio del producto es el de la más barata
+        // (el servidor también lo calcula así).
+        price: cleanedSizes.length
+          ? Math.min(...cleanedSizes.map((s) => s.price))
+          : Number(form.price),
+        sizes: cleanedSizes,
         badge: form.badge || null,
         image: gallery[0],
         images: gallery,
@@ -197,9 +283,65 @@ export default function AdminProductForm() {
             min="0"
             value={form.price}
             onChange={handleChange}
-            required
+            required={sizes.length === 0}
           />
         </label>
+
+        <div className="admin-sizes">
+          <span className="admin-gallery-label">Tallas y precios (opcional)</span>
+          <p className="admin-currency-hint">
+            Si el producto tiene tallas, cada una puede tener su propio
+            precio. Sin tallas, se usa el precio de arriba. Con tallas, ese
+            campo solo sirve para rellenar tallas nuevas, y el precio que se
+            muestra sale de las tallas.
+          </p>
+
+          {sizes.map((size, index) => (
+            <div className="admin-size-row" key={index}>
+              <input
+                type="text"
+                maxLength={30}
+                placeholder="Talla (ej: 7)"
+                value={size.label}
+                onChange={(e) => updateSize(index, { label: e.target.value })}
+              />
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                placeholder="Precio LPS"
+                value={size.price}
+                onChange={(e) => updateSize(index, { price: e.target.value })}
+              />
+              <button
+                type="button"
+                aria-label={`Quitar talla ${size.label || index + 1}`}
+                onClick={() => removeSize(index)}
+              >
+                Quitar
+              </button>
+            </div>
+          ))}
+
+          <div className="admin-size-actions">
+            {sizes.length < MAX_SIZES && (
+              <button type="button" className="product-page-back" onClick={addSize}>
+                + Agregar talla
+              </button>
+            )}
+
+            {SIZE_PRESETS.map((preset) => (
+              <button
+                type="button"
+                key={preset.name}
+                className="product-page-back"
+                onClick={() => applyPreset(preset.labels)}
+              >
+                {preset.name}
+              </button>
+            ))}
+          </div>
+        </div>
 
         <label>
           Categoría
