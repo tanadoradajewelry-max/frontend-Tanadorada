@@ -42,13 +42,16 @@ export default function Checkout() {
     try {
       const { approveUrl } = await api.createOrder({
         customer: form,
+        // Solo se manda qué producto, qué talla y cuántos: el precio lo
+        // calcula el servidor.
         items: items.map((item) => ({
           productId: item.id,
           quantity: item.quantity,
+          size: item.size,
         })),
       });
 
-           if (!approveUrl) {
+      if (!approveUrl) {
         throw new Error("No se recibió el link de pago");
       }
 
@@ -148,7 +151,7 @@ export default function Checkout() {
             className="btn btn--dark checkout-submit"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Conectando con PayPal…" : "Ir a pagar"}
+            {isSubmitting ? "Conectando con el pago…" : "Ir a pagar"}
           </button>
 
           <button
@@ -164,9 +167,10 @@ export default function Checkout() {
           <h3>Resumen del pedido</h3>
           <ul className="checkout-summary-list">
             {items.map((item) => (
-              <li key={item.id}>
+              <li key={item.key}>
                 <span>
-                  {item.title} × {item.quantity}
+                  {item.title}
+                  {item.size ? ` · Talla ${item.size}` : ""} × {item.quantity}
                 </span>
                 <span>{formatPriceLPS(item.price * item.quantity)}</span>
               </li>
