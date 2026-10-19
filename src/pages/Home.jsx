@@ -11,7 +11,7 @@ import InstagramCarousel from "../components/InstagramCarousel";
 // así la portada nunca se ve vacía o rota.
 const defaults = {
   hero: {
-    image: "/img/1.jpg",
+    image: "/img/logo1.jpeg",
     eyebrow: "Nueva Colección",
     headline: "Brilla. Luce. Repite.",
     subtext: "Piezas atemporales en oro, pensadas para el día a día",
