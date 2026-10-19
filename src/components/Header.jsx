@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { navLinks } from "../data/storeData";
+import { navLinks as defaultNavLinks } from "../data/storeData";
+import { useNavMenu } from "../hooks/useNavMenu";
 import { useCartStore } from "../store/useCartStore";
 import { useCurrencyStore } from "../store/useCurrencyStore";
 import { useCurrency } from "../hooks/useCurrency";
@@ -10,12 +11,46 @@ import { api } from "../api/client";
 
 // "/coleccion/anillos" -> "anillos"
 function getCategorySlug(href) {
-  return href.startsWith("/coleccion/") ? href.split("/")[2] : null;
+  return href.startsWith("/coleccion/")
+    ? href.split("/")[2].split("?")[0]
+    : null;
+}
+
+// Las fotos del submenú de siempre, por si todavía no guardas otras.
+const defaultPreviewByHref = Object.fromEntries(
+  defaultNavLinks
+    .filter((link) => link.preview)
+    .map((link) => [link.href, link.preview])
+);
+
+// Enlace del menú: interno (sin recargar), ancla, o externo (otra pestaña).
+function MenuLink({ href, className, onClick, children }) {
+  if (href.startsWith("/")) {
+    return (
+      <Link className={className} to={href} onClick={onClick}>
+        {children}
+      </Link>
+    );
+  }
+
+  const isExternal = /^https?:\/\//i.test(href);
+
+  return (
+    <a
+      className={className}
+      href={href}
+      onClick={onClick}
+      {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+    >
+      {children}
+    </a>
+  );
 }
 
 export default function Header() {
   const location = useLocation();
   const isHome = location.pathname === "/";
+  const menu = useNavMenu();
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   // null = todavía no se pidieron; {} = pedidas (o falló: se usan las de siempre)
@@ -62,20 +97,22 @@ export default function Header() {
       .catch(() => setNavPreviews({}));
   }, [isDrawerOpen, navPreviews]);
 
+  // Fotos guardadas desde el panel; si no hay para ese enlace, las de siempre.
+  // Mientras cargan no se muestra nada, para que no parpadeen las viejas.
   const getPreview = (link) => {
     if (navPreviews === null) return undefined;
     const saved = navPreviews[link.href];
-    return Array.isArray(saved) ? saved : link.preview;
+    return Array.isArray(saved) ? saved : defaultPreviewByHref[link.href];
   };
 
-  // Colecciones que pertenecen a la categoría de este link del menú.
+  // Colecciones que pertenecen a la categoría de este enlace del menú.
   const getDropdownItems = (link) => {
     const slug = getCategorySlug(link.href);
     return slug ? collections.filter((c) => c.category === slug) : [];
   };
 
-  const hasOpenDropdown = navLinks.some(
-    (link) => openMenu === link.label && getDropdownItems(link).length > 0
+  const hasOpenDropdown = menu.some(
+    (link) => openMenu === link.href && getDropdownItems(link).length > 0
   );
 
   // Transparente solo en la portada, arriba del todo y sin menú abierto.
@@ -92,7 +129,7 @@ export default function Header() {
   return (
     <>
       <div className="announcement-bar">
-          10% OFF EN TU PRIMERA COMPRA ONLINE
+        lO% OFF EN TU PRIMERA COMPRA ONLINE
       </div>
 
       <div className={headerClass}>
@@ -141,33 +178,27 @@ export default function Header() {
 
           <nav className="site-nav" aria-label="Principal">
             <ul className="site-nav-list">
-              {navLinks.map((link) => {
+              {menu.map((link, index) => {
                 const dropdownItems = getDropdownItems(link);
                 const isOpen =
-                  openMenu === link.label && dropdownItems.length > 0;
+                  openMenu === link.href && dropdownItems.length > 0;
 
                 return (
                   <li
                     className="site-nav-item"
-                    key={link.label}
-                    onMouseEnter={() => setOpenMenu(link.label)}
+                    key={`${link.href}-${index}`}
+                    onMouseEnter={() => setOpenMenu(link.href)}
                     onMouseLeave={() => setOpenMenu(null)}
-                    onFocus={() => setOpenMenu(link.label)}
+                    onFocus={() => setOpenMenu(link.href)}
                     onBlur={(e) => {
                       if (!e.currentTarget.contains(e.relatedTarget)) {
                         setOpenMenu(null);
                       }
                     }}
                   >
-                    {link.href.startsWith("/") ? (
-                      <Link className="site-nav-link" to={link.href}>
-                        {link.label}
-                      </Link>
-                    ) : (
-                      <a className="site-nav-link" href={link.href}>
-                        {link.label}
-                      </a>
-                    )}
+                    <MenuLink href={link.href} className="site-nav-link">
+                      {link.label}
+                    </MenuLink>
 
                     {isOpen && (
                       <div className="site-nav-dropdown">
@@ -209,20 +240,14 @@ export default function Header() {
         </button>
 
         <ul className="mobile-nav-list">
-          {navLinks.map((link) => {
+          {menu.map((link, index) => {
             const preview = getPreview(link);
 
             return (
-              <li key={link.label}>
-                {link.href.startsWith("/") ? (
-                  <Link to={link.href} onClick={closeMenu}>
-                    {link.label}
-                  </Link>
-                ) : (
-                  <a href={link.href} onClick={closeMenu}>
-                    {link.label}
-                  </a>
-                )}
+              <li key={`${link.href}-${index}`}>
+                <MenuLink href={link.href} onClick={closeMenu}>
+                  {link.label}
+                </MenuLink>
 
                 {preview?.length > 0 && (
                   <div className="mobile-nav-preview">
@@ -251,6 +276,24 @@ export default function Header() {
             </select>
           </label>
         )}
+
+        <div className="mobile-nav-account">
+          <span className="mobile-nav-account-label">Mi Cuenta</span>
+          <Link
+            to="/cuenta/iniciar-sesion"
+            className="btn btn--dark mobile-nav-login"
+            onClick={closeMenu}
+          >
+            Iniciar Sesión
+          </Link>
+          <Link
+            to="/cuenta/registro"
+            className="mobile-nav-register"
+            onClick={closeMenu}
+          >
+            Registrarse
+          </Link>
+        </div>
       </aside>
     </>
   );
