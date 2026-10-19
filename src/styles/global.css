@@ -3469,3 +3469,48 @@ textarea {
   align-items: center;
   gap: 8px 18px;
 }
+/* ==========================================================================
+   41. PANEL ADMIN: EDITOR DEL MENÚ
+   ========================================================================== */
+.admin-menu-row {
+  display: grid;
+  grid-template-columns: 1fr 1.3fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.admin-menu-controls {
+  display: flex;
+  gap: 4px;
+}
+
+.admin-menu-controls button {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-small);
+  background: #FFFFFF;
+  color: var(--text);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.admin-menu-controls button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.admin-menu-controls button.is-danger {
+  border-color: transparent;
+  background: none;
+  color: #B4453D;
+}
+
+@media (max-width: 700px) {
+  .admin-menu-row {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-menu-controls {
+    justify-content: flex-start;
+  }
+}
