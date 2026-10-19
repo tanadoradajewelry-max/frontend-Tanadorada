@@ -92,7 +92,7 @@ export default function Header() {
   return (
     <>
       <div className="announcement-bar">
-        ENVÍOS GRATIS A TODO EL PAÍS EN COMPRAS MAYORES
+          10% OFF EN TU PRIMERA COMPRA ONLINE
       </div>
 
       <div className={headerClass}>
