@@ -59,15 +59,19 @@ export default function InstagramCarousel({ data }) {
   return (
     <section className="instagram-section">
       <Reveal as="div" className="instagram-header">
-        <h2 className="instagram-title">
-          {data.title || "Síguenos en"}{" "}
-          {handle && (
-            <a href={profileUrl} target="_blank" rel="noopener noreferrer">
-              @{handle}
-            </a>
-          )}
-        </h2>
-      </Reveal>
+  <h2 className="instagram-title">{data.title || "Síguenos en"}</h2>
+
+  {(data.subtitle || handle) && (
+    <p className="instagram-subtitle">
+      {data.subtitle}{" "}
+      {handle && (
+        <a href={profileUrl} target="_blank" rel="noopener noreferrer">
+          @{handle}
+        </a>
+      )}
+    </p>
+  )}
+</Reveal>
 
       <div className="instagram-carousel">
         {!atStart && (
