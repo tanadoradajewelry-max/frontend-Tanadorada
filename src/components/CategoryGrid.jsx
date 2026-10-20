@@ -31,7 +31,7 @@ export default function CategoryGrid({ data }) {
                       textTransform: "uppercase",
                     }}
                   >
-                    Explorar &rarr;
+                    Shop now &rarr;
                   </span>
                 </div>
               </Wrapper>
