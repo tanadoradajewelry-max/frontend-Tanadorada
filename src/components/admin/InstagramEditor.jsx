@@ -6,7 +6,7 @@ import { compressImage } from "../../utils/compressImage";
 const CONTENT_KEY = "instagram";
 const MAX_ITEMS = 12;
 
-const emptyData = { title: "Síguenos en", handle: "", items: [] };
+const emptyData = { title: "Síguenos en", subtitle: "", handle: "", items: [] };
 
 // Acepta "@usuario", "usuario" o el link completo del perfil.
 function cleanHandle(value) {
@@ -126,6 +126,7 @@ export default function InstagramEditor() {
     try {
       await api.updateContent(CONTENT_KEY, {
         title: data.title,
+        subtitle: (data.subtitle || "").trim(),
         handle: cleanHandle(data.handle),
         items: data.items.map((item) => ({
           image: item.image,
@@ -177,6 +178,16 @@ export default function InstagramEditor() {
       </label>
 
       <label>
+        Subtítulo (se muestra en dorado, antes del @usuario)
+        <input
+          type="text"
+          value={data.subtitle || ""}
+          placeholder="Ej: More than jewelry, we create quality experiences for you. Tag us"
+          onChange={(e) => patch({ subtitle: e.target.value })}
+        />
+      </label>
+
+      <label>
         Tu usuario de Instagram (sin @, o pega el link de tu perfil)
         <input
           type="text"
@@ -186,7 +197,7 @@ export default function InstagramEditor() {
       </label>
       {handle && (
         <p className="admin-instagram-hint">
-          Perfil: https://www.instagram.com/tanadorada?stkn=MWV6M2p6bHdrNXE5ZA%3D%3D
+          Perfil: https://www.instagram.com/{handle}
         </p>
       )}
 
@@ -209,7 +220,7 @@ export default function InstagramEditor() {
             <input
               type="text"
               value={item.link}
-              placeholder="https://www.instagram.com/tanadorada?stkn=MWV6M2p6bHdrNXE5ZA%3D%3D"
+              placeholder="https://www.instagram.com/p/..."
               onChange={(e) => patchItem(index, { link: e.target.value })}
             />
           </label>
