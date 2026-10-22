@@ -129,7 +129,7 @@ export default function Header() {
   return (
     <>
       <div className="announcement-bar">
-        lO% OFF EN TU PRIMERA COMPRA ONLINE
+       10% OFF EN TU PRIMERA COMPRA ONLINE
       </div>
 
       <div className={headerClass}>
