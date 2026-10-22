@@ -3535,3 +3535,34 @@ textarea {
     justify-content: flex-start;
   }
 }
+/* ==========================================================================
+   42. BARRA DE ANUNCIO MÁS GRANDE Y LEGIBLE
+   ========================================================================== */
+:root {
+  /* Alto mínimo de la barra. El hero usa este valor para calcular su alto. */
+  --announcement-h: 40px;
+}
+
+.announcement-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--announcement-h);
+  padding: 8px 14px;
+  /* Montserrat se lee mucho mejor que la serif fina a este tamaño */
+  font-family: var(--FONT-STACK-BODY);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-align: center;
+  text-wrap: balance;
+}
+
+@media (min-width: 993px) {
+  .announcement-bar {
+    font-size: 14px;
+    letter-spacing: 2px;
+  }
+}
