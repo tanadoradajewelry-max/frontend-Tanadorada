@@ -3540,7 +3540,7 @@ textarea {
    ========================================================================== */
 :root {
   /* Alto mínimo de la barra. El hero usa este valor para calcular su alto. */
-  --announcement-h: 40px;
+  --announcement-h: 20px;
 }
 
 .announcement-bar {
