@@ -5,7 +5,7 @@ export default function Footer() {
         <div className="footer-col">
           <h4>TANADORADA</h4>
           <p style={{ fontSize: "11px", opacity: 0.7, lineHeight: 1.8 }}>
-            Joyería cuidadosa mente curada para elevar tu estilo todos los días.
+            Joyería cuidadosamente curada para elevar tu estilo todos los días.
           </p>
         </div>
         <div className="footer-col">
@@ -15,7 +15,7 @@ export default function Footer() {
             <li>Collares</li>
             <li>Aretes</li>
             <li>Anillos</li>
-            <li>Experiencia Charm Bar</li>
+            <li>Charm Bar Experiencia</li>
           </ul>
         </div>
         <div className="footer-col">
