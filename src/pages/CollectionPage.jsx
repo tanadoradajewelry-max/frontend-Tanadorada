@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { api } from "../api/client";
-import { getCategoryLabel } from "../data/categories";
+import { useCategories } from "../hooks/useCategories";
 import { useCurrency } from "../hooks/useCurrency";
 import { getPriceRange } from "../utils/productSizes";
 
@@ -10,6 +10,7 @@ export default function CollectionPage() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { formatPrice } = useCurrency();
+  const { getLabel } = useCategories();
 
   // La colección activa vive en la dirección: ?coleccion=la-dolce-vita
   const activeCollection = searchParams.get("coleccion");
@@ -37,7 +38,7 @@ export default function CollectionPage() {
 
   return (
     <section className="normal-flow-section category-page">
-      <h1 className="category-page-title">{getCategoryLabel(categorySlug)}</h1>
+       <h1 className="category-page-title">{getLabel(categorySlug)}</h1>
 
       {collections.length > 0 && (
         <div className="collection-tabs">
