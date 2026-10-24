@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { api } from "../../api/client";
-import { CATEGORIES } from "../../data/categories";
+import { useCategories } from "../../hooks/useCategories";
 import { compressImage } from "../../utils/compressImage";
 
 const MAX_PRODUCT_IMAGES = 3;
@@ -25,6 +25,7 @@ export default function AdminProductForm() {
   const { productId } = useParams();
   const isEditing = Boolean(productId);
   const navigate = useNavigate();
+ const { categories } = useCategories();
 
   const [form, setForm] = useState(emptyForm);
   const [gallery, setGallery] = useState([]);
@@ -347,7 +348,7 @@ export default function AdminProductForm() {
           Categoría
           <select name="category" value={form.category} onChange={handleChange}>
             <option value="">Sin categoría</option>
-            {CATEGORIES.map((cat) => (
+            {categories.map((cat) => (
               <option key={cat.slug} value={cat.slug}>
                 {cat.label}
               </option>
