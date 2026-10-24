@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../api/client";
 import AdminNav from "../../components/admin/AdminNav";
 import ImageListEditor from "../../components/admin/ImageListEditor";
 import { compressImage } from "../../utils/compressImage";
 import { navLinks } from "../../data/storeData";
-import { CATEGORIES } from "../../data/categories";
+import { useCategories } from "../../hooks/useCategories";
 import {
   MAX_MENU_ITEMS,
   MAX_LABEL_CHARS,
@@ -20,27 +20,6 @@ const PREVIEWS_KEY = "nav_previews";
 const MAX_PREVIEW_IMAGES = 4;
 const CUSTOM = "__custom__";
 
-// A dónde puede llevar un enlace del menú. Las categorías salen solas de
-// data/categories.js: si agregas una allá, aparece aquí.
-const DESTINATIONS = [
-  { value: "/", label: "Inicio" },
-  ...CATEGORIES.map((c) => ({
-    value: `/coleccion/${c.slug}`,
-    label: `Categoría: ${c.label}`,
-  })),
-  { value: "/charm-bar", label: "Charm Bar Experience" },
-  { value: "/sobre-nosotros", label: "Sobre nosotros" },
-  { value: "#", label: "Sin destino todavía" },
-];
-
-const isKnownDestination = (href) =>
-  DESTINATIONS.some((destination) => destination.value === href);
-
-// "custom" solo sirve en esta pantalla (para mostrar el cuadro de enlace
-// propio); no se guarda.
-const withCustomFlag = (list) =>
-  list.map((item) => ({ ...item, custom: !isKnownDestination(item.href) }));
-
 // Fotos del submenú de siempre, por si todavía no guardas otras.
 const defaultPreviewByHref = Object.fromEntries(
   navLinks.filter((link) => link.preview).map((link) => [link.href, link.preview])
@@ -48,7 +27,31 @@ const defaultPreviewByHref = Object.fromEntries(
 
 export default function AdminMenu() {
   const navigate = useNavigate();
-  const [menu, setMenu] = useState(() => withCustomFlag(defaultMenu()));
+  const { categories } = useCategories();
+
+  // A dónde puede llevar un enlace del menú. Las categorías salen del panel
+  // (pestaña Categorías): si agregas una allá, aparece aquí.
+  const destinations = useMemo(
+    () => [
+      { value: "/", label: "Inicio" },
+      ...categories.map((c) => ({
+        value: `/coleccion/${c.slug}`,
+        label: `Categoría: ${c.label}`,
+      })),
+      { value: "/charm-bar", label: "Charm Bar Experience" },
+      { value: "/sobre-nosotros", label: "Sobre nosotros" },
+      { value: "#", label: "Sin destino todavía" },
+    ],
+    [categories]
+  );
+
+  const isKnownDestination = (href) =>
+    destinations.some((destination) => destination.value === href);
+
+  // "custom" (opcional) solo sirve en esta pantalla, para mostrar el cuadro
+  // de enlace propio; no se guarda. Si no está definido, se deduce del
+  // destino, así las categorías nuevas se reconocen cuando terminan de cargar.
+  const [menu, setMenu] = useState(() => defaultMenu());
   const [previews, setPreviews] = useState({});
   const [status, setStatus] = useState("loading");
   const [savingKey, setSavingKey] = useState(null);
@@ -62,7 +65,7 @@ export default function AdminMenu() {
     ])
       .then(([savedMenu, savedPreviews]) => {
         const cleaned = cleanMenu(savedMenu);
-        if (cleaned.length > 0) setMenu(withCustomFlag(cleaned));
+        if (cleaned.length > 0) setMenu(cleaned);
         setPreviews(savedPreviews || {});
         setStatus("success");
       })
@@ -225,70 +228,73 @@ export default function AdminMenu() {
           menú de hamburguesa del celular. Máximo {MAX_MENU_ITEMS}: con más no
           caben en una sola fila. Si un enlace lleva a una categoría que tiene
           colecciones, en la computadora se despliegan solas. Las categorías
-          nuevas se agregan una vez en <code>data/categories.js</code> y
-          aparecen aquí.
+          se crean en la pestaña Categorías y aparecen aquí.
         </p>
 
-        {menu.map((item, index) => (
-          <div className="admin-content-subitem" key={index}>
-            <div className="admin-menu-row">
-              <input
-                type="text"
-                maxLength={MAX_LABEL_CHARS}
-                placeholder="Nombre en el menú"
-                value={item.label}
-                onChange={(e) => patchItem(index, { label: e.target.value })}
-              />
+        {menu.map((item, index) => {
+          const isCustom = item.custom ?? !isKnownDestination(item.href);
 
-              <select
-                value={item.custom ? CUSTOM : item.href}
-                onChange={(e) => handleDestinationChange(index, e.target.value)}
-              >
-                {DESTINATIONS.map((destination) => (
-                  <option key={destination.value} value={destination.value}>
-                    {destination.label}
-                  </option>
-                ))}
-                <option value={CUSTOM}>Otro enlace…</option>
-              </select>
+          return (
+            <div className="admin-content-subitem" key={index}>
+              <div className="admin-menu-row">
+                <input
+                  type="text"
+                  maxLength={MAX_LABEL_CHARS}
+                  placeholder="Nombre en el menú"
+                  value={item.label}
+                  onChange={(e) => patchItem(index, { label: e.target.value })}
+                />
 
-              <div className="admin-menu-controls">
-                <button
-                  type="button"
-                  aria-label="Subir"
-                  disabled={index === 0}
-                  onClick={() => moveItem(index, -1)}
+                <select
+                  value={isCustom ? CUSTOM : item.href}
+                  onChange={(e) => handleDestinationChange(index, e.target.value)}
                 >
-                  ↑
-                </button>
-                <button
-                  type="button"
-                  aria-label="Bajar"
-                  disabled={index === menu.length - 1}
-                  onClick={() => moveItem(index, 1)}
-                >
-                  ↓
-                </button>
-                <button
-                  type="button"
-                  className="is-danger"
-                  onClick={() => removeItem(index)}
-                >
-                  Quitar
-                </button>
+                  {destinations.map((destination) => (
+                    <option key={destination.value} value={destination.value}>
+                      {destination.label}
+                    </option>
+                  ))}
+                  <option value={CUSTOM}>Otro enlace…</option>
+                </select>
+
+                <div className="admin-menu-controls">
+                  <button
+                    type="button"
+                    aria-label="Subir"
+                    disabled={index === 0}
+                    onClick={() => moveItem(index, -1)}
+                  >
+                    ↑
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Bajar"
+                    disabled={index === menu.length - 1}
+                    onClick={() => moveItem(index, 1)}
+                  >
+                    ↓
+                  </button>
+                  <button
+                    type="button"
+                    className="is-danger"
+                    onClick={() => removeItem(index)}
+                  >
+                    Quitar
+                  </button>
+                </div>
               </div>
-            </div>
 
-            {item.custom && (
-              <input
-                type="text"
-                placeholder="/coleccion/anillos   o   https://instagram.com/tu_cuenta"
-                value={item.href}
-                onChange={(e) => patchItem(index, { href: e.target.value })}
-              />
-            )}
-          </div>
-        ))}
+              {isCustom && (
+                <input
+                  type="text"
+                  placeholder="/coleccion/anillos   o   https://instagram.com/tu_cuenta"
+                  value={item.href}
+                  onChange={(e) => patchItem(index, { href: e.target.value })}
+                />
+              )}
+            </div>
+          );
+        })}
 
         {menu.length < MAX_MENU_ITEMS && (
           <button type="button" className="product-page-back" onClick={addItem}>
