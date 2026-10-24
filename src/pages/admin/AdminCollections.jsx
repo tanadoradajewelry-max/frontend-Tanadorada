@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../api/client";
 import AdminNav from "../../components/admin/AdminNav";
-import { CATEGORIES, getCategoryLabel } from "../../data/categories";
+import { useCategories } from "../../hooks/useCategories";
 
 export default function AdminCollections() {
   const navigate = useNavigate();
+  const { categories, getLabel } = useCategories();
   const [collections, setCollections] = useState([]);
   const [status, setStatus] = useState("loading");
   const [newName, setNewName] = useState("");
@@ -106,7 +107,7 @@ export default function AdminCollections() {
           }}
         >
           <option value="">Elige categoría</option>
-          {CATEGORIES.map((cat) => (
+          {categories.map((cat) => (
             <option key={cat.slug} value={cat.slug}>
               {cat.label}
             </option>
@@ -148,7 +149,7 @@ export default function AdminCollections() {
             {collections.map((collection) => (
               <tr key={collection.id}>
                 <td>{collection.name}</td>
-                <td>{getCategoryLabel(collection.category)}</td>
+                  <td>{getLabel(collection.category)}</td>
                 <td className="admin-table-actions">
                   <button type="button" onClick={() => handleDelete(collection)}>
                     Eliminar
