@@ -3583,3 +3583,12 @@ textarea {
 .product-card-image .badge-tag {
   z-index: 2;
 }
+/* ==========================================================================
+   44. PANEL ADMIN: CATEGORÍAS
+   ========================================================================== */
+.admin-category-slug {
+  font-size: 12px;
+  color: #777;
+  letter-spacing: normal;
+  word-break: break-all;
+}
