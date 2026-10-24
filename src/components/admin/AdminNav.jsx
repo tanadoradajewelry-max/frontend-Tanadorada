@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 // Para agregar otra pestaña al panel, solo agrega una línea aquí.
 const ADMIN_LINKS = [
   { to: "/admin", label: "Productos" },
+  { to: "/admin/categorias", label: "Categorías" },
   { to: "/admin/colecciones", label: "Colecciones" },
   { to: "/admin/contenido", label: "Contenido de página" },
   { to: "/admin/menu", label: "Menú" },
