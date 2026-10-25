@@ -19,8 +19,9 @@ const emptyForm = {
   badge: "",
   category: "",
   collection: "",
+  stock: "",
 };
-
+ 
 export default function AdminProductForm() {
   const { productId } = useParams();
   const isEditing = Boolean(productId);
@@ -67,8 +68,9 @@ export default function AdminProductForm() {
           title: product.title,
           price: product.price,
           badge: product.badge || "",
-          category: product.category || "",
+         category: product.category || "",
           collection: product.collection || "",
+          stock: product.stock ?? "",
         });
         setGallery(product.images?.length ? product.images : [product.image]);
         setSizes(
@@ -212,6 +214,15 @@ export default function AdminProductForm() {
       return;
     }
 
+    // Stock: vacío = no controlar; si hay número, debe ser entero de 0 en adelante.
+    const stockValue = form.stock === "" ? null : Number(form.stock);
+    if (stockValue !== null && (!Number.isInteger(stockValue) || stockValue < 0)) {
+      setError("El stock debe ser un número entero, 0 o mayor");
+      return;
+    }
+
+    setIsSaving(true);
+
     setIsSaving(true);
 
     try {
@@ -222,7 +233,8 @@ export default function AdminProductForm() {
         price: cleanedSizes.length
           ? Math.min(...cleanedSizes.map((s) => s.price))
           : Number(form.price),
-        sizes: cleanedSizes,
+         sizes: cleanedSizes,
+        stock: stockValue,
         badge: form.badge || null,
         image: gallery[0],
         images: gallery,
@@ -343,6 +355,23 @@ export default function AdminProductForm() {
             ))}
           </div>
         </div>
+        
+        <label>
+          Stock (cuántas piezas hay)
+          <input
+            type="number"
+            name="stock"
+            min="0"
+            step="1"
+            placeholder="Vacío = no controlar stock"
+            value={form.stock}
+            onChange={handleChange}
+          />
+          <span className="admin-currency-hint">
+            Cuando se vende y quedan menos de 10, te llega un correo. Si el
+            producto tiene tallas, es el total de todas las tallas juntas.
+          </span>
+        </label>
 
         <label>
           Categoría
