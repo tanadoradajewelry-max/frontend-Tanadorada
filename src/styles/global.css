@@ -3592,3 +3592,52 @@ textarea {
   letter-spacing: normal;
   word-break: break-all;
 }
+/* ==========================================================================
+   45. STOCK
+   ========================================================================== */
+.badge-tag--sold-out {
+  background: var(--text);
+  color: #FFFFFF;
+}
+
+.product-card-item--sold-out .product-card-image img {
+  opacity: 0.5;
+  filter: grayscale(0.4);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn--dark:disabled:hover {
+  background-color: #1C1B1D;
+}
+
+/* --- Panel admin --- */
+.stock-pill {
+  display: inline-block;
+  min-width: 34px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-align: center;
+}
+
+.stock-pill--ok { background: #E4F3E8; color: #2F7D4A; }
+.stock-pill--low { background: #FDF2DD; color: #A9720F; }
+.stock-pill--out { background: #FBE7E5; color: #B4453D; }
+.stock-pill--none { background: #F1EFEB; color: #888; font-weight: 400; }
+
+.admin-stock-summary {
+  max-width: 1350px;
+  margin: 0 auto 18px;
+  font-size: 12px;
+  color: #777;
+}
+
+.admin-stock-summary strong {
+  color: #B4453D;
+}
