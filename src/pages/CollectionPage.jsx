@@ -4,6 +4,7 @@ import { api } from "../api/client";
 import { useCategories } from "../hooks/useCategories";
 import { useCurrency } from "../hooks/useCurrency";
 import { getPriceRange } from "../utils/productSizes";
+import { isSoldOut } from "../utils/stock";
 
 export default function CollectionPage() {
   const { categorySlug } = useParams();
@@ -85,16 +86,21 @@ export default function CollectionPage() {
         <div className="product-grid">
           {products.map((product) => {
             const range = getPriceRange(product);
+            const soldOut = isSoldOut(product);
 
             return (
               <div
-                className="product-card-item"
+                className={`product-card-item ${soldOut ? "product-card-item--sold-out" : ""}`}
                 key={product.id}
                 onClick={() => navigate(`/producto/${product.id}`)}
               >
                 <div className="product-card-image">
-                  {product.badge && (
-                    <span className="badge-tag">{product.badge}</span>
+                  {soldOut ? (
+                    <span className="badge-tag badge-tag--sold-out">Agotado</span>
+                  ) : (
+                    product.badge && (
+                      <span className="badge-tag">{product.badge}</span>
+                    )
                   )}
                   <img src={product.image} alt={product.title} />
                 </div>
