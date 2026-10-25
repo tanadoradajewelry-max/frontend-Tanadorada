@@ -5,6 +5,7 @@ import { useProduct } from "../hooks/useProduct";
 import { useCurrency } from "../hooks/useCurrency";
 import ProductGallery from "../components/ProductGallery";
 import { getSizes, getPriceRange } from "../utils/productSizes";
+import { isSoldOut, getMaxQuantity } from "../utils/stock";
 
 export default function ProductPage() {
   const { productId } = useParams();
@@ -64,18 +65,24 @@ export default function ProductPage() {
   const selectedSize = sizes.find((s) => s.label === selectedLabel) || null;
   const range = getPriceRange(product);
 
+  // Stock: agotado = no se puede agregar; si no, la cantidad tiene tope.
+  const soldOut = isSoldOut(product);
+  const maxQuantity = getMaxQuantity(product);
+
   // Con talla elegida se muestra su precio; sin elegir, el más bajo
   // (con "Desde" si las tallas no cuestan lo mismo).
   const shownPrice = selectedSize ? selectedSize.price : range.min;
   const showFrom = hasSizes && !selectedSize && range.hasRange;
 
   const handleAddToCart = () => {
+    if (soldOut) return;
+
     if (hasSizes && !selectedSize) {
       setShowSizeError(true);
       return;
     }
 
-    addItem(product, quantity, selectedSize);
+    addItem(product, Math.min(quantity, maxQuantity), selectedSize);
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 2000);
   };
@@ -104,7 +111,7 @@ export default function ProductPage() {
             </p>
           )}
 
-          {hasSizes && (
+          {hasSizes && !soldOut && (
             <div className="size-picker">
               <div className="size-picker-head">
                 <span className="size-picker-label">
@@ -144,30 +151,41 @@ export default function ProductPage() {
             </div>
           )}
 
-          <div className="quantity-selector">
-            <button
-              type="button"
-              onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-              aria-label="Disminuir cantidad"
-            >
-              −
-            </button>
-            <span>{quantity}</span>
-            <button
-              type="button"
-              onClick={() => setQuantity((q) => Math.min(99, q + 1))}
-              aria-label="Aumentar cantidad"
-            >
-              +
-            </button>
-          </div>
+          {!soldOut && (
+            <div className="quantity-selector">
+              <button
+                type="button"
+                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                aria-label="Disminuir cantidad"
+              >
+                −
+              </button>
+              <span>{quantity}</span>
+              <button
+                type="button"
+                onClick={() => setQuantity((q) => Math.min(maxQuantity, q + 1))}
+                aria-label="Aumentar cantidad"
+              >
+                +
+              </button>
+            </div>
+          )}
+
+          {!soldOut && maxQuantity < 99 && quantity >= maxQuantity && (
+            <p className="price-note">Es la cantidad máxima disponible.</p>
+          )}
 
           <button
             type="button"
             className="btn btn--dark product-page-add"
+            disabled={soldOut}
             onClick={handleAddToCart}
           >
-            {justAdded ? "Agregado ✓" : "Agregar al carrito"}
+            {soldOut
+              ? "Agotado"
+              : justAdded
+                ? "Agregado ✓"
+                : "Agregar al carrito"}
           </button>
 
           <button
