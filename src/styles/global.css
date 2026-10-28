@@ -3641,3 +3641,61 @@ textarea {
 .admin-stock-summary strong {
   color: #B4453D;
 }
+/* ==========================================================================
+   46. PANTALLA DE CARGA DE LA PORTADA (sin contenido de respaldo)
+   ========================================================================== */
+.home-skeleton-hero {
+  height: calc(100vh - var(--announcement-h));
+  height: calc(100svh - var(--announcement-h));
+  min-height: 560px;
+  /* Oscuro, para que el header blanco (transparente sobre el hero) se lea */
+  background: linear-gradient(110deg, #2b2724 8%, #3a3531 18%, #2b2724 33%);
+  background-size: 200% 100%;
+  animation: home-skeleton-shimmer 1.6s linear infinite;
+}
+
+@keyframes home-skeleton-shimmer {
+  to {
+    background-position-x: -200%;
+  }
+}
+
+.home-skeleton-strip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 32px;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 72px 40px 80px;
+  background: var(--bg);
+}
+
+.home-skeleton-strip span {
+  flex: 0 1 calc(25% - 24px);
+  aspect-ratio: 1 / 1;
+  border-radius: 6px;
+  background: #EFECE6;
+}
+
+@media (max-width: 992px) {
+  .home-skeleton-strip {
+    gap: 22px;
+    padding: 48px 20px 56px;
+  }
+
+  .home-skeleton-strip span {
+    flex-basis: calc(50% - 11px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-skeleton-hero {
+    animation: none;
+  }
+}
+
+/* Mensaje de error: queda por debajo del header, que flota sobre la portada */
+.home-error {
+  padding-top: calc(var(--header-h) + 80px);
+}
