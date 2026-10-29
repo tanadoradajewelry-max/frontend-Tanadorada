@@ -277,23 +277,6 @@ export default function Header() {
           </label>
         )}
 
-        <div className="mobile-nav-account">
-          <span className="mobile-nav-account-label">Mi Cuenta</span>
-          <Link
-            to="/cuenta/iniciar-sesion"
-            className="btn btn--dark mobile-nav-login"
-            onClick={closeMenu}
-          >
-            Iniciar Sesión
-          </Link>
-          <Link
-            to="/cuenta/registro"
-            className="mobile-nav-register"
-            onClick={closeMenu}
-          >
-            Registrarse
-          </Link>
-        </div>
       </aside>
     </>
   );
