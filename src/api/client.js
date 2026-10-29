@@ -43,6 +43,13 @@ export const api = {
     return request(qs ? `/api/products?${qs}` : "/api/products");
   },
   getProduct: (id) => request(`/api/products/${id}`),
+  
+  // ✅ NUEVA FUNCIÓN AGREGADA AQUÍ:
+  // Dirección de una foto del producto, servida como imagen real
+  // (0 = principal, 1 = segunda…). El navegador la guarda en memoria.
+  productImageUrl: (id, index) =>
+    `${API_URL}/api/products/${encodeURIComponent(id)}/image/${index}`,
+
   createOrder: (payload) =>
     request("/api/orders", {
       method: "POST",
@@ -80,19 +87,6 @@ export const api = {
     }),
   deleteCollection: (id) =>
     adminRequest(`/api/collections/${id}`, { method: "DELETE" }),
-
-  // --- Charm Bar Experience ---
-  createCharmBarRequest: (payload) =>
-    request("/api/charm-bar", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    }),
-  getCharmBarRequests: () => adminRequest("/api/charm-bar"),
-  updateCharmBarStatus: (id, status) =>
-    adminRequest(`/api/charm-bar/${id}/status`, {
-      method: "PUT",
-      body: JSON.stringify({ status }),
-    }),
 
   // --- Admin: productos ---
   createProduct: (data) =>
