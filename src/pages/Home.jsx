@@ -2,28 +2,24 @@ import Hero from "../components/Hero";
 import CategoryStrip from "../components/CategoryStrip";
 import CategoryGrid from "../components/CategoryGrid";
 import AboutBanner from "../components/AboutBanner";
-import AboutUs from "../components/AboutUs";
+// ❌ SE ELIMINÓ: import AboutUs from "../components/AboutUs";
 import QuoteBand, { quoteBandDefaults } from "../components/QuoteBand";
 import HomeSkeleton from "../components/HomeSkeleton";
 import { useSiteContent } from "../hooks/useSiteContent";
 import { aboutBannerDefaults } from "../data/aboutBannerDefaults";
 
-// Solo se usan para los bloques que todavía no has guardado en el panel.
-// El hero ya NO tiene texto ni foto de respaldo: se muestra únicamente lo
-// que guardaste en /admin/contenido.
 const defaults = {
   hero: null,
   category_strip: [],
   category_grid: { eyebrow: "", title: "", subtitle: "", items: [] },
   about_banner: aboutBannerDefaults,
-  about_us: null,
+  // ❌ SE ELIMINÓ: about_us: null,
   quote_band: quoteBandDefaults,
 };
 
 export default function Home() {
   const { content, status } = useSiteContent(defaults);
 
-  // Mientras llega el contenido, una pantalla neutra: nada de respaldo.
   if (status === "loading") {
     return <HomeSkeleton />;
   }
@@ -58,7 +54,9 @@ export default function Home() {
       </section>
 
       <AboutBanner data={content.about_banner} />
-      {content.about_us && <AboutUs data={content.about_us} />}
+      
+      {/* ❌ SE ELIMINÓ: {content.about_us && <AboutUs data={content.about_us} />} */}
+      
       <QuoteBand data={content.quote_band} />
     </>
   );
