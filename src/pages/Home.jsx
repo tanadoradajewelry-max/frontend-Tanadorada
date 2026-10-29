@@ -2,7 +2,7 @@ import Hero from "../components/Hero";
 import CategoryStrip from "../components/CategoryStrip";
 import CategoryGrid from "../components/CategoryGrid";
 import AboutBanner from "../components/AboutBanner";
-// ❌ SE ELIMINÓ: import AboutUs from "../components/AboutUs";
+import InstagramCarousel from "../components/InstagramCarousel";
 import QuoteBand, { quoteBandDefaults } from "../components/QuoteBand";
 import HomeSkeleton from "../components/HomeSkeleton";
 import { useSiteContent } from "../hooks/useSiteContent";
@@ -13,7 +13,7 @@ const defaults = {
   category_strip: [],
   category_grid: { eyebrow: "", title: "", subtitle: "", items: [] },
   about_banner: aboutBannerDefaults,
-  // ❌ SE ELIMINÓ: about_us: null,
+  instagram: { title: "", subtitle: "", handle: "", items: [] },
   quote_band: quoteBandDefaults,
 };
 
@@ -53,10 +53,10 @@ export default function Home() {
         <CategoryGrid data={content.category_grid} />
       </section>
 
+      <InstagramCarousel data={content.instagram} />
+
       <AboutBanner data={content.about_banner} />
-      
-      {/* ❌ SE ELIMINÓ: {content.about_us && <AboutUs data={content.about_us} />} */}
-      
+
       <QuoteBand data={content.quote_band} />
     </>
   );
