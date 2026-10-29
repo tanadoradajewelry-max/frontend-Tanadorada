@@ -1,16 +1,12 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { api } from "../api/client";
 import { useCategories } from "../hooks/useCategories";
-import { useCurrency } from "../hooks/useCurrency";
-import { getPriceRange } from "../utils/productSizes";
-import { isSoldOut } from "../utils/stock";
+import ProductCard from "../components/ProductCard";
 
 export default function CollectionPage() {
   const { categorySlug } = useParams();
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { formatPrice } = useCurrency();
   const { getLabel } = useCategories();
 
   // La colección activa vive en la dirección: ?coleccion=la-dolce-vita
@@ -39,7 +35,7 @@ export default function CollectionPage() {
 
   return (
     <section className="normal-flow-section category-page">
-       <h1 className="category-page-title">{getLabel(categorySlug)}</h1>
+      <h1 className="category-page-title">{getLabel(categorySlug)}</h1>
 
       {collections.length > 0 && (
         <div className="collection-tabs">
@@ -84,34 +80,9 @@ export default function CollectionPage() {
 
       {status === "success" && products.length > 0 && (
         <div className="product-grid">
-          {products.map((product) => {
-            const range = getPriceRange(product);
-            const soldOut = isSoldOut(product);
-
-            return (
-              <div
-                className={`product-card-item ${soldOut ? "product-card-item--sold-out" : ""}`}
-                key={product.id}
-                onClick={() => navigate(`/producto/${product.id}`)}
-              >
-                <div className="product-card-image">
-                  {soldOut ? (
-                    <span className="badge-tag badge-tag--sold-out">Agotado</span>
-                  ) : (
-                    product.badge && (
-                      <span className="badge-tag">{product.badge}</span>
-                    )
-                  )}
-                  <img src={product.image} alt={product.title} />
-                </div>
-                <div className="product-info-title">{product.title}</div>
-                <div className="product-info-price">
-                  {range.hasRange && "Desde "}
-                  {formatPrice(range.min)}
-                </div>
-              </div>
-            );
-          })}
+          {products.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
         </div>
       )}
     </section>
