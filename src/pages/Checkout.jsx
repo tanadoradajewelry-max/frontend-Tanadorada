@@ -1,8 +1,36 @@
 import { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCartStore } from "../store/useCartStore";
 import { formatPriceLPS } from "../data/storeData";
 import { api } from "../api/client";
+
+const LAST_ORDER_KEY = "tanadorada_last_order";
+
+// Solo se acepta ir a enlaces de WhatsApp, nunca a otro sitio.
+const isWhatsappUrl = (url) =>
+  typeof url === "string" && url.startsWith("https://wa.me/");
+
+// Se recuerda el último pedido mientras la pestaña siga abierta, por si la
+// clienta vuelve atrás desde WhatsApp y necesita abrirlo otra vez.
+function saveLastOrder(order) {
+  try {
+    sessionStorage.setItem(LAST_ORDER_KEY, JSON.stringify(order));
+  } catch {
+    /* sin almacenamiento: no pasa nada */
+  }
+}
+
+function readLastOrder() {
+  try {
+    const raw = sessionStorage.getItem(LAST_ORDER_KEY);
+    const data = raw ? JSON.parse(raw) : null;
+    return data && typeof data.orderId === "string" && isWhatsappUrl(data.whatsappUrl)
+      ? data
+      : null;
+  } catch {
+    return null;
+  }
+}
 
 const emptyForm = {
   name: "",
@@ -15,6 +43,7 @@ const emptyForm = {
 export default function Checkout() {
   const items = useCartStore((state) => state.items);
   const subtotal = useCartStore((state) => state.getSubtotal());
+  const clearCart = useCartStore((state) => state.clearCart);
   const navigate = useNavigate();
 
   const [form, setForm] = useState(emptyForm);
@@ -40,7 +69,7 @@ export default function Checkout() {
     setIsSubmitting(true);
 
     try {
-      const { approveUrl } = await api.createOrder({
+      const { orderId, whatsappUrl } = await api.createOrder({
         customer: form,
         // Solo se manda qué producto, qué talla y cuántos: el precio lo
         // calcula el servidor.
@@ -51,16 +80,18 @@ export default function Checkout() {
         })),
       });
 
-      if (!approveUrl) {
-        throw new Error("No se recibió el link de pago");
+      if (!isWhatsappUrl(whatsappUrl)) {
+        throw new Error("No se pudo preparar el mensaje de WhatsApp");
       }
 
-      // El carrito se vacía cuando vuelva ya pagado a /gracias,
-      // no acá, por si cancela el pago y necesita volver a intentar.
-      window.location.href = approveUrl;
+      // El pedido ya quedó guardado: se vacía la bolsa y se abre WhatsApp.
+      // (Aquí NO se libera el bloqueo: la página se va a WhatsApp.)
+      saveLastOrder({ orderId, whatsappUrl });
+      clearCart();
+      window.location.href = whatsappUrl;
     } catch (error) {
       setErrorMessage(
-        error.message || "No se pudo iniciar el pago. Intenta de nuevo."
+        error.message || "No se pudo enviar el pedido. Intenta de nuevo."
       );
       setIsSubmitting(false);
       isSubmittingRef.current = false;
@@ -68,11 +99,50 @@ export default function Checkout() {
   };
 
   if (items.length === 0) {
+    const lastOrder = readLastOrder();
+
+    // Volvió atrás desde WhatsApp: su pedido ya está registrado.
+    if (lastOrder) {
+      return (
+        <section className="normal-flow-section">
+          <div className="section-header">
+            <h2>Pedido registrado</h2>
+            <p>Pedido #{lastOrder.orderId.slice(-8).toUpperCase()}</p>
+          </div>
+
+          <div className="checkout-sent">
+            <p>
+              Para recibir tu link de pago con tarjeta, envíanos el mensaje por
+              WhatsApp. Si no se abrió, toca el botón.
+            </p>
+
+            <a
+              href={lastOrder.whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn--dark"
+            >
+              Abrir WhatsApp
+            </a>
+
+            <Link to="/" className="product-page-back">
+              &larr; Seguir comprando
+            </Link>
+          </div>
+        </section>
+      );
+    }
+
     return (
       <section className="normal-flow-section">
         <div className="section-header">
           <h2>No hay nada que pagar todavía</h2>
           <p>Tu bolsa está vacía</p>
+        </div>
+        <div style={{ textAlign: "center" }}>
+          <Link to="/" className="btn btn--dark">
+            Ir a la tienda
+          </Link>
         </div>
       </section>
     );
@@ -151,8 +221,13 @@ export default function Checkout() {
             className="btn btn--dark checkout-submit"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Conectando con el pago…" : "Ir a pagar"}
+            {isSubmitting ? "Preparando tu pedido…" : "Enviar pedido por WhatsApp"}
           </button>
+
+          <p className="checkout-note">
+            Pago con tarjeta: al enviar tu pedido te llevamos a WhatsApp con el
+            mensaje ya escrito. Nosotros te respondemos con tu link de pago.
+          </p>
 
           <button
             type="button"
