@@ -55,15 +55,12 @@ export const api = {
       method: "POST",
       body: JSON.stringify(payload),
     }),
-  captureOrder: (orderId, paymentHash) =>
-    request(`/api/orders/${orderId}/capture`, {
-      method: "POST",
-      body: JSON.stringify({ paymentHash }),
-    }),
-
-  getOrder: (orderId) => request(`/api/orders/${orderId}`),
   getOrders: () => adminRequest("/api/orders"),
-
+  updateOrderStatus: (orderId, status) =>
+    adminRequest(`/api/orders/${orderId}/status`, {
+      method: "PUT",
+      body: JSON.stringify({ status }),
+    }),
   // --- Contenido de la portada ---
   getContent: () => request("/api/content"), // todos los bloques (la portada)
   getContentBlock: (key) => request(`/api/content/${key}`), // uno solo (el menú)
