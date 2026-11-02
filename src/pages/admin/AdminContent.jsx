@@ -8,6 +8,8 @@ import AboutBannerEditor from "../../components/admin/AboutBannerEditor";
 import InstagramEditor from "../../components/admin/InstagramEditor";
 import CurrencyEditor from "../../components/admin/CurrencyEditor";
 import QuoteBandEditor from "../../components/admin/QuoteBandEditor";
+// ✅ NUEVO IMPORT AGREGADO:
+import WhatsAppEditor from "../../components/admin/WhatsAppEditor";
 
 const MAX_HERO_IMAGES = 5;
 const MAX_ABOUT_IMAGES = 5;
@@ -439,15 +441,19 @@ export default function AdminContent() {
           </button>
         </div>
       </div>
+      
       <InstagramEditor />
       <AboutBannerEditor />
-     <QuoteBandEditor />
+      <QuoteBandEditor />
       <CurrencyEditor />
+      {/* ✅ NUEVO COMPONENTE AGREGADO AQUÍ */}
+      <WhatsAppEditor />
+
       {/* --- ABOUT US --- */}
       <div className="admin-content-block">
         <h3>Sobre Nosotros</h3>
 
-                <ImageListEditor
+        <ImageListEditor
           label={`Imágenes (hasta ${MAX_ABOUT_IMAGES}) — se mueven solas cada 5 segundos`}
           firstLabel="Primera"
           aspectRatio="4 / 5"
