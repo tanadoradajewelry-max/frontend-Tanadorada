@@ -44,7 +44,6 @@ export const api = {
   },
   getProduct: (id) => request(`/api/products/${id}`),
   
-  // ✅ NUEVA FUNCIÓN AGREGADA AQUÍ:
   // Dirección de una foto del producto, servida como imagen real
   // (0 = principal, 1 = segunda…). El navegador la guarda en memoria.
   productImageUrl: (id, index) =>
@@ -61,6 +60,7 @@ export const api = {
       method: "PUT",
       body: JSON.stringify({ status }),
     }),
+    
   // --- Contenido de la portada ---
   getContent: () => request("/api/content"), // todos los bloques (la portada)
   getContentBlock: (key) => request(`/api/content/${key}`), // uno solo (el menú)
@@ -84,6 +84,23 @@ export const api = {
     }),
   deleteCollection: (id) =>
     adminRequest(`/api/collections/${id}`, { method: "DELETE" }),
+
+  // --- Charm Bar ---
+  // ✅ AGREGADO: Funciones para manejar las solicitudes del Charm Bar
+  getCharmBarRequests: () => adminRequest("/api/charm-bar"),
+  updateCharmBarRequest: (id, data) =>
+    adminRequest(`/api/charm-bar/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }),
+  deleteCharmBarRequest: (id) =>
+    adminRequest(`/api/charm-bar/${id}`, { method: "DELETE" }),
+  // (Por si el formulario público necesita enviar la solicitud desde el frontend)
+  createCharmBarRequest: (payload) =>
+    request("/api/charm-bar", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
 
   // --- Admin: productos ---
   createProduct: (data) =>
