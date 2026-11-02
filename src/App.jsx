@@ -9,7 +9,7 @@ import ProductPage from "./pages/ProductPage";
 import CollectionPage from "./pages/CollectionPage";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
-import OrderConfirmation from "./pages/OrderConfirmation";
+// ❌ SE ELIMINÓ: import OrderConfirmation from "./pages/OrderConfirmation";
 import AccountComingSoon from "./pages/account/AccountComingSoon";
 
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -38,8 +38,8 @@ export default function App() {
             <Route path="/coleccion/:categorySlug" element={<CollectionPage />} />
             <Route path="/carrito" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
-            <Route path="/gracias" element={<OrderConfirmation />} />
-             <Route path="/sobre-nosotros" element={<AboutPage />} />
+            {/* ❌ SE ELIMINÓ: <Route path="/gracias" element={<OrderConfirmation />} /> */}
+            <Route path="/sobre-nosotros" element={<AboutPage />} />
             <Route path="/charm-bar" element={<CharmBarPage />} />
             <Route
               path="/cuenta/iniciar-sesion"
@@ -61,12 +61,11 @@ export default function App() {
               <Route path="/admin/menu" element={<AdminMenu />} />
               <Route path="/admin/editar/:productId" element={<AdminProductForm />} />
               <Route path="/admin/colecciones" element={<AdminCollections />} />
-             <Route path="/admin/charm-bar" element={<AdminCharmBar />} />
-             <Route path="/admin/categorias" element={<AdminCategories />} />
+              <Route path="/admin/charm-bar" element={<AdminCharmBar />} />
+              <Route path="/admin/categorias" element={<AdminCategories />} />
               <Route path="/admin/contenido" element={<AdminContent />} />
               <Route path="/admin/pedidos" element={<AdminOrders />} />
-
-            </Route> 
+            </Route>
           </Routes>
         </main>
 
