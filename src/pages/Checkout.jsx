@@ -151,7 +151,7 @@ export default function Checkout() {
   return (
     <section className="normal-flow-section">
       <div className="section-header">
-        <h2>Checkout</h2>
+        <h2>CHECKOUT</h2>
         <p>Completa tus datos de envío</p>
       </div>
 
