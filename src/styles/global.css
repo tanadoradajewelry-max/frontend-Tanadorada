@@ -3725,3 +3725,48 @@ textarea {
   background: #EEEBE6;
   color: #777;
 }
+/* ==========================================================================
+   49. MENÚ DEL CELULAR CON SCROLL
+   ========================================================================== */
+.mobile-nav-drawer {
+  height: 100vh;
+  /* Alto real visible en el celular, sin contar la barra del navegador */
+  height: 100dvh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  /* Al llegar al final del menú, no se mueve la página que está detrás */
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  /* Espacio abajo para que el último botón no quede pegado al borde */
+  padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px));
+}
+
+/* Mientras el menú está abierto, la página de atrás no se mueve */
+body:has(.mobile-nav-drawer.is-active) {
+  overflow: hidden;
+}
+
+/* La X se queda fija arriba mientras haces scroll en el menú */
+.mobile-nav-close {
+  position: sticky;
+  top: 12px;
+  right: auto;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin: -44px -10px 4px auto;
+  border-radius: 50%;
+  background: var(--bg);
+}
+
+/* Lo mismo para el menú desplegable de la computadora, por si una categoría
+   llega a tener muchas colecciones */
+.site-nav-dropdown {
+  max-height: calc(100vh - 170px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
