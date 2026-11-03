@@ -1244,7 +1244,7 @@ button {
    ========================================================================== */
 .category-strip {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px; /* Separación entre las imágenes */
   padding: 0 20px; /* Margen interno lateral */
   max-width: 1350px;
