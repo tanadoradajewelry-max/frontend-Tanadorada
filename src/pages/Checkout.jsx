@@ -225,8 +225,7 @@ export default function Checkout() {
           </button>
 
           <p className="checkout-note">
-            Pago con tarjeta: al enviar tu pedido te llevamos a WhatsApp con el
-            mensaje ya escrito. Nosotros te respondemos con tu link de pago.
+            Al enviar tu pedido por WhatsApp, podrás elegir tu método de pago: tarjeta de crédito o débito mediante un link de pago, o transferencia bancaria. Te compartiremos toda la información y los datos necesarios por WhatsApp para completar tu compra.
           </p>
 
           <button
