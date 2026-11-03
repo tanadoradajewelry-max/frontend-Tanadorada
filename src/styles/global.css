@@ -353,7 +353,7 @@ button {
 
 .category-box {
   position: relative;
-  height: 380px;
+  height: 420px;
   border-radius: var(--radius-medium);
   overflow: hidden;
   cursor: pointer;
