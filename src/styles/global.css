@@ -539,8 +539,7 @@ button {
   }
 
   .footer-container { grid-template-columns: 1fr; }
-}
-/* ==========================================================================
+}/* ==========================================================================
    7. PÁGINA DE PRODUCTO
    ========================================================================== */
 .btn--dark {
@@ -565,10 +564,11 @@ button {
 
 .product-page-image {
   position: relative;
-  background: transparent; /* 👈 QUITAMOS EL COLOR DE FONDO */
-  aspect-ratio: 1 / 1; /* 👈 LO HACEMOS CUADRADO */
+  background: #EFECE6; /* 👈 VOLVEMOS AL COLOR CREMA DEL CATÁLOGO */
+  aspect-ratio: 1 / 1; /* Cuadrado para que no se vea gigante */
   border-radius: var(--radius-medium);
   overflow: hidden;
+  isolation: isolate; /* Asegura que el efecto multiply funcione correctamente */
 }
 
 .product-page-image img {
@@ -576,7 +576,7 @@ button {
   height: 100%;
   object-fit: contain; /* Muestra la imagen completa sin cortarla */
   object-position: center;
-  mix-blend-mode: multiply; /* Hace transparente el fondo blanco de la foto */
+  mix-blend-mode: multiply; /* 👈 Hace transparente el fondo blanco de la foto */
 }
 
 .product-page-info {
