@@ -311,7 +311,6 @@ button {
   background-color: var(--accent);
   color: #FFFFFF;
 }
-
 /* ==========================================================================
    4. SECCIÓN SECUNDARIA
    ========================================================================== */
@@ -343,12 +342,13 @@ button {
   text-transform: uppercase;
 }
 
+/* 👇 AQUÍ ESTÁ LA MAGIA: Cambiado a 2 columnas 👇 */
 .categories-grid {
-  max-width: 1350px;
+  max-width: 1000px; /* Ancho ideal para que 2 imágenes se vean bien */
   margin: 0 auto 50px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
+  grid-template-columns: repeat(2, 1fr); /* <-- Cambiado de 3 a 2 */
+  gap: 30px; /* Más espacio entre las dos imágenes */
 }
 
 .category-box {
@@ -429,7 +429,6 @@ button {
   color: var(--accent);
   font-weight: 600;
 }
-
 /* ==========================================================================
    5. FOOTER
    ========================================================================== */
@@ -1244,7 +1243,7 @@ button {
    ========================================================================== */
 .category-strip {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 16px; /* Separación entre las imágenes */
   padding: 0 20px; /* Margen interno lateral */
   max-width: 1350px;
