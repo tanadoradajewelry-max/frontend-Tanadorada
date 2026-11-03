@@ -386,7 +386,7 @@ button {
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 15px;
+  gap: 25px;
 }
 
 .product-card-item {
