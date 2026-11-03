@@ -35,30 +35,23 @@ export default function AdminProducts() {
     api
       .getProducts()
       .then((data) => {
-        // 🔍 ESTO TE AYUDARÁ A VER QUÉ DEVUELVE TU API EN LA CONSOLA
-        console.log("Datos crudos desde el backend:", data);
-
-        // 🛡️ SOLUCIÓN: Si tu base de datos usa "_id" en lugar de "id",
-        // esto lo corrige automáticamente para que React no falle.
+        // 🛡️ Convertimos el ID a texto y nos aseguramos de que no sea nulo
         const fixedData = data.map((p) => ({
           ...p,
-          id: p.id || p._id || p.productId 
+          id: p.id != null ? String(p.id) : "",
         }));
-
         setProducts(fixedData);
         setStatus("success");
       })
-      .catch((error) => {
-        console.error("Error al cargar los productos:", error);
-        setStatus("error");
-      });
+      .catch(() => setStatus("error"));
   };
 
   useEffect(loadProducts, []);
 
   const handleDelete = async (product) => {
+    // Si el ID está vacío, el backend no sabrá qué borrar.
     if (!product.id) {
-      alert("Este producto no tiene un ID válido y no se puede eliminar.");
+      alert("Este producto no tiene un ID válido en la base de datos. Revisa tu backend.");
       return;
     }
 
@@ -83,9 +76,7 @@ export default function AdminProducts() {
 
   const stockParts = [];
   if (soldOutCount) {
-    stockParts.push(
-      `${soldOutCount} ${soldOutCount === 1 ? "agotado" : "agotados"}`
-    );
+    stockParts.push(`${soldOutCount} ${soldOutCount === 1 ? "agotado" : "agotados"}`);
   }
   if (lowCount) stockParts.push(`${lowCount} con poco stock`);
 
@@ -130,8 +121,7 @@ export default function AdminProducts() {
           </thead>
           <tbody>
             {products.map((product, index) => (
-              // Usamos el ID o el index como respaldo para evitar errores de React
-              <tr key={product.id || index}>
+              <tr key={product.id || `fallback-${index}`}>
                 <td>
                   <img
                     src={product.image}
@@ -146,11 +136,13 @@ export default function AdminProducts() {
                   <StockCell product={product} />
                 </td>
                 <td className="admin-table-actions">
-                  {/* 🛡️ Solo mostramos el enlace si el producto tiene un ID */}
+                  {/* 🛡️ Si el producto tiene ID, mostramos "Editar". Si no, mostramos un aviso. */}
                   {product.id ? (
                     <Link to={`/admin/editar/${product.id}`}>Editar</Link>
                   ) : (
-                    <span style={{ color: "#B4453D", fontSize: "12px" }}>Sin ID</span>
+                    <span style={{ color: "#B4453D", fontSize: "11px", fontWeight: "bold" }}>
+                      Sin ID (Bórralo)
+                    </span>
                   )}
                   
                   <button type="button" onClick={() => handleDelete(product)}>
