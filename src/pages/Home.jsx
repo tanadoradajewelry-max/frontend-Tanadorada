@@ -2,23 +2,19 @@ import Hero from "../components/Hero";
 import CategoryStrip from "../components/CategoryStrip";
 import CategoryGrid from "../components/CategoryGrid";
 import AboutBanner from "../components/AboutBanner";
+import InstagramCarousel from "../components/InstagramCarousel";
 import QuoteBand, { quoteBandDefaults } from "../components/QuoteBand";
 import HomeSkeleton from "../components/HomeSkeleton";
 import { useSiteContent } from "../hooks/useSiteContent";
 import { aboutBannerDefaults } from "../data/aboutBannerDefaults";
-
-// ⚠️ AQUÍ IMPORTAMOS EL COMPONENTE DE INSTAGRAM
-// (Asegúrate de que el nombre del archivo sea exactamente este)
-import InstagramSection from "../components/InstagramSection"; 
 
 const defaults = {
   hero: null,
   category_strip: [],
   category_grid: { eyebrow: "", title: "", subtitle: "", items: [] },
   about_banner: aboutBannerDefaults,
+  instagram: { title: "", subtitle: "", handle: "", items: [] },
   quote_band: quoteBandDefaults,
-  // Si tu Instagram carga datos dinámicos desde el admin, agrégalo aquí:
-  // instagram: [], 
 };
 
 export default function Home() {
@@ -51,21 +47,20 @@ export default function Home() {
   return (
     <>
       {content.hero && <Hero data={content.hero} />}
-      
-      {/* 1. Las 2 imágenes de "Encuentra tus favoritos" */}
+
+      {/* 1. Primero van las 2 imágenes de "Encuentra tus favoritos" */}
       <section className="normal-flow-section" id="colecciones-por-estilo">
         <CategoryGrid data={content.category_grid} />
       </section>
 
-      {/* 2. Las 4 imágenes (Anillos, Collares, etc.) */}
+      {/* 2. Ahora las 4 imágenes de Anillos, Collares, etc. */}
       <CategoryStrip items={content.category_strip} />
 
+      {/* 3. Carrusel de Instagram */}
+      <InstagramCarousel data={content.instagram} />
+
       <AboutBanner data={content.about_banner} />
-      
-      {/* 3. LA SECCIÓN DE INSTAGRAM (Las fotos de las mujeres) */}
-      {/* Si tu componente recibe datos, pásaselos aquí ej: data={content.instagram} */}
-      <InstagramSection /> 
-      
+
       <QuoteBand data={content.quote_band} />
     </>
   );
