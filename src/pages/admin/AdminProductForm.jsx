@@ -26,7 +26,7 @@ export default function AdminProductForm() {
   const { productId } = useParams();
   const isEditing = Boolean(productId);
   const navigate = useNavigate();
- const { categories } = useCategories();
+  const { categories } = useCategories();
 
   const [form, setForm] = useState(emptyForm);
   const [gallery, setGallery] = useState([]);
@@ -68,7 +68,7 @@ export default function AdminProductForm() {
           title: product.title,
           price: product.price,
           badge: product.badge || "",
-         category: product.category || "",
+          category: product.category || "",
           collection: product.collection || "",
           stock: product.stock ?? "",
         });
@@ -223,8 +223,6 @@ export default function AdminProductForm() {
 
     setIsSaving(true);
 
-    setIsSaving(true);
-
     try {
       const payload = {
         title: form.title,
@@ -233,7 +231,7 @@ export default function AdminProductForm() {
         price: cleanedSizes.length
           ? Math.min(...cleanedSizes.map((s) => s.price))
           : Number(form.price),
-         sizes: cleanedSizes,
+        sizes: cleanedSizes,
         stock: stockValue,
         badge: form.badge || null,
         image: gallery[0],
@@ -432,7 +430,10 @@ export default function AdminProductForm() {
                       Hacer principal
                     </button>
                   )}
-                  <button type="button" onClick={() => removeImage(i)}>
+                  <button
+                    type="button"
+                    onClick={() => removeImage(i)}
+                  >
                     Quitar
                   </button>
                 </div>
