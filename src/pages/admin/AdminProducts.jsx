@@ -35,15 +35,33 @@ export default function AdminProducts() {
     api
       .getProducts()
       .then((data) => {
-        setProducts(data);
+        // 🔍 ESTO TE AYUDARÁ A VER QUÉ DEVUELVE TU API EN LA CONSOLA
+        console.log("Datos crudos desde el backend:", data);
+
+        // 🛡️ SOLUCIÓN: Si tu base de datos usa "_id" en lugar de "id",
+        // esto lo corrige automáticamente para que React no falle.
+        const fixedData = data.map((p) => ({
+          ...p,
+          id: p.id || p._id || p.productId 
+        }));
+
+        setProducts(fixedData);
         setStatus("success");
       })
-      .catch(() => setStatus("error"));
+      .catch((error) => {
+        console.error("Error al cargar los productos:", error);
+        setStatus("error");
+      });
   };
 
   useEffect(loadProducts, []);
 
   const handleDelete = async (product) => {
+    if (!product.id) {
+      alert("Este producto no tiene un ID válido y no se puede eliminar.");
+      return;
+    }
+
     const confirmed = window.confirm(`¿Eliminar "${product.title}"?`);
     if (!confirmed) return;
 
@@ -111,8 +129,9 @@ export default function AdminProducts() {
             </tr>
           </thead>
           <tbody>
-            {products.map((product) => (
-              <tr key={product.id}>
+            {products.map((product, index) => (
+              // Usamos el ID o el index como respaldo para evitar errores de React
+              <tr key={product.id || index}>
                 <td>
                   <img
                     src={product.image}
@@ -127,7 +146,13 @@ export default function AdminProducts() {
                   <StockCell product={product} />
                 </td>
                 <td className="admin-table-actions">
-                  <Link to={`/admin/editar/${product.id}`}>Editar</Link>
+                  {/* 🛡️ Solo mostramos el enlace si el producto tiene un ID */}
+                  {product.id ? (
+                    <Link to={`/admin/editar/${product.id}`}>Editar</Link>
+                  ) : (
+                    <span style={{ color: "#B4453D", fontSize: "12px" }}>Sin ID</span>
+                  )}
+                  
                   <button type="button" onClick={() => handleDelete(product)}>
                     Eliminar
                   </button>
