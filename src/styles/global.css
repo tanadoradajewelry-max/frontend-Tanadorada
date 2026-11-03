@@ -559,8 +559,9 @@ button {
   max-width: 1100px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 4fr 6fr; /* 👈 La foto toma 40% y los textos 60% */
   gap: 50px;
+  align-items: start; /* Para que no se estiren hacia abajo */
 }
 
 .product-page-image {
