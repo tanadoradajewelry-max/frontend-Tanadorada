@@ -2,7 +2,6 @@ import Hero from "../components/Hero";
 import CategoryStrip from "../components/CategoryStrip";
 import CategoryGrid from "../components/CategoryGrid";
 import AboutBanner from "../components/AboutBanner";
-import InstagramCarousel from "../components/InstagramCarousel";
 import QuoteBand, { quoteBandDefaults } from "../components/QuoteBand";
 import HomeSkeleton from "../components/HomeSkeleton";
 import { useSiteContent } from "../hooks/useSiteContent";
@@ -13,7 +12,6 @@ const defaults = {
   category_strip: [],
   category_grid: { eyebrow: "", title: "", subtitle: "", items: [] },
   about_banner: aboutBannerDefaults,
-  instagram: { title: "", subtitle: "", handle: "", items: [] },
   quote_band: quoteBandDefaults,
 };
 
@@ -47,16 +45,17 @@ export default function Home() {
   return (
     <>
       {content.hero && <Hero data={content.hero} />}
-      <CategoryStrip items={content.category_strip} />
-
+      
+      {/* 1. Primero van las 2 imágenes de "Encuentra tus favoritos" */}
       <section className="normal-flow-section" id="colecciones-por-estilo">
         <CategoryGrid data={content.category_grid} />
       </section>
 
-      <InstagramCarousel data={content.instagram} />
+      {/* 2. Ahora las 4 imágenes de Anillos, Collares, etc. */}
+      <CategoryStrip items={content.category_strip} />
 
       <AboutBanner data={content.about_banner} />
-
+      
       <QuoteBand data={content.quote_band} />
     </>
   );
