@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCartStore } from "../store/useCartStore";
 import { formatPriceLPS } from "../data/storeData";
@@ -6,18 +6,13 @@ import { api } from "../api/client";
 
 const LAST_ORDER_KEY = "tanadorada_last_order";
 
-// Solo se acepta ir a enlaces de WhatsApp, nunca a otro sitio.
 const isWhatsappUrl = (url) =>
   typeof url === "string" && url.startsWith("https://wa.me/");
 
-// Se recuerda el último pedido mientras la pestaña siga abierta, por si la
-// clienta vuelve atrás desde WhatsApp y necesita abrirlo otra vez.
 function saveLastOrder(order) {
   try {
     sessionStorage.setItem(LAST_ORDER_KEY, JSON.stringify(order));
-  } catch {
-    /* sin almacenamiento: no pasa nada */
-  }
+  } catch {}
 }
 
 function readLastOrder() {
@@ -51,6 +46,23 @@ export default function Checkout() {
   const [errorMessage, setErrorMessage] = useState(null);
   const isSubmittingRef = useRef(false);
 
+  // ✅ ESTADOS PARA EL DESCUENTO VISUAL
+  const [isFirstPurchase, setIsFirstPurchase] = useState(false);
+  const [descuento, setDescuento] = useState(0);
+
+  // ✅ VERIFICAR SI ES SU PRIMERA COMPRA EN ESTE NAVEGADOR
+  useEffect(() => {
+    const yaCompro = localStorage.getItem("tanadorada_ha_comprado");
+    
+    if (!yaCompro) {
+      setIsFirstPurchase(true);
+      setDescuento(subtotal * 0.10); // 10% de descuento visual
+    } else {
+      setIsFirstPurchase(false);
+      setDescuento(0);
+    }
+  }, [subtotal]);
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -75,13 +87,11 @@ export default function Checkout() {
         })),
       });
 
-      // 🛠️ PARCHE: Agregamos los datos en el orden solicitado
       let finalWhatsappUrl = whatsappUrl;
       try {
         const urlObj = new URL(whatsappUrl);
         let text = urlObj.searchParams.get("text") || "";
         
-        // Verificamos que no estén ya para evitar duplicados
         if (form.address && form.city && !text.includes(form.address)) {
           text += `\n\n--- Datos de envío ---`;
           text += `\nNombre: ${form.name}`;
@@ -100,7 +110,9 @@ export default function Checkout() {
         throw new Error("No se pudo preparar el mensaje de WhatsApp");
       }
 
-      // El pedido ya quedó guardado: se vacía la bolsa y se abre WhatsApp.
+      // ✅ MARCAR AL USUARIO PARA QUE NO VUELVA A VER EL DESCUENTO EN ESTE NAVEGADOR
+      localStorage.setItem("tanadorada_ha_comprado", "true");
+
       saveLastOrder({ orderId, whatsappUrl: finalWhatsappUrl });
       clearCart();
       window.location.href = finalWhatsappUrl;
@@ -264,9 +276,23 @@ export default function Checkout() {
               </li>
             ))}
           </ul>
-          <div className="cart-summary-row">
-            <span>Total</span>
+
+          {/* ✅ MOSTRAMOS EL SUBTOTAL Y EL DESCUENTO VISUAL */}
+          <div className="cart-summary-row" style={{ borderBottom: '1px solid #eee', paddingBottom: '10px', marginBottom: '10px' }}>
+            <span>Subtotal</span>
             <span>{formatPriceLPS(subtotal)}</span>
+          </div>
+
+          {isFirstPurchase && (
+            <div className="cart-summary-row" style={{ color: '#2F7D4A' }}>
+              <span>Descuento Primera Compra (10%)</span>
+              <span>-{formatPriceLPS(descuento)}</span>
+            </div>
+          )}
+
+          <div className="cart-summary-row" style={{ fontSize: '18px', fontWeight: 'bold' }}>
+            <span>Total</span>
+            <span>{formatPriceLPS(subtotal - descuento)}</span>
           </div>
         </aside>
       </div>
