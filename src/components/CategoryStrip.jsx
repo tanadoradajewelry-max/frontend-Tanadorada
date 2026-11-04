@@ -53,11 +53,27 @@ function StripCard({ category, index }) {
   );
 }
 
-export default function CategoryStrip({ items }) {
+// "header" es opcional: { eyebrow, title, subtitle }. Si los tres están
+// vacíos (o nunca lo guardaste), la franja se ve como siempre.
+export default function CategoryStrip({ items, header }) {
   if (!items?.length) return null;
+
+  const hasHeader = Boolean(
+    header && (header.eyebrow || header.title || header.subtitle)
+  );
 
   return (
     <div className="float-strip">
+      {hasHeader && (
+        <Reveal as="div" className="section-header strip-header">
+          {header.eyebrow && (
+            <span className="section-eyebrow">{header.eyebrow}</span>
+          )}
+          {header.title && <h2>{header.title}</h2>}
+          {header.subtitle && <p>{header.subtitle}</p>}
+        </Reveal>
+      )}
+
       {items.map((category, index) => (
         <StripCard
           key={`${category.label}-${index}`}
