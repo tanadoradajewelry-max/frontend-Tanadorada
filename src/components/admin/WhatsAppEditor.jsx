@@ -128,9 +128,9 @@ export default function WhatsAppEditor() {
         </span>
       </label>
 
+      {/* 👇 TEXTO ACTUALIZADO 👇 */}
       <span className="admin-currency-hint">
-        Después del saludo, el mensaje agrega solo el número de pedido, los
-        productos, el total y el nombre de la clienta.
+        Después del saludo, el mensaje agrega automáticamente el número de pedido, los productos, el total, el nombre y la <strong>dirección de envío</strong> de la clienta.
       </span>
 
       {normalized && (
