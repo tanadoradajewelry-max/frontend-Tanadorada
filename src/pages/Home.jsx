@@ -2,17 +2,23 @@ import Hero from "../components/Hero";
 import CategoryStrip from "../components/CategoryStrip";
 import CategoryGrid from "../components/CategoryGrid";
 import AboutBanner from "../components/AboutBanner";
+import AboutUs from "../components/AboutUs";
 import InstagramCarousel from "../components/InstagramCarousel";
 import QuoteBand, { quoteBandDefaults } from "../components/QuoteBand";
 import HomeSkeleton from "../components/HomeSkeleton";
 import { useSiteContent } from "../hooks/useSiteContent";
 import { aboutBannerDefaults } from "../data/aboutBannerDefaults";
 
+// Solo se usan para los bloques que todavía no has guardado en el panel.
+// El hero ya NO tiene texto ni foto de respaldo: se muestra únicamente lo
+// que guardaste en /admin/contenido.
 const defaults = {
   hero: null,
   category_strip: [],
+  category_strip_header: null,
   category_grid: { eyebrow: "", title: "", subtitle: "", items: [] },
   about_banner: aboutBannerDefaults,
+  about_us: null,
   instagram: { title: "", subtitle: "", handle: "", items: [] },
   quote_band: quoteBandDefaults,
 };
@@ -20,6 +26,7 @@ const defaults = {
 export default function Home() {
   const { content, status } = useSiteContent(defaults);
 
+  // Mientras llega el contenido, una pantalla neutra: nada de respaldo.
   if (status === "loading") {
     return <HomeSkeleton />;
   }
@@ -47,20 +54,19 @@ export default function Home() {
   return (
     <>
       {content.hero && <Hero data={content.hero} />}
+      <CategoryStrip
+        items={content.category_strip}
+        header={content.category_strip_header}
+      />
 
-      {/* 1. Primero van las 2 imágenes de "Encuentra tus favoritos" */}
       <section className="normal-flow-section" id="colecciones-por-estilo">
         <CategoryGrid data={content.category_grid} />
       </section>
 
-      {/* 2. Ahora las 4 imágenes de Anillos, Collares, etc. */}
-      <CategoryStrip items={content.category_strip} />
-
-      {/* 3. Carrusel de Instagram */}
       <InstagramCarousel data={content.instagram} />
 
       <AboutBanner data={content.about_banner} />
-
+      {content.about_us && <AboutUs data={content.about_us} />}
       <QuoteBand data={content.quote_band} />
     </>
   );
