@@ -7,9 +7,10 @@ import AdminGuard from "./components/admin/AdminGuard";
 import Home from "./pages/Home";
 import ProductPage from "./pages/ProductPage";
 import CollectionPage from "./pages/CollectionPage";
+// ✅ NUEVO IMPORT AGREGADO
+import CollectionGroupPage from "./pages/CollectionGroupPage";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
-// ❌ SE ELIMINÓ: import OrderConfirmation from "./pages/OrderConfirmation";
 import AccountComingSoon from "./pages/account/AccountComingSoon";
 
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -35,10 +36,17 @@ export default function App() {
             {/* --- Tienda pública --- */}
             <Route path="/" element={<Home />} />
             <Route path="/producto/:productId" element={<ProductPage />} />
+            
+            {/* /coleccion/ (singular) = categoría */}
             <Route path="/coleccion/:categorySlug" element={<CollectionPage />} />
+            
+            {/* ✅ NUEVA RUTA AGREGADA */}
+            {/* /colecciones/ (plural) = colección de marca */}
+            <Route path="/colecciones/:groupSlug" element={<CollectionGroupPage />} />
+
             <Route path="/carrito" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
-            {/* ❌ SE ELIMINÓ: <Route path="/gracias" element={<OrderConfirmation />} /> */}
+           
             <Route path="/sobre-nosotros" element={<AboutPage />} />
             <Route path="/charm-bar" element={<CharmBarPage />} />
             <Route
