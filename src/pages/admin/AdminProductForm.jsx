@@ -20,6 +20,7 @@ const emptyForm = {
   category: "",
   collection: "",
   stock: "",
+  description: "", // 👈 1. AGREGADO
 };
  
 export default function AdminProductForm() {
@@ -71,6 +72,7 @@ export default function AdminProductForm() {
           category: product.category || "",
           collection: product.collection || "",
           stock: product.stock ?? "",
+          description: product.description ?? "", // 👈 2. AGREGADO
         });
         setGallery(product.images?.length ? product.images : [product.image]);
         setSizes(
@@ -233,6 +235,7 @@ export default function AdminProductForm() {
           : Number(form.price),
         sizes: cleanedSizes,
         stock: stockValue,
+        description: form.description.trim() || null, // 👈 3. AGREGADO
         badge: form.badge || null,
         image: gallery[0],
         images: gallery,
@@ -283,6 +286,26 @@ export default function AdminProductForm() {
             onChange={handleChange}
             required
           />
+        </label>
+
+        {/* 👈 4. AGREGADO: El campo de Minidescripción */}
+        <label>
+          Minidescripción (opcional)
+          <textarea
+            name="description"
+            rows={6}
+            maxLength={600}
+            placeholder={
+              "Oro: baño de oro de 24k\nPlata: baño de plata\nMedidas:\n- Alto: 12 mm"
+            }
+            value={form.description}
+            onChange={handleChange}
+          />
+          <span className="charm-counter">{form.description.length} / 600</span>
+          <span className="admin-currency-hint">
+            Cada renglón es una línea. Si un renglón empieza con "- ", se
+            muestra como viñeta. Solo texto: no admite negritas ni enlaces.
+          </span>
         </label>
 
         <label>
