@@ -59,9 +59,6 @@ export default function Checkout() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Bloqueo inmediato con ref (no depende de que React re-renderice el
-    // botón como disabled, que puede tardar una fracción de segundo y
-    // dejar pasar un doble clic muy rápido).
     if (isSubmittingRef.current) return;
     isSubmittingRef.current = true;
 
@@ -71,8 +68,6 @@ export default function Checkout() {
     try {
       const { orderId, whatsappUrl } = await api.createOrder({
         customer: form,
-        // Solo se manda qué producto, qué talla y cuántos: el precio lo
-        // calcula el servidor.
         items: items.map((item) => ({
           productId: item.id,
           quantity: item.quantity,
@@ -80,15 +75,30 @@ export default function Checkout() {
         })),
       });
 
-      if (!isWhatsappUrl(whatsappUrl)) {
+      // 🛠️ PARCHE: Forzamos a que la dirección y la ciudad se incluyan en el mensaje de WhatsApp
+      let finalWhatsappUrl = whatsappUrl;
+      try {
+        const urlObj = new URL(whatsappUrl);
+        let text = urlObj.searchParams.get("text") || "";
+        
+        // Si no incluye la dirección ya, se la agregamos al final
+        if (form.address && form.city && !text.includes(form.address)) {
+          text += `\nDirección de envío: ${form.address}, ${form.city}`;
+          urlObj.searchParams.set("text", text);
+          finalWhatsappUrl = urlObj.toString();
+        }
+      } catch (err) {
+        console.error("Error al agregar la dirección al link de WhatsApp", err);
+      }
+
+      if (!isWhatsappUrl(finalWhatsappUrl)) {
         throw new Error("No se pudo preparar el mensaje de WhatsApp");
       }
 
       // El pedido ya quedó guardado: se vacía la bolsa y se abre WhatsApp.
-      // (Aquí NO se libera el bloqueo: la página se va a WhatsApp.)
-      saveLastOrder({ orderId, whatsappUrl });
+      saveLastOrder({ orderId, whatsappUrl: finalWhatsappUrl });
       clearCart();
-      window.location.href = whatsappUrl;
+      window.location.href = finalWhatsappUrl;
     } catch (error) {
       setErrorMessage(
         error.message || "No se pudo enviar el pedido. Intenta de nuevo."
@@ -101,7 +111,6 @@ export default function Checkout() {
   if (items.length === 0) {
     const lastOrder = readLastOrder();
 
-    // Volvió atrás desde WhatsApp: su pedido ya está registrado.
     if (lastOrder) {
       return (
         <section className="normal-flow-section">
@@ -151,7 +160,7 @@ export default function Checkout() {
   return (
     <section className="normal-flow-section">
       <div className="section-header">
-        <h2>CHECKOUT</h2>
+        <h2>Checkout</h2>
         <p>Completa tus datos de envío</p>
       </div>
 
