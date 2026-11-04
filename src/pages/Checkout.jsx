@@ -75,20 +75,25 @@ export default function Checkout() {
         })),
       });
 
-      // 🛠️ PARCHE: Forzamos a que la dirección y la ciudad se incluyan en el mensaje de WhatsApp
+      // 🛠️ PARCHE: Agregamos los datos en el orden solicitado
       let finalWhatsappUrl = whatsappUrl;
       try {
         const urlObj = new URL(whatsappUrl);
         let text = urlObj.searchParams.get("text") || "";
         
-        // Si no incluye la dirección ya, se la agregamos al final
+        // Verificamos que no estén ya para evitar duplicados
         if (form.address && form.city && !text.includes(form.address)) {
-          text += `\nDirección de envío: ${form.address}, ${form.city}`;
+          text += `\n\n--- Datos de envío ---`;
+          text += `\nNombre: ${form.name}`;
+          text += `\nCiudad: ${form.city}`;
+          text += `\nDirección de entrega: ${form.address}`;
+          text += `\nNúmero de quien recibe: ${form.phone}`;
+          
           urlObj.searchParams.set("text", text);
           finalWhatsappUrl = urlObj.toString();
         }
       } catch (err) {
-        console.error("Error al agregar la dirección al link de WhatsApp", err);
+        console.error("Error al agregar datos al link de WhatsApp", err);
       }
 
       if (!isWhatsappUrl(finalWhatsappUrl)) {
