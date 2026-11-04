@@ -2,17 +2,20 @@ import Hero from "../components/Hero";
 import CategoryStrip from "../components/CategoryStrip";
 import CategoryGrid from "../components/CategoryGrid";
 import AboutBanner from "../components/AboutBanner";
+import InstagramCarousel from "../components/InstagramCarousel"; 
 import QuoteBand, { quoteBandDefaults } from "../components/QuoteBand";
 import HomeSkeleton from "../components/HomeSkeleton";
-import InstagramSection from "../components/InstagramSection"; 
 import { useSiteContent } from "../hooks/useSiteContent";
 import { aboutBannerDefaults } from "../data/aboutBannerDefaults";
 
 const defaults = {
   hero: null,
   category_strip: [],
+  category_strip_header: null,
   category_grid: { eyebrow: "", title: "", subtitle: "", items: [] },
   about_banner: aboutBannerDefaults,
+  about_us: null, 
+  instagram: { title: "", subtitle: "", handle: "", items: [] },
   quote_band: quoteBandDefaults,
 };
 
@@ -48,21 +51,24 @@ export default function Home() {
       {/* 1. Hero (Banner principal) */}
       {content.hero && <Hero data={content.hero} />}
       
-      {/* 2. Las 4 imágenes (Anillos, Collares, Aretes, Pulseras) */}
-      <CategoryStrip items={content.category_strip} />
-
-      {/* 3. Las 2 imágenes grandes (La Dolce Vita, Muza & Gala) */}
+      {/* 2. Las 2 imágenes grandes (La Dolce Vita, Muza & Gala) */}
       <section className="normal-flow-section" id="colecciones-por-estilo">
         <CategoryGrid data={content.category_grid} />
       </section>
 
-      {/* 4. Banner de 3 columnas (Envios, The Art of Choosing...) */}
+      {/* 3. Las 4 imágenes (Anillos, Collares, Aretes, Pulseras) */}
+      <CategoryStrip
+        items={content.category_strip}
+        header={content.category_strip_header}
+      />
+
+      {/* 4. Carrusel de Instagram */}
+      <InstagramCarousel data={content.instagram} />
+
+      {/* 5. Banner de 3 columnas (Envios, The Art of Choosing...) */}
       <AboutBanner data={content.about_banner} />
       
-      {/* 5. Sección de Instagram (Las fotos de las mujeres) */}
-      <InstagramSection /> 
-      
-      {/* 6. Frase final antes del pie de página */}
+      {/* 6. Frase final */}
       <QuoteBand data={content.quote_band} />
     </>
   );
