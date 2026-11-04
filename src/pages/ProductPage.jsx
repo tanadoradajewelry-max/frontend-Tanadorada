@@ -4,6 +4,7 @@ import { useCartStore } from "../store/useCartStore";
 import { useProduct } from "../hooks/useProduct";
 import { useCurrency } from "../hooks/useCurrency";
 import ProductGallery from "../components/ProductGallery";
+import ProductDescription from "../components/ProductDescription";
 import { getSizes, getPriceRange } from "../utils/productSizes";
 import { isSoldOut, getMaxQuantity } from "../utils/stock";
 
@@ -109,6 +110,10 @@ export default function ProductPage() {
               Precio de referencia en {currency.code}. El cobro se hace en
               lempiras ({formatHnl(shownPrice)}).
             </p>
+          )}
+
+          {product.description && (
+            <ProductDescription text={product.description} />
           )}
 
           {hasSizes && !soldOut && (
