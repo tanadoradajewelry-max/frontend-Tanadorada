@@ -2,31 +2,23 @@ import Hero from "../components/Hero";
 import CategoryStrip from "../components/CategoryStrip";
 import CategoryGrid from "../components/CategoryGrid";
 import AboutBanner from "../components/AboutBanner";
-import AboutUs from "../components/AboutUs";
-import InstagramCarousel from "../components/InstagramCarousel";
 import QuoteBand, { quoteBandDefaults } from "../components/QuoteBand";
 import HomeSkeleton from "../components/HomeSkeleton";
+import InstagramSection from "../components/InstagramSection"; 
 import { useSiteContent } from "../hooks/useSiteContent";
 import { aboutBannerDefaults } from "../data/aboutBannerDefaults";
 
-// Solo se usan para los bloques que todavía no has guardado en el panel.
-// El hero ya NO tiene texto ni foto de respaldo: se muestra únicamente lo
-// que guardaste en /admin/contenido.
 const defaults = {
   hero: null,
   category_strip: [],
-  category_strip_header: null,
   category_grid: { eyebrow: "", title: "", subtitle: "", items: [] },
   about_banner: aboutBannerDefaults,
-  about_us: null,
-  instagram: { title: "", subtitle: "", handle: "", items: [] },
   quote_band: quoteBandDefaults,
 };
 
 export default function Home() {
   const { content, status } = useSiteContent(defaults);
 
-  // Mientras llega el contenido, una pantalla neutra: nada de respaldo.
   if (status === "loading") {
     return <HomeSkeleton />;
   }
@@ -53,20 +45,24 @@ export default function Home() {
 
   return (
     <>
+      {/* 1. Hero (Banner principal) */}
       {content.hero && <Hero data={content.hero} />}
-      <CategoryStrip
-        items={content.category_strip}
-        header={content.category_strip_header}
-      />
+      
+      {/* 2. Las 4 imágenes (Anillos, Collares, Aretes, Pulseras) */}
+      <CategoryStrip items={content.category_strip} />
 
+      {/* 3. Las 2 imágenes grandes (La Dolce Vita, Muza & Gala) */}
       <section className="normal-flow-section" id="colecciones-por-estilo">
         <CategoryGrid data={content.category_grid} />
       </section>
 
-      <InstagramCarousel data={content.instagram} />
-
+      {/* 4. Banner de 3 columnas (Envios, The Art of Choosing...) */}
       <AboutBanner data={content.about_banner} />
-      {content.about_us && <AboutUs data={content.about_us} />}
+      
+      {/* 5. Sección de Instagram (Las fotos de las mujeres) */}
+      <InstagramSection /> 
+      
+      {/* 6. Frase final antes del pie de página */}
       <QuoteBand data={content.quote_band} />
     </>
   );
