@@ -69,6 +69,7 @@ export const navLinks = [
   { label: "Charm Bar Experience", href: "/charm-bar" },
 ];
 
+// ✅ CAMBIO AQUÍ: Cambiamos el $ por L y LPS por HNL
 export function formatPriceLPS(amount) {
-  return `$${amount.toFixed(2)} LPS`;
+  return `L${amount.toFixed(2)} HNL`;
 }
