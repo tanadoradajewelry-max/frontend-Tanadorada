@@ -3773,3 +3773,92 @@ body:has(.mobile-nav-drawer.is-active) {
   overflow-y: auto;
   overscroll-behavior: contain;
 }
+/* ==========================================================================
+   50. ENCABEZADO DE LA FRANJA Y MINIDESCRIPCIÓN DEL PRODUCTO
+   ========================================================================== */
+
+/* Ocupa toda la fila, encima de las tarjetas */
+.float-strip .strip-header {
+  flex: 0 0 100%;
+  margin-bottom: 0;
+}
+
+.product-description {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 6px 0 4px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #444;
+}
+
+.product-description ul {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-left: 20px;
+  list-style: disc;
+}
+/* ==========================================================================
+   51. CERTIFICADO DE REGALO
+   ========================================================================== */
+.gift-heading {
+  font-size: 19px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.radio-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Cada opción: circulito a la izquierda y el texto normal (no en mayúsculas) */
+.checkout-form .radio-option {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.checkout-form input[type="radio"] {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin: 2px 0 0;
+  padding: 0;
+  border: none;
+  accent-color: var(--text);
+}
+
+.gift-terms {
+  padding: 22px 24px;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-medium);
+}
+
+.gift-terms h3 {
+  margin-bottom: 12px;
+  font-family: var(--FONT-STACK-HEADING);
+  font-size: 22px;
+  font-weight: 400;
+}
+
+.gift-terms ul {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-left: 20px;
+  list-style: disc;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #444;
+}
