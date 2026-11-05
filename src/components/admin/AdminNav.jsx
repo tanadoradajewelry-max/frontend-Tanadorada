@@ -8,6 +8,7 @@ const ADMIN_LINKS = [
   { to: "/admin/contenido", label: "Contenido de página" },
   { to: "/admin/menu", label: "Menú" },
   { to: "/admin/charm-bar", label: "Charm Bar" },
+  { to: "/admin/certificados", label: "Certificados" },
   { to: "/admin/pedidos", label: "Pedidos" },
 ];
 
