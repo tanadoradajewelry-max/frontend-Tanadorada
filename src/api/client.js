@@ -85,21 +85,17 @@ export const api = {
   deleteCollection: (id) =>
     adminRequest(`/api/collections/${id}`, { method: "DELETE" }),
 
-  // --- Charm Bar ---
-  // ✅ AGREGADO: Funciones para manejar las solicitudes del Charm Bar
-  getCharmBarRequests: () => adminRequest("/api/charm-bar"),
-  updateCharmBarRequest: (id, data) =>
-    adminRequest(`/api/charm-bar/${id}`, {
-      method: "PUT",
-      body: JSON.stringify(data),
-    }),
-  deleteCharmBarRequest: (id) =>
-    adminRequest(`/api/charm-bar/${id}`, { method: "DELETE" }),
-  // (Por si el formulario público necesita enviar la solicitud desde el frontend)
-  createCharmBarRequest: (payload) =>
-    request("/api/charm-bar", {
+  // ✅ NUEVO: Certificados de regalo
+  createGiftCertificate: (payload) =>
+    request("/api/gift-certificates", {
       method: "POST",
       body: JSON.stringify(payload),
+    }),
+  getGiftCertificates: () => adminRequest("/api/gift-certificates"),
+  updateGiftCertificateStatus: (id, status) =>
+    adminRequest(`/api/gift-certificates/${id}/status`, {
+      method: "PUT",
+      body: JSON.stringify({ status }),
     }),
 
   // --- Admin: productos ---
