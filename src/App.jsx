@@ -7,11 +7,14 @@ import AdminGuard from "./components/admin/AdminGuard";
 import Home from "./pages/Home";
 import ProductPage from "./pages/ProductPage";
 import CollectionPage from "./pages/CollectionPage";
-// ✅ NUEVO IMPORT AGREGADO
 import CollectionGroupPage from "./pages/CollectionGroupPage";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import AccountComingSoon from "./pages/account/AccountComingSoon";
+
+// ✅ NUEVOS IMPORTS: Certificados de regalo
+import GiftCertificatePage from "./pages/GiftCertificatePage";
+import AdminGiftCertificates from "./pages/admin/AdminGiftCertificates";
 
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminProducts from "./pages/admin/AdminProducts";
@@ -40,7 +43,6 @@ export default function App() {
             {/* /coleccion/ (singular) = categoría */}
             <Route path="/coleccion/:categorySlug" element={<CollectionPage />} />
             
-            {/* ✅ NUEVA RUTA AGREGADA */}
             {/* /colecciones/ (plural) = colección de marca */}
             <Route path="/colecciones/:groupSlug" element={<CollectionGroupPage />} />
 
@@ -49,6 +51,10 @@ export default function App() {
            
             <Route path="/sobre-nosotros" element={<AboutPage />} />
             <Route path="/charm-bar" element={<CharmBarPage />} />
+            
+            {/* ✅ NUEVA RUTA PÚBLICA: Certificados de regalo */}
+            <Route path="/gift-certificate" element={<GiftCertificatePage />} />
+
             <Route
               path="/cuenta/iniciar-sesion"
               element={<AccountComingSoon title="Iniciar Sesión" />}
@@ -70,6 +76,10 @@ export default function App() {
               <Route path="/admin/editar/:productId" element={<AdminProductForm />} />
               <Route path="/admin/colecciones" element={<AdminCollections />} />
               <Route path="/admin/charm-bar" element={<AdminCharmBar />} />
+              
+              {/* ✅ NUEVA RUTA ADMIN: Panel de certificados */}
+              <Route path="/admin/certificados" element={<AdminGiftCertificates />} />
+              
               <Route path="/admin/categorias" element={<AdminCategories />} />
               <Route path="/admin/contenido" element={<AdminContent />} />
               <Route path="/admin/pedidos" element={<AdminOrders />} />
