@@ -39,6 +39,7 @@ export default function AdminMenu() {
         label: `Categoría: ${c.label}`,
       })),
       { value: "/charm-bar", label: "Charm Bar Experience" },
+      { value: "/gift-certificate", label: "Gift Certificate" },
       { value: "/sobre-nosotros", label: "Sobre nosotros" },
       { value: "#", label: "Sin destino todavía" },
     ],
