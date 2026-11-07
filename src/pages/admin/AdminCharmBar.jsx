@@ -23,6 +23,9 @@ function formatDateTime(isoString) {
   });
 }
 
+// a) Una función auxiliar, justo debajo de formatDateTime:
+const shortId = (id) => String(id).slice(-8).toUpperCase();
+
 // Un número de 8 dígitos es de Honduras, se le agrega el 504.
 function whatsappLink(phone) {
   const digits = String(phone).replace(/\D/g, "");
@@ -113,6 +116,8 @@ export default function AdminCharmBar() {
         <table className="admin-table">
           <thead>
             <tr>
+              {/* b) El encabezado de la tabla */}
+              <th>Solicitud</th>
               <th>Recibida</th>
               <th>Nombre</th>
               <th>Fecha del evento</th>
@@ -125,7 +130,13 @@ export default function AdminCharmBar() {
             {requests.map((r) => (
               <Fragment key={r.id}>
                 <tr>
-                  <td>{formatDateTime(r.createdAt)}</td>
+                  {/* c) La fila de cada solicitud */}
+                  <td>
+                    <strong>{shortId(r.id)}</strong>
+                  </td>
+                  <td>
+                    {formatDateTime(r.createdAt)}
+                  </td>
                   <td>{r.fullName}</td>
                   <td>{formatEventDate(r.eventDate)}</td>
                   <td>{r.occasion}</td>
@@ -156,7 +167,8 @@ export default function AdminCharmBar() {
 
                 {expandedId === r.id && (
                   <tr>
-                    <td colSpan={6} className="order-detail-row">
+                    {/* d) El ancho de la fila del detalle (cambia de 6 a 7) */}
+                    <td colSpan={7} className="order-detail-row">
                       <dl className="admin-detail-list">
                         {detailRows(r).map(([label, value]) => (
                           <Fragment key={label}>
