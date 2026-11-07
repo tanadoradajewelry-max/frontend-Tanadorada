@@ -220,7 +220,6 @@ export default function GiftCertificatePage() {
     <section className="normal-flow-section charm-page">
       <header className="charm-title">
         <h1>Certificado de regalo</h1>
-        <p className="charm-subtitle">Un regalo especial, elegido con amor.</p>
       </header>
 
       <form className="checkout-form charm-form" onSubmit={handleSubmit}>
