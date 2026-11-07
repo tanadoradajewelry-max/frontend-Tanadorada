@@ -12,6 +12,55 @@ import {
   SOURCES,
 } from "../data/charmBarOptions";
 
+const LAST_REQUEST_KEY = "tanadorada_last_charm_bar";
+const LAST_REQUEST_MAX_AGE_MS = 30 * 60 * 1000; // 30 minutos
+
+// Solo se acepta ir a enlaces de WhatsApp, nunca a otro sitio.
+const isWhatsappUrl = (url) =>
+  typeof url === "string" && url.startsWith("https://wa.me/");
+
+// Se recuerda la última solicitud un rato, por si la clienta vuelve atrás
+// desde WhatsApp y necesita abrirlo otra vez. Pasados 30 minutos se olvida,
+// para que quien regrese más tarde vea el formulario limpio.
+function saveLastRequest(record) {
+  try {
+    sessionStorage.setItem(
+      LAST_REQUEST_KEY,
+      JSON.stringify({ ...record, savedAt: Date.now() })
+    );
+  } catch {
+    /* sin almacenamiento: no pasa nada */
+  }
+}
+
+function clearLastRequest() {
+  try {
+    sessionStorage.removeItem(LAST_REQUEST_KEY);
+  } catch {
+    /* sin almacenamiento: no pasa nada */
+  }
+}
+
+function readLastRequest() {
+  try {
+    const raw = sessionStorage.getItem(LAST_REQUEST_KEY);
+    const data = raw ? JSON.parse(raw) : null;
+    if (!data || typeof data !== "object") return null;
+
+    if (!(Date.now() - Number(data.savedAt) < LAST_REQUEST_MAX_AGE_MS)) {
+      clearLastRequest();
+      return null;
+    }
+
+    return {
+      reference: typeof data.reference === "string" ? data.reference : "",
+      whatsappUrl: isWhatsappUrl(data.whatsappUrl) ? data.whatsappUrl : null,
+    };
+  } catch {
+    return null;
+  }
+}
+
 const emptyForm = {
   occasion: "",
   guests: "",
@@ -58,13 +107,23 @@ function SelectField({ label, name, options, value, onChange, required }) {
 
 export default function CharmBarPage() {
   const [form, setForm] = useState(emptyForm);
-  const [status, setStatus] = useState("idle"); // idle | sending | sent
+  const [status, setStatus] = useState("idle"); // idle | sending
   const [error, setError] = useState(null);
+  const [lastRequest, setLastRequest] = useState(readLastRequest);
   const submittingRef = useRef(false);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const startOver = () => {
+    clearLastRequest();
+    setLastRequest(null);
+    setForm(emptyForm);
+    setError(null);
+    setStatus("idle");
+    submittingRef.current = false;
   };
 
   const handleSubmit = async (event) => {
@@ -78,36 +137,87 @@ export default function CharmBarPage() {
     setStatus("sending");
 
     try {
-      await api.createCharmBarRequest(form);
-      setStatus("sent");
+      const result = await api.createCharmBarRequest(form);
+
+      const record = {
+        reference: typeof result?.reference === "string" ? result.reference : "",
+        whatsappUrl: isWhatsappUrl(result?.whatsappUrl) ? result.whatsappUrl : null,
+      };
+
+      saveLastRequest(record);
+
+      // Con WhatsApp configurado, la página se va a WhatsApp con el mensaje
+      // ya escrito. (Aquí NO se libera el bloqueo: la página se va.)
+      if (record.whatsappUrl) {
+        window.location.href = record.whatsappUrl;
+        return;
+      }
+
+      setLastRequest(record);
+      setStatus("idle");
+      submittingRef.current = false;
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (err) {
       setError(
         err.message || "No se pudo enviar la solicitud. Intenta de nuevo."
       );
       setStatus("idle");
-    } finally {
       submittingRef.current = false;
     }
   };
 
-  if (status === "sent") {
+  if (lastRequest) {
     return (
       <section className="normal-flow-section charm-page">
         <div className="charm-sent">
           <span className="section-eyebrow">Solicitud enviada</span>
           <h1>Let’s make it personal.</h1>
+
+          {lastRequest.reference && (
+            <p>
+              Tu solicitud <strong>#{lastRequest.reference}</strong> quedó
+              registrada.
+            </p>
+          )}
+
           <p>
             Gracias por considerar a Tanadorada para tu celebración. Nos
             encantará crear una experiencia especial contigo.
           </p>
+
+          {lastRequest.whatsappUrl ? (
+            <>
+              <p>
+                Para conversar sobre tu evento, envíanos el mensaje por
+                WhatsApp. Si no se abrió, toca el botón.
+              </p>
+              <a
+                href={lastRequest.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn--dark"
+              >
+                Abrir WhatsApp
+              </a>
+            </>
+          ) : (
+            <p>
+              Nuestro equipo se pondrá en contacto contigo para conversar sobre
+              tu evento.
+            </p>
+          )}
+
           <p className="charm-note">
             Enviar este formulario no confirma una reservación. Nuestro equipo
             se pondrá en contacto contigo para conversar sobre disponibilidad,
             opciones y cotización.
           </p>
-          <Link to="/" className="btn btn--dark">
-            Volver a la tienda
+
+          <button type="button" className="product-page-back" onClick={startOver}>
+            Hacer otra solicitud
+          </button>
+          <Link to="/" className="product-page-back">
+            &larr; Volver a la tienda
           </Link>
         </div>
       </section>
@@ -346,9 +456,10 @@ export default function CharmBarPage() {
           </button>
 
           <p className="charm-note">
-            Enviar este formulario no confirma una reservación. Nuestro equipo
-            se pondrá en contacto contigo para conversar sobre disponibilidad,
-            opciones y cotización.
+            Al enviar tu solicitud te llevamos a WhatsApp con el mensaje ya
+            escrito, para conversar sobre tu evento. Enviar este formulario no
+            confirma una reservación. Nuestro equipo se pondrá en contacto
+            contigo para conversar sobre disponibilidad, opciones y cotización.
           </p>
         </div>
       </form>
