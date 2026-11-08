@@ -27,6 +27,7 @@ import AboutPage from "./pages/AboutPage";
 import CharmBarPage from "./pages/CharmBarPage";
 import AdminCharmBar from "./pages/admin/AdminCharmBar";
 import AdminCategories from "./pages/admin/AdminCategories";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 export default function App() {
   return (
@@ -70,7 +71,8 @@ export default function App() {
             {/* --- TODO lo que esté dentro de este bloque pasa por
                  AdminGuard. Para agregar otra página de admin, ponla aquí. --- */}
             <Route element={<AdminGuard />}>
-              <Route path="/admin" element={<AdminProducts />} />
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/productos" element={<AdminProducts />} />
               <Route path="/admin/nuevo" element={<AdminProductForm />} />
               <Route path="/admin/menu" element={<AdminMenu />} />
               <Route path="/admin/editar/:productId" element={<AdminProductForm />} />
