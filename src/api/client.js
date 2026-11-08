@@ -43,6 +43,8 @@ export const api = {
     return request(qs ? `/api/products?${qs}` : "/api/products");
   },
   getProduct: (id) => request(`/api/products/${id}`),
+    // Números para las tarjetas del panel de inicio (solo admin)
+  getAdminSummary: () => adminRequest("/api/admin/summary"),
   
   // Dirección de una foto del producto, servida como imagen real
   // (0 = principal, 1 = segunda…). El navegador la guarda en memoria.
