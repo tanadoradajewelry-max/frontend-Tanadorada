@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams, Link } from "react-router-dom";
 import { api } from "../../api/client";
 import { useCategories } from "../../hooks/useCategories";
 import { compressImage } from "../../utils/compressImage";
@@ -29,7 +29,13 @@ export default function AdminProductForm() {
   const navigate = useNavigate();
   const { categories } = useCategories();
 
-  const [form, setForm] = useState(emptyForm);
+ const [searchParams] = useSearchParams();
+  const [form, setForm] = useState(() => {
+    // Desde una sección del listado, la categoría ya viene elegida.
+    const wanted = searchParams.get("categoria");
+    const valid = !isEditing && categories.some((c) => c.slug === wanted);
+    return valid ? { ...emptyForm, category: wanted } : emptyForm;
+  });
   const [gallery, setGallery] = useState([]);
   // [{ label, price }] — el precio se guarda como texto mientras se escribe
   const [sizes, setSizes] = useState([]);
@@ -249,7 +255,7 @@ export default function AdminProductForm() {
         await api.createProduct(payload);
       }
 
-      navigate("/admin");
+      navigate("/admin/productos");
     } catch (err) {
       if (handleAuthError(err)) return;
       setError(err.message);
@@ -488,7 +494,7 @@ export default function AdminProductForm() {
           {isSaving ? "Guardando…" : "Guardar"}
         </button>
 
-        <Link to="/admin" className="product-page-back">
+        <Link to="/admin/productos" className="product-page-back">
           &larr; Volver al listado
         </Link>
       </form>
