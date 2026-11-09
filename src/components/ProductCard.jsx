@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../api/client";
 import { useCurrency } from "../hooks/useCurrency";
@@ -12,9 +13,15 @@ const CAN_HOVER =
   typeof window.matchMedia === "function" &&
   window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
-export default function ProductCard({ product }) {
+// "priority" es opcional: si la página se lo pone a las primeras tarjetas,
+// esas fotos cargan de inmediato; las demás cargan al acercarse a la pantalla.
+export default function ProductCard({ product, priority = false }) {
   const navigate = useNavigate();
   const { formatPrice } = useCurrency();
+
+  // La segunda foto NO se pide al cargar la página: solo la primera vez que
+  // el mouse entra en la tarjeta.
+  const [hoverRequested, setHoverRequested] = useState(false);
 
   const range = getPriceRange(product);
   const soldOut = isSoldOut(product);
@@ -32,6 +39,11 @@ export default function ProductCard({ product }) {
         .filter(Boolean)
         .join(" ")}
       onClick={() => navigate(`/producto/${product.id}`)}
+      onMouseEnter={
+        hasHoverPhoto && !hoverRequested
+          ? () => setHoverRequested(true)
+          : undefined
+      }
     >
       <div className="product-card-image">
         {soldOut ? (
@@ -44,15 +56,16 @@ export default function ProductCard({ product }) {
           className="product-card-photo"
           src={product.image}
           alt={product.title}
+          loading={priority ? "eager" : "lazy"}
+          decoding="async"
         />
 
-        {hasHoverPhoto && (
+        {hasHoverPhoto && hoverRequested && (
           <img
             className="product-card-photo product-card-photo--hover"
             src={api.productImageUrl(product.id, 1)}
             alt=""
             aria-hidden="true"
-            loading="lazy"
             decoding="async"
             // Si la segunda foto no carga, se esconde y no pasa nada.
             onError={(event) => {
