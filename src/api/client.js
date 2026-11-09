@@ -51,6 +51,10 @@ export const api = {
   productImageUrl: (id, index) =>
     `${API_URL}/api/products/${encodeURIComponent(id)}/image/${index}`,
 
+  // Buscador de la tienda: devuelve { results, total }
+  searchProducts: (term, options) =>
+    request(`/api/products/search?q=${encodeURIComponent(term)}`, options),
+
   createOrder: (payload) =>
     request("/api/orders", {
       method: "POST",
