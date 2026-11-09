@@ -6,6 +6,7 @@ import { useCartStore } from "../store/useCartStore";
 import { useCurrencyStore } from "../store/useCurrencyStore";
 import { useCurrency } from "../hooks/useCurrency";
 import CurrencySelector from "./CurrencySelector";
+import SearchOverlay from "./SearchOverlay";
 import { SearchIcon, BagIcon, MenuIcon } from "./HeaderIcons";
 import { api } from "../api/client";
 
@@ -53,6 +54,7 @@ export default function Header() {
   const menu = useNavMenu();
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   // null = todavía no se pidieron; {} = pedidas (o falló: se usan las de siempre)
   const [navPreviews, setNavPreviews] = useState(null);
   const [collections, setCollections] = useState([]);
@@ -71,6 +73,11 @@ export default function Header() {
   useEffect(() => {
     loadCurrencies();
   }, [loadCurrencies]);
+
+  // Al cambiar de página (por ejemplo con el botón de atrás), el buscador se cierra.
+  useEffect(() => {
+    setSearchOpen(false);
+  }, [location.pathname]);
 
   // Detecta si ya se bajó un poco, para pasar de transparente a crema.
   useEffect(() => {
@@ -157,7 +164,9 @@ export default function Header() {
               type="button"
               className="site-icon-button"
               aria-label="Buscar"
+              aria-haspopup="dialog"
               title="Buscar"
+              onClick={() => setSearchOpen(true)}
             >
               <SearchIcon />
             </button>
@@ -224,6 +233,11 @@ export default function Header() {
         </header>
       </div>
 
+      {/* El buscador va FUERA del header: el header tiene un efecto de vidrio
+          que haría que el buscador se posicionara dentro de él y no sobre
+          toda la pantalla. */}
+      {searchOpen && <SearchOverlay onClose={() => setSearchOpen(false)} />}
+
       <div
         className={`overlay-backdrop ${isDrawerOpen ? "is-active" : ""}`}
         onClick={closeMenu}
@@ -277,6 +291,23 @@ export default function Header() {
           </label>
         )}
 
+        <div className="mobile-nav-account">
+          <span className="mobile-nav-account-label">Mi Cuenta</span>
+          <Link
+            to="/cuenta/iniciar-sesion"
+            className="btn btn--dark mobile-nav-login"
+            onClick={closeMenu}
+          >
+            Iniciar Sesión
+          </Link>
+          <Link
+            to="/cuenta/registro"
+            className="mobile-nav-register"
+            onClick={closeMenu}
+          >
+            Registrarse
+          </Link>
+        </div>
       </aside>
     </>
   );
