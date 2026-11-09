@@ -7,8 +7,8 @@ import { getPriceRange } from "../utils/productSizes";
 import { isSoldOut } from "../utils/stock";
 import { SearchIcon } from "./HeaderIcons";
 
-const MIN_CHARS = 2;
-const DEBOUNCE_MS = 250;
+const MIN_CHARS = 3; // antes 2: menos búsquedas al escribir
+const DEBOUNCE_MS = 400; // antes 250: espera más antes de buscar
 
 const EMPTY = { status: "idle", results: [], total: 0 };
 
