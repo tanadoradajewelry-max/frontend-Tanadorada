@@ -1,17 +1,53 @@
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const API_URL = (import.meta.env.VITE_API_URL || "http://localhost:4000").replace(
+  /\/$/,
+  ""
+);
+
+const TIMEOUT_MS = 15000; // peticiones normales
+const UPLOAD_TIMEOUT_MS = 60000; // subir una foto puede tardar más
 
 function getAdminPassword() {
   return localStorage.getItem("tanadorada_admin_password") || "";
 }
 
 async function request(path, options = {}) {
-  const response = await fetch(`${API_URL}${path}`, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
-  });
+  const headers = { ...options.headers };
+
+  // Solo se manda Content-Type cuando hay cuerpo (POST/PUT).
+  // Así los GET públicos no generan preflight (petición OPTIONS extra).
+  if (options.body && !(options.body instanceof FormData)) {
+    headers["Content-Type"] = "application/json";
+  }
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+
+  // Si quien llama pasa su propio signal (como el buscador), también se respeta.
+  if (options.signal) {
+    if (options.signal.aborted) controller.abort();
+    else
+      options.signal.addEventListener("abort", () => controller.abort(), {
+        once: true,
+      });
+  }
+
+  let response;
+  try {
+    response = await fetch(`${API_URL}${path}`, {
+      ...options,
+      headers,
+      signal: controller.signal,
+    });
+  } catch (err) {
+    if (err.name === "AbortError" && !options.signal?.aborted) {
+      throw new Error(
+        "El servidor tardó demasiado en responder. Intenta de nuevo."
+      );
+    }
+    throw err;
+  } finally {
+    clearTimeout(timer);
+  }
 
   if (!response.ok) {
     const body = await response.json().catch(() => ({}));
@@ -43,11 +79,13 @@ export const api = {
     return request(qs ? `/api/products?${qs}` : "/api/products");
   },
   getProduct: (id) => request(`/api/products/${id}`),
-    // Números para las tarjetas del panel de inicio (solo admin)
+
+  // Números para las tarjetas del panel de inicio (solo admin)
   getAdminSummary: () => adminRequest("/api/admin/summary"),
-  
+
   // Dirección de una foto del producto, servida como imagen real
   // (0 = principal, 1 = segunda…). El navegador la guarda en memoria.
+  // OJO: esta ruta debe existir en el backend (GET /api/products/:id/image/:index).
   productImageUrl: (id, index) =>
     `${API_URL}/api/products/${encodeURIComponent(id)}/image/${index}`,
 
@@ -66,7 +104,7 @@ export const api = {
       method: "PUT",
       body: JSON.stringify({ status }),
     }),
-    
+
   // --- Contenido de la portada ---
   getContent: () => request("/api/content"), // todos los bloques (la portada)
   getContentBlock: (key) => request(`/api/content/${key}`), // uno solo (el menú)
@@ -91,7 +129,7 @@ export const api = {
   deleteCollection: (id) =>
     adminRequest(`/api/collections/${id}`, { method: "DELETE" }),
 
-  // ✅ NUEVO: Certificados de regalo
+  // --- Certificados de regalo ---
   createGiftCertificate: (payload) =>
     request("/api/gift-certificates", {
       method: "POST",
@@ -117,15 +155,30 @@ export const api = {
     }),
   deleteProduct: (id) =>
     adminRequest(`/api/products/${id}`, { method: "DELETE" }),
+
   uploadImage: async (file) => {
     const formData = new FormData();
     formData.append("image", file);
 
-    const response = await fetch(`${API_URL}/api/upload`, {
-      method: "POST",
-      headers: { "x-admin-password": getAdminPassword() },
-      body: formData,
-    });
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), UPLOAD_TIMEOUT_MS);
+
+    let response;
+    try {
+      response = await fetch(`${API_URL}/api/upload`, {
+        method: "POST",
+        headers: { "x-admin-password": getAdminPassword() },
+        body: formData,
+        signal: controller.signal,
+      });
+    } catch (err) {
+      if (err.name === "AbortError") {
+        throw new Error("La subida tardó demasiado. Intenta de nuevo.");
+      }
+      throw err;
+    } finally {
+      clearTimeout(timer);
+    }
 
     if (!response.ok) {
       const body = await response.json().catch(() => ({}));
@@ -139,9 +192,16 @@ export const api = {
   // true = válida, false = incorrecta. Si el servidor no responde,
   // lanza error (así el guardia no te saca de la sesión por una caída).
   verifyAdminPassword: async (password) => {
-    const response = await fetch(`${API_URL}/api/admin/verify`, {
-      headers: { "x-admin-password": password },
-    });
-    return response.ok;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+    try {
+      const response = await fetch(`${API_URL}/api/admin/verify`, {
+        headers: { "x-admin-password": password },
+        signal: controller.signal,
+      });
+      return response.ok;
+    } finally {
+      clearTimeout(timer);
+    }
   },
 };
