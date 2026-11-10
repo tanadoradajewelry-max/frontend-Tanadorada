@@ -20,7 +20,7 @@ export const DELIVERY_OPTIONS = [
 ];
 
 export const TERMS = [
-  "Canjeable en compras en línea y en tienda física.",
+  "Canjeable en compras en línea.",
   "El certificado puede utilizarse hasta agotar el monto disponible.",
   "No es canjeable por dinero en efectivo.",
   "No se aceptan devoluciones ni reembolsos.",
