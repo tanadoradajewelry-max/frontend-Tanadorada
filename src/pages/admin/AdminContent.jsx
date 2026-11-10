@@ -9,7 +9,6 @@ import InstagramEditor from "../../components/admin/InstagramEditor";
 import CurrencyEditor from "../../components/admin/CurrencyEditor";
 import QuoteBandEditor from "../../components/admin/QuoteBandEditor";
 import WhatsAppEditor from "../../components/admin/WhatsAppEditor";
-// ✅ NUEVO IMPORT AGREGADO:
 import StripHeaderEditor from "../../components/admin/StripHeaderEditor";
 
 const MAX_HERO_IMAGES = 5;
@@ -30,8 +29,6 @@ const emptyContent = {
   about_us: { image: "", images: [], eyebrow: "", title: "", paragraphs: [] },
 };
 
-// Si el bloque ya tiene lista de imágenes se usa; si es contenido viejo,
-// se parte de la imagen única que tenía.
 function getSlides(block) {
   if (block.images?.length) return block.images;
   return block.image ? [block.image] : [];
@@ -72,14 +69,12 @@ export default function AdminContent() {
     alert("No se pudo subir la imagen: " + err.message);
   };
 
-  // Comprime y sube una foto; devuelve su URL.
   const uploadFile = async (file) => {
     const compressed = await compressImage(file);
     const uploaded = await api.uploadImage(compressed);
     return uploaded.url;
   };
 
-  // Sube UNA imagen (Franja y cajas de Colecciones).
   const handleImageUpload = async (file, onSuccess) => {
     try {
       onSuccess(await uploadFile(file));
@@ -91,7 +86,6 @@ export default function AdminContent() {
   const patchBlock = (key, patch) =>
     setContent((c) => ({ ...c, [key]: { ...c[key], ...patch } }));
 
-  // Cambia la lista de imágenes de un bloque; la primera es siempre "image".
   const setSlides = (key, next) =>
     setContent((c) => ({
       ...c,
@@ -109,6 +103,16 @@ export default function AdminContent() {
     setContent((c) => {
       const items = [...c.category_grid.items];
       items[index] = { ...items[index], ...patch };
+      return { ...c, category_grid: { ...c.category_grid, items } };
+    });
+
+  // ✅ 1. FUNCIÓN AGREGADA PARA MOVER LAS CAJAS
+  const reorderGridItem = (from, to) =>
+    setContent((c) => {
+      const items = [...c.category_grid.items];
+      if (from === to || to < 0 || to >= items.length) return c;
+      const [moved] = items.splice(from, 1);
+      items.splice(to, 0, moved);
       return { ...c, category_grid: { ...c.category_grid, items } };
     });
 
@@ -236,7 +240,7 @@ export default function AdminContent() {
         </button>
       </div>
 
-      {/* ✅ NUEVO COMPONENTE AGREGADO AQUÍ */}
+      {/* ✅ COMPONENTE AGREGADO ANTERIORMENTE */}
       <StripHeaderEditor />
 
       {/* --- CATEGORY STRIP --- */}
@@ -360,60 +364,115 @@ export default function AdminContent() {
           />
         </label>
 
-        {content.category_grid.items.map((item, index) => (
-          <div className="admin-content-subitem" key={index}>
-            <label>
-              Imagen
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) =>
-                  e.target.files[0] &&
-                  handleImageUpload(e.target.files[0], (url) =>
-                    patchGridItem(index, { image: url })
-                  )
+        <p className="admin-currency-hint">
+          La primera caja es la de la izquierda en la computadora y la de arriba
+          en el celular. El orden se aplica al darle <strong>Guardar
+          Colecciones</strong>.
+        </p>
+
+        {/* ✅ 2. MAPEO REEMPLAZADO CON LOS CONTROLES DE ORDEN */}
+        {content.category_grid.items.map((item, index) => {
+          const isFirst = index === 0;
+          const isLast = index === content.category_grid.items.length - 1;
+
+          return (
+            <div className="admin-content-subitem" key={index}>
+              <div className="admin-order-bar">
+                <span
+                  className={`admin-order-badge ${isFirst ? "admin-order-badge--first" : ""}`}
+                >
+                  {isFirst ? "Primera" : `Posición ${index + 1}`}
+                </span>
+
+                <div className="admin-order-tools">
+                  {!isFirst && (
+                    <button
+                      type="button"
+                      className="admin-order-first"
+                      onClick={() => reorderGridItem(index, 0)}
+                    >
+                      Poner primera
+                    </button>
+                  )}
+
+                  <div className="admin-menu-controls">
+                    <button
+                      type="button"
+                      aria-label="Subir"
+                      disabled={isFirst}
+                      onClick={() => reorderGridItem(index, index - 1)}
+                    >
+                      ↑
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="Bajar"
+                      disabled={isLast}
+                      onClick={() => reorderGridItem(index, index + 1)}
+                    >
+                      ↓
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <label>
+                Imagen
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    e.target.value = "";
+                    if (file) {
+                      handleImageUpload(file, (url) =>
+                        patchGridItem(index, { image: url })
+                      );
+                    }
+                  }}
+                />
+              </label>
+              {item.image && (
+                <img src={item.image} alt="" className="admin-content-preview" />
+              )}
+
+              <label>
+                Título de la caja
+                <input
+                  type="text"
+                  value={item.title}
+                  onChange={(e) => patchGridItem(index, { title: e.target.value })}
+                />
+              </label>
+
+              <label>
+                A dónde lleva
+                <input
+                  type="text"
+                  list="admin-link-options"
+                  value={item.href}
+                  onChange={(e) => patchGridItem(index, { href: e.target.value })}
+                />
+              </label>
+
+              <button
+                type="button"
+                className="admin-content-remove"
+                onClick={() =>
+                  setContent((c) => ({
+                    ...c,
+                    category_grid: {
+                      ...c.category_grid,
+                      items: c.category_grid.items.filter((_, i) => i !== index),
+                    },
+                  }))
                 }
-              />
-            </label>
-            {item.image && (
-              <img src={item.image} alt="" className="admin-content-preview" />
-            )}
-
-            <label>
-              Título de la caja
-              <input
-                type="text"
-                value={item.title}
-                onChange={(e) => patchGridItem(index, { title: e.target.value })}
-              />
-            </label>
-
-            <label>
-              A dónde lleva
-              <input
-                type="text"
-                value={item.href}
-                onChange={(e) => patchGridItem(index, { href: e.target.value })}
-              />
-            </label>
-
-            <button
-              type="button"
-              className="admin-content-remove"
-              onClick={() =>
-                setContent((c) => ({
-                  ...c,
-                  category_grid: {
-                    ...c.category_grid,
-                    items: c.category_grid.items.filter((_, i) => i !== index),
-                  },
-                }))
-              }
-            >
-              Quitar esta
-            </button>
-          </div>
-        ))}
+              >
+                Quitar esta
+              </button>
+            </div>
+          );
+        })}
 
         <button
           type="button"
