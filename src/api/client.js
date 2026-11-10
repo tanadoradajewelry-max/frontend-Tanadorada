@@ -85,7 +85,6 @@ export const api = {
 
   // Dirección de una foto del producto, servida como imagen real
   // (0 = principal, 1 = segunda…). El navegador la guarda en memoria.
-  // OJO: esta ruta debe existir en el backend (GET /api/products/:id/image/:index).
   productImageUrl: (id, index) =>
     `${API_URL}/api/products/${encodeURIComponent(id)}/image/${index}`,
 
@@ -138,6 +137,19 @@ export const api = {
   getGiftCertificates: () => adminRequest("/api/gift-certificates"),
   updateGiftCertificateStatus: (id, status) =>
     adminRequest(`/api/gift-certificates/${id}/status`, {
+      method: "PUT",
+      body: JSON.stringify({ status }),
+    }),
+
+  // --- Charm Bar ---
+  createCharmBarRequest: (payload) =>
+    request("/api/charm-bar", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  getCharmBarRequests: () => adminRequest("/api/charm-bar"),
+  updateCharmBarStatus: (id, status) =>
+    adminRequest(`/api/charm-bar/${id}/status`, {
       method: "PUT",
       body: JSON.stringify({ status }),
     }),
