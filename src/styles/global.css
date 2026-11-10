@@ -4648,3 +4648,42 @@ body:has(.mobile-nav-drawer.is-active) {
     animation: none;
   }
 }
+/* ==========================================================================
+   55. ORDENAR LAS CAJAS DE COLECCIONES POR ESTILO (panel admin)
+   ========================================================================== */
+.admin-order-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.admin-order-badge {
+  padding: 3px 12px;
+  border-radius: 20px;
+  background: #EFECE6;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  color: #555;
+}
+
+.admin-order-badge--first {
+  background: var(--text);
+  color: #FFFFFF;
+}
+
+.admin-order-tools {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.admin-order-first {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+}
