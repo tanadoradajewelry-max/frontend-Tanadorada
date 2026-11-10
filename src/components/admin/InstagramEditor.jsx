@@ -4,7 +4,7 @@ import { api } from "../../api/client";
 import { compressImage } from "../../utils/compressImage";
 
 const CONTENT_KEY = "instagram";
-const MAX_ITEMS = 12;
+const MAX_ITEMS = 30;
 
 const emptyData = { title: "Síguenos en", subtitle: "", handle: "", items: [] };
 
