@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../api/client";
+import CharmBarMediaEditor from "../../components/admin/CharmBarMediaEditor";
 import AdminNav from "../../components/admin/AdminNav";
 
 const STATUS_LABELS = {
@@ -96,7 +97,7 @@ export default function AdminCharmBar() {
   return (
     <section className="normal-flow-section">
       <AdminNav />
-
+          <CharmBarMediaEditor />
       <div className="section-header" style={{ textAlign: "left", marginBottom: 20 }}>
         <h2>Charm Bar Experience</h2>
         <p>{requests.length} solicitudes recibidas</p>
