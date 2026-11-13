@@ -4687,3 +4687,71 @@ body:has(.mobile-nav-drawer.is-active) {
   letter-spacing: 0.5px;
   cursor: pointer;
 }
+/* ==========================================================================
+   56. PANEL: VIDEOS E IMÁGENES DE CHARM BAR
+   ========================================================================== */
+.admin-collapsible {
+  max-width: 600px;
+  margin: 0 auto 36px;
+}
+
+.admin-collapsible > summary {
+  padding: 14px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-medium);
+  background: #FFFFFF;
+  font-family: var(--FONT-STACK-HEADING);
+  font-size: 20px;
+  list-style: none;
+  cursor: pointer;
+}
+
+.admin-collapsible > summary::-webkit-details-marker {
+  display: none;
+}
+
+.admin-collapsible > summary::after {
+  content: "+";
+  float: right;
+  color: var(--accent);
+}
+
+.admin-collapsible[open] > summary {
+  margin-bottom: 14px;
+}
+
+.admin-collapsible[open] > summary::after {
+  content: "−";
+}
+
+.admin-media-item {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.admin-media-thumb {
+  width: 96px;
+  aspect-ratio: 4 / 5;
+  border-radius: 8px;
+  background: #EFECE6;
+  object-fit: cover;
+}
+
+.admin-media-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.admin-media-ok {
+  font-size: 11px;
+  color: #2F7D4A;
+}
+
+.admin-media-bad {
+  font-size: 11px;
+  color: #B4453D;
+}
