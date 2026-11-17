@@ -11,7 +11,6 @@ import {
   DURATIONS,
   SOURCES,
 } from "../data/charmBarOptions";
-// ✅ IMPORTAMOS LAS UTILIDADES PARA LOS VIDEOS E IMÁGENES
 import { normalizeCharmMedia, parseInstagramUrl } from "../utils/charmBarMedia";
 
 const LAST_REQUEST_KEY = "tanadorada_last_charm_bar";
@@ -105,10 +104,11 @@ export default function CharmBarPage() {
   const [lastRequest, setLastRequest] = useState(readLastRequest);
   const submittingRef = useRef(false);
 
-  // ✅ ESTADO PARA VIDEOS E IMÁGENES
   const [media, setMedia] = useState({ videos: [], images: [] });
+  
+  // ✅ NUEVO ESTADO: Guarda la URL del video que está sonando ahora mismo
+  const [playingVideo, setPlayingVideo] = useState(null);
 
-  // ✅ CARGAR DATOS DEL BACKEND AL ENTRAR
   useEffect(() => {
     api.getContentBlock("charm_bar_media")
       .then((saved) => {
@@ -219,7 +219,6 @@ export default function CharmBarPage() {
   return (
     <section className="normal-flow-section charm-page">
       
-      {/* ✅ NUEVA ESTRUCTURA DE 3 COLUMNAS */}
       <div className="charm-layout">
 
         {/* COLUMNA IZQUIERDA: VIDEOS */}
@@ -229,9 +228,31 @@ export default function CharmBarPage() {
               {media.videos.map((video, i) => {
                 const parsed = parseInstagramUrl(video.url);
                 if (!parsed) return null;
+
+                // ✅ SI EL VIDEO ESTÁ ACTIVO, MOSTRAMOS EL IFRAME DE INSTAGRAM
+                if (playingVideo === video.url) {
+                  return (
+                    <div key={i} className="charm-video-card charm-video-playing">
+                      <iframe
+                        src={parsed.embedUrl}
+                        className="charm-instagram-iframe"
+                        allowFullScreen
+                        scrolling="no"
+                        allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                        title={`Reel de Instagram ${i + 1}`}
+                      ></iframe>
+                    </div>
+                  );
+                }
+
+                // SI NO ESTÁ ACTIVO, MOSTRAMOS LA PORTADA CON EL BOTÓN DE PLAY
                 return (
                   <div key={i} className="charm-video-card">
-                    <a href={parsed.pageUrl} target="_blank" rel="noreferrer">
+                    <button 
+                      type="button" 
+                      className="charm-video-play-btn"
+                      onClick={() => setPlayingVideo(video.url)}
+                    >
                       {video.cover ? (
                         <div className="charm-video-cover-wrap">
                           <img src={video.cover} alt={`Reel ${i + 1}`} className="charm-video-cover" />
@@ -243,7 +264,7 @@ export default function CharmBarPage() {
                           <span className="charm-play-icon-small">▶</span>
                         </div>
                       )}
-                    </a>
+                    </button>
                   </div>
                 );
               })}
