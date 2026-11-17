@@ -4754,45 +4754,50 @@ body:has(.mobile-nav-drawer.is-active) {
 .admin-media-bad {
   font-size: 11px;
   color: #B4453D;
-}
-/* ==========================================================================
-   57. CHARM BAR PÚBLICO (3 COLUMNAS)
+}/* ==========================================================================
+   57. CHARM BAR PÚBLICO (LAYOUT Y CORRECCIÓN MÓVIL)
    ========================================================================== */
+
+/* Contenedor principal */
 .charm-layout {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 40px;
-  max-width: 1400px;
+  gap: 30px;
+  max-width: 100%; /* Evita que se estire más que la pantalla */
   margin: 0 auto;
   align-items: start;
+  overflow-x: hidden; /* Bloquea cualquier scroll horizontal */
 }
 
+/* Columna central (Formulario) */
 .charm-main-content {
-  max-width: 640px;
+  max-width: 100%; /* Asegura que no exceda la pantalla */
+  min-width: 0; /* Magia para que Flex/Grid no se estiren de más */
+  width: 100%;
   margin: 0 auto;
+}
+
+/* Formulario e Inputs */
+.charm-form {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Forzar a los campos a quedarse dentro de su caja */
+.charm-form input,
+.charm-form select,
+.charm-form textarea {
+  width: 100% !important;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* --- Estilos base de videos e imágenes --- */
+.charm-media-sidebar {
   width: 100%;
 }
 
-/* --- En computadora: Videos a la izq, Formulario al centro, Fotos a la der --- */
-@media (min-width: 1150px) {
-  .charm-layout {
-    grid-template-columns: 220px minmax(500px, 1fr) 220px; 
-  }
-
-  .charm-media-sidebar {
-    position: sticky;
-    top: 120px; /* Se quedan pegados arriba mientras bajas por el formulario */
-    max-height: calc(100vh - 140px);
-    overflow-y: auto;
-    /* Escondemos la barra de scroll para que se vea limpio */
-    scrollbar-width: none; 
-  }
-  .charm-media-sidebar::-webkit-scrollbar {
-    display: none;
-  }
-}
-
-/* --- Estilos de los Videos --- */
 .charm-media-track {
   display: flex;
   flex-direction: column;
@@ -4854,24 +4859,40 @@ body:has(.mobile-nav-drawer.is-active) {
   color: var(--accent);
 }
 
-/* --- Estilos de las Imágenes --- */
 .charm-image-card {
   aspect-ratio: 4 / 5;
 }
 
-
-/* --- En celular: Convertir laterales en carruseles horizontales --- */
-@media (max-width: 1149px) {
-  .charm-media-sidebar {
-    margin-bottom: 10px;
+/* --- En computadora (Pantallas grandes) --- */
+@media (min-width: 1150px) {
+  .charm-layout {
+    max-width: 1400px; /* Aquí sí dejamos que se expanda */
+    grid-template-columns: 240px minmax(500px, 1fr) 240px;
+    overflow-x: visible;
   }
   
+  .charm-media-sidebar {
+    position: sticky;
+    top: 120px;
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
+    scrollbar-width: none; /* Oculta la barra de scroll */
+  }
+  
+  .charm-media-sidebar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* --- En celular (Carruseles) --- */
+@media (max-width: 1149px) {
   .charm-media-track {
     flex-direction: row;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     padding-bottom: 15px;
     gap: 12px;
+    -webkit-overflow-scrolling: touch; /* Scroll suave en iPhone */
   }
   
   .charm-video-card {
