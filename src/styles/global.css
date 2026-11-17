@@ -4754,9 +4754,8 @@ body:has(.mobile-nav-drawer.is-active) {
 .admin-media-bad {
   font-size: 11px;
   color: #B4453D;
-}
-/* ==========================================================================
-   57. CHARM BAR PÚBLICO (LAYOUT Y CORRECCIÓN MÓVIL)
+}/* ==========================================================================
+   57. CHARM BAR PÚBLICO (LAYOUT, MÓVIL Y REPRODUCTOR DE INSTAGRAM)
    ========================================================================== */
 
 /* Contenedor principal */
@@ -4764,16 +4763,16 @@ body:has(.mobile-nav-drawer.is-active) {
   display: grid;
   grid-template-columns: 1fr;
   gap: 30px;
-  max-width: 100%; /* Evita que se estire más que la pantalla */
+  max-width: 100%;
   margin: 0 auto;
   align-items: start;
-  overflow-x: hidden; /* Bloquea cualquier scroll horizontal */
+  overflow-x: hidden;
 }
 
 /* Columna central (Formulario) */
 .charm-main-content {
-  max-width: 100%; /* Asegura que no exceda la pantalla */
-  min-width: 0; /* Magia para que Flex/Grid no se estiren de más */
+  max-width: 100%;
+  min-width: 0;
   width: 100%;
   margin: 0 auto;
 }
@@ -4785,7 +4784,6 @@ body:has(.mobile-nav-drawer.is-active) {
   box-sizing: border-box;
 }
 
-/* Forzar a los campos a quedarse dentro de su caja */
 .charm-form input,
 .charm-form select,
 .charm-form textarea {
@@ -4839,6 +4837,11 @@ body:has(.mobile-nav-drawer.is-active) {
   color: #FFFFFF;
   font-size: 28px;
   pointer-events: none;
+  transition: background 0.3s ease;
+}
+
+.charm-video-card:hover .charm-play-icon {
+  background: rgba(0, 0, 0, 0.4);
 }
 
 .charm-video-no-cover {
@@ -4864,11 +4867,43 @@ body:has(.mobile-nav-drawer.is-active) {
   aspect-ratio: 4 / 5;
 }
 
+/* ==========================================================================
+   ✅ NUEVOS ESTILOS PARA EL REPRODUCTOR EN PÁGINA
+   ========================================================================== */
+
+/* Botón invisible que envuelve la portada (limpia estilos por defecto) */
+.charm-video-play-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  width: 100%;
+  cursor: pointer;
+  display: block;
+}
+
+/* Fondo negro para que el iframe resalte mientras carga */
+.charm-video-playing {
+  background: #000;
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+/* El reproductor de Instagram */
+.charm-instagram-iframe {
+  width: 100%;
+  height: 100%;
+  min-height: 480px; /* Ajusta esto si quieres el video más largo o corto */
+  border: none;
+  border-radius: var(--radius-medium);
+  overflow: hidden;
+}
+
 /* --- En computadora (Pantallas grandes) --- */
 @media (min-width: 1150px) {
   .charm-layout {
-    max-width: 1400px; /* Aquí sí dejamos que se expanda */
-    grid-template-columns: 240px minmax(500px, 1fr) 240px; /* Videos - Formulario - Fotos */
+    max-width: 1400px;
+    grid-template-columns: 240px minmax(500px, 1fr) 240px;
     overflow-x: visible;
   }
   
@@ -4877,7 +4912,7 @@ body:has(.mobile-nav-drawer.is-active) {
     top: 120px;
     max-height: calc(100vh - 140px);
     overflow-y: auto;
-    scrollbar-width: none; /* Oculta la barra de scroll */
+    scrollbar-width: none;
   }
   
   .charm-media-sidebar::-webkit-scrollbar {
@@ -4887,7 +4922,6 @@ body:has(.mobile-nav-drawer.is-active) {
 
 /* --- En celular (Carruseles y Reordenamiento) --- */
 @media (max-width: 1149px) {
-  /* Cambiamos a Flexbox para poder reordenar los bloques */
   .charm-layout {
     display: flex;
     flex-direction: column;
@@ -4910,23 +4944,27 @@ body:has(.mobile-nav-drawer.is-active) {
     margin-top: 30px;
   }
 
-  /* Convertir las listas en carruseles deslizables */
   .charm-media-track {
     flex-direction: row;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     padding-bottom: 15px;
     gap: 12px;
-    -webkit-overflow-scrolling: touch; /* Scroll suave en iPhone */
+    -webkit-overflow-scrolling: touch;
   }
   
   .charm-video-card {
-    flex: 0 0 160px;
+    flex: 0 0 180px; /* Un poquito más ancho en celular para que se vea bien el play */
     scroll-snap-align: start;
   }
 
   .charm-image-card {
     flex: 0 0 140px;
     scroll-snap-align: start;
+  }
+
+  /* En celular el reproductor necesita un alto específico */
+  .charm-instagram-iframe {
+    min-height: 520px; 
   }
 }
