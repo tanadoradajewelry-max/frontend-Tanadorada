@@ -4754,7 +4754,8 @@ body:has(.mobile-nav-drawer.is-active) {
 .admin-media-bad {
   font-size: 11px;
   color: #B4453D;
-}/* ==========================================================================
+}
+/* ==========================================================================
    57. CHARM BAR PÚBLICO (LAYOUT Y CORRECCIÓN MÓVIL)
    ========================================================================== */
 
@@ -4867,7 +4868,7 @@ body:has(.mobile-nav-drawer.is-active) {
 @media (min-width: 1150px) {
   .charm-layout {
     max-width: 1400px; /* Aquí sí dejamos que se expanda */
-    grid-template-columns: 240px minmax(500px, 1fr) 240px;
+    grid-template-columns: 240px minmax(500px, 1fr) 240px; /* Videos - Formulario - Fotos */
     overflow-x: visible;
   }
   
@@ -4884,8 +4885,32 @@ body:has(.mobile-nav-drawer.is-active) {
   }
 }
 
-/* --- En celular (Carruseles) --- */
+/* --- En celular (Carruseles y Reordenamiento) --- */
 @media (max-width: 1149px) {
+  /* Cambiamos a Flexbox para poder reordenar los bloques */
+  .charm-layout {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* 1. FOTOS ARRIBA */
+  .charm-media-right {
+    order: 1;
+    margin-bottom: 10px;
+  }
+
+  /* 2. FORMULARIO AL CENTRO */
+  .charm-main-content {
+    order: 2;
+  }
+
+  /* 3. VIDEOS ABAJO */
+  .charm-media-left {
+    order: 3;
+    margin-top: 30px;
+  }
+
+  /* Convertir las listas en carruseles deslizables */
   .charm-media-track {
     flex-direction: row;
     overflow-x: auto;
