@@ -4755,3 +4755,132 @@ body:has(.mobile-nav-drawer.is-active) {
   font-size: 11px;
   color: #B4453D;
 }
+/* ==========================================================================
+   57. CHARM BAR PÚBLICO (3 COLUMNAS)
+   ========================================================================== */
+.charm-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+.charm-main-content {
+  max-width: 640px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* --- En computadora: Videos a la izq, Formulario al centro, Fotos a la der --- */
+@media (min-width: 1150px) {
+  .charm-layout {
+    grid-template-columns: 220px minmax(500px, 1fr) 220px; 
+  }
+
+  .charm-media-sidebar {
+    position: sticky;
+    top: 120px; /* Se quedan pegados arriba mientras bajas por el formulario */
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
+    /* Escondemos la barra de scroll para que se vea limpio */
+    scrollbar-width: none; 
+  }
+  .charm-media-sidebar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* --- Estilos de los Videos --- */
+.charm-media-track {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.charm-video-card, .charm-image-card {
+  border-radius: var(--radius-medium);
+  overflow: hidden;
+  background: #EFECE6;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+  transition: transform 0.3s ease;
+}
+
+.charm-video-card:hover, .charm-image-card:hover {
+  transform: translateY(-4px);
+}
+
+.charm-video-cover-wrap {
+  position: relative;
+  aspect-ratio: 9 / 16;
+}
+
+.charm-video-cover, .charm-gallery-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.charm-play-icon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.25);
+  color: #FFFFFF;
+  font-size: 28px;
+  pointer-events: none;
+}
+
+.charm-video-no-cover {
+  aspect-ratio: 9 / 16;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: var(--FONT-STACK-HEADING);
+  font-size: 16px;
+  color: var(--text);
+  text-align: center;
+  padding: 10px;
+}
+
+.charm-play-icon-small {
+  font-size: 24px;
+  color: var(--accent);
+}
+
+/* --- Estilos de las Imágenes --- */
+.charm-image-card {
+  aspect-ratio: 4 / 5;
+}
+
+
+/* --- En celular: Convertir laterales en carruseles horizontales --- */
+@media (max-width: 1149px) {
+  .charm-media-sidebar {
+    margin-bottom: 10px;
+  }
+  
+  .charm-media-track {
+    flex-direction: row;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 15px;
+    gap: 12px;
+  }
+  
+  .charm-video-card {
+    flex: 0 0 160px;
+    scroll-snap-align: start;
+  }
+
+  .charm-image-card {
+    flex: 0 0 140px;
+    scroll-snap-align: start;
+  }
+}
